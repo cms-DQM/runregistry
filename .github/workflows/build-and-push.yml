@@ -7,8 +7,8 @@ on:
     branches: [master]
 
 jobs:
-  build-and-push-frontend:
-    name: 'Build and push frontend'
+  build-and-push-backend:
+    name: 'Build and push backend'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,10 +25,10 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
-          context: ./runregistry_frontend
-          file: ./runregistry_frontend/Dockerfile
+          context: ./runregistry_backend
+          file: ./runregistry_backend/Dockerfile
           push: true
-          tags: cmssw/runregistry-frontend:latest
+          tags: cmssw/runregistry-backend:latest
 
   # build-and-push-backend:
   #   name: 'Build and push backend'
