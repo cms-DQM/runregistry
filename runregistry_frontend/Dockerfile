@@ -7,7 +7,7 @@ ENV NODE_ENV production
 ENV ENV kubernetes
 # Installing dependencies
 COPY package*.json ./
-RUN npm install --loglevel verbose
+RUN npm install
 
 # Copying source files
 COPY . .

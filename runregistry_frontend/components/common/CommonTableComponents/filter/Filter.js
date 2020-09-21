@@ -3,7 +3,6 @@ import Router, { useRouter } from 'next/router';
 import { debounce } from 'throttle-debounce';
 import qs from 'qs';
 import QueryBuilder, { formatQuery } from 'react-querybuilder';
-import 'react-querybuilder/src/query-builder.scss';
 
 const oms_attributes = [
   'energy',
@@ -344,6 +343,27 @@ class RootView extends Component {
           </div>
         </div>
         <style jsx global>{`
+          .ruleGroup {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: rgba(255, 233, 172, 0.5);
+
+            .rule,
+            .ruleGroup {
+              margin-top: 0.5rem;
+              margin-left: 0.5rem;
+            }
+
+            .ruleGroup-combinators.betweenRules {
+              margin-top: 0.5rem;
+            }
+
+            .ruleGroup-notToggle {
+              margin-right: 0.5rem;
+            }
+          }
+
           .rule {
             overflow-x: scroll !important;
             display: flex;
