@@ -27,7 +27,6 @@ jobs:
         with:
           context: .
           file: ./runregistry_frontend/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/386
           push: true
           tags: cmssw/runregistry-frontend:latest
 
