@@ -343,25 +343,22 @@ class RootView extends Component {
           </div>
         </div>
         <style jsx global>{`
-          .ruleGroup {
+          .ruleGroup .rule {
             padding: 0.5rem;
             border: 1px solid #ccc;
             border-radius: 4px;
-            background: rgba(255, 233, 172, 0.5);
+          }
+          .ruleGroup .ruleGroup {
+            margin-top: 0.5rem;
+            margin-left: 0.5rem;
+          }
 
-            .rule,
-            .ruleGroup {
-              margin-top: 0.5rem;
-              margin-left: 0.5rem;
-            }
+          .ruleGroup .ruleGroup-combinators.betweenRules {
+            margin-top: 0.5rem;
+          }
 
-            .ruleGroup-combinators.betweenRules {
-              margin-top: 0.5rem;
-            }
-
-            .ruleGroup-notToggle {
-              margin-right: 0.5rem;
-            }
+          .ruleGroup .ruleGroup-notToggle {
+            margin-right: 0.5rem;
           }
 
           .rule {
