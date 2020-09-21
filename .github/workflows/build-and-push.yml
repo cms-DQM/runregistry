@@ -16,8 +16,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          registry: cmssw
-          image_name: runregistry-frontend
+          image_name: cmssw/runregistry-frontend
           tags: latest,${{ github.sha }}
           context: ./runregistry_frontend
           pull_image_and_stages: false
@@ -32,8 +31,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          registry: cmssw
-          image_name: runregistry-backend
+          image_name: cmssw/runregistry-backend
           tags: latest,${{ github.sha }}
           context: ./runregistry_backend
           pull_image_and_stages: false
@@ -48,8 +46,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          registry: cmssw
-          image_name: runregistry-workers-dqm-gui-pinging
+          image_name: cmssw/runregistry-workers-dqm-gui-pinging
           tags: latest,${{ github.sha }}
           context: ./runregistry_backend
           pull_image_and_stages: false
