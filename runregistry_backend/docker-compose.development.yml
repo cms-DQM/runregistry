@@ -1,0 +1,79 @@
+version: '3.5'
+
+services:
+  dev:
+    image: node:12.10.0
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - nodemodules:/usr/src/service/node_modules
+      - .:/usr/src/service
+    working_dir: /usr/src/service
+    environment:
+      - NODE_ENV=development
+      - REDIS_HOST=redis
+      - DOCKER_POSTGRES=true
+    command: npm run dev
+    ports:
+      - 9500:9500
+      - 9229:9229 # For debugger
+
+  # Enable to ping DQM GUI
+  # pinging_dqm_gui:
+  #   image: node:12.10.0
+  #   depends_on:
+  #     - postgres
+  #     - dev
+  #   volumes:
+  #     - nodemodules:/usr/src/service/node_modules
+  #     - .:/usr/src/service
+  #   working_dir: /usr/src/service
+  #   environment:
+  #     - NODE_ENV=development
+  #     - DOCKER_POSTGRES=true
+  #   command: npm run start_pinging_gui
+  # Enable the following ports for debugging:
+  # ports:
+  #   - 9229:9229 # For debugger
+
+  # processing_jsons:
+  #   image: node:12.10.0
+  #   depends_on:
+  #     - postgres
+  #     - dev
+  #     - redis
+  #   volumes:
+  #     - nodemodules:/usr/src/service/node_modules
+  #     - .:/usr/src/service
+  #   working_dir: /usr/src/service
+  #   environment:
+  #     - NODE_ENV=development
+  #     - DOCKER_POSTGRES=true
+  #   command: npm run start_processing_jsons
+  # Enable the following ports for debugging:
+  # ports:
+  #   - 9229:9229 # For debugger
+
+  postgres:
+    image: postgres:11.2-alpine
+    shm_size: 4gb
+    environment:
+      - POSTGRES_USER=hackathon
+      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=runregistry_database
+    ports:
+      - '6543:5432'
+
+  redis:
+    image: redis:5.0.7-alpine
+    hostname: redis
+    volumes:
+      - redis_data:/data
+    ports:
+      - 6379:6379
+
+volumes:
+  nodemodules:
+    external: true
+  redis_data:

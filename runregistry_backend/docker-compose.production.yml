@@ -1,0 +1,6 @@
+version: '3'
+
+services:
+  postgres:
+    entrypoint:
+      ['echo', 'Local postgres disabled in favor of DB on demand in production']

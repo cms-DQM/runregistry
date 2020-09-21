@@ -1,0 +1,56 @@
+name: build docker images
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-and-push-frontend:
+    name: 'Build and push frontend'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          registry: cmssw
+          image_name: runregistry-frontend
+          tags: latest,${{ github.sha }}
+          context: ./runregistry_frontend
+          pull_image_and_stages: false
+          dockerfile: Dockerfile
+
+  build-and-push-backend:
+    name: 'Build and push backend'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          registry: cmssw
+          image_name: runregistry-backend
+          tags: latest,${{ github.sha }}
+          context: ./runregistry_backend
+          pull_image_and_stages: false
+          dockerfile: Dockerfile
+
+  build-and-push-dqm-gui-pinging:
+    name: 'Build and push DQM GUI pinging'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          registry: cmssw
+          image_name: runregistry-workers-dqm-gui-pinging
+          tags: latest,${{ github.sha }}
+          context: ./runregistry_backend
+          pull_image_and_stages: false
+          dockerfile: DockerfilePingGUI

@@ -1,0 +1,17 @@
+version: '2'
+services:
+  base:
+    image: node:12.10.0
+    volumes:
+      - nodemodules:/usr/src/service/node_modules
+      - .:/usr/src/service
+    working_dir: /usr/src/service
+
+  install:
+    extends:
+      service: base
+    command: npm install
+
+volumes:
+  nodemodules:
+    external: true
