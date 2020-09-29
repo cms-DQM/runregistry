@@ -28,7 +28,7 @@ class JsonList extends Component {
             <Tag color="#87d068">Official</Tag>
           </div>
         )}
-        {progress === 1 ? (
+        {progress === 1 && !active ? (
           <a
             className={selected && 'selected_link'}
             onClick={() => selectJson(id)}
