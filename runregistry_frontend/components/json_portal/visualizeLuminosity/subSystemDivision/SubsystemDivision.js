@@ -689,6 +689,7 @@ class VisualizeLuminosity extends Component {
           );
         }
       }
+
       // We check that the loss hasn't been added and that there are ONLY rules failing belonging to Run Registry or OMS, if by some chance another rule appeared which belongs to other criteria it shouldn't be attributed here
       if (!loss_added && dcs_only.length + rr_only.length === vars.length) {
         for (const [subsystem, dcs_bits] of Object.entries(dcs_mapping)) {
@@ -714,7 +715,13 @@ class VisualizeLuminosity extends Component {
               }
               return rr_subsystem === subsystem;
             });
-          if (only_dcs_bits_from_this_subystem || only_rr_from_this_subystem) {
+
+          // If both of them (dcs and rr) are from the same subsystem. Or there are only rr from subsystem and no DCS, or there are only dcs from the subsystem and no RR
+          if (
+            (only_dcs_bits_from_this_subystem && only_rr_from_this_subystem) ||
+            (only_dcs_bits_from_this_subystem && rr_only.length === 0) ||
+            (only_rr_from_this_subystem && dcs_only.length === 0)
+          ) {
             exclusive_loss += val;
             loss_added = true;
             if (typeof exclusive_losses[subsystem] === 'undefined') {

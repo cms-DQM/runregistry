@@ -95,7 +95,7 @@ class BreadcrumbCmp extends Component {
           {section === 'datasets' && (
             <Link
               href={`${root_url_prefix}/offline?type=offline&section=cycles&workspace=${workspace}`}
-              as={`/offline/cycles/${workspace}`}
+              as={`${root_url_prefix}/offline/cycles/${workspace}`}
             >
               <a>
                 <Button type="primary" size="large" icon={<RetweetOutlined />}>

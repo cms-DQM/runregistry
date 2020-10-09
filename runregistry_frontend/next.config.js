@@ -8,6 +8,8 @@ if (typeof require !== 'undefined') {
 }
 module.exports = withCss(
   withSass({
+    assetPrefix: process.env.ENV === 'kubernetes' ? '/runregistry' : '',
+    // basePath: process.env.ENV === 'kubernetes' && '/runregistry',
     publicRuntimeConfig: {
       // Will be available on both server and client
       staticFolder: '/static',

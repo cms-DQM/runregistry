@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const models = require('./models/index');
+const router = express.Router();
 // Add timestamps to logs:
 require('console-stamp')(console);
 const { expressError } = require('./utils/error_handlers');
@@ -18,7 +19,7 @@ models.sequelize
     // Initialize DB data
     // await require('./initialization/initialize')();
     server.listen(port, () => {
-      console.log(`server listening in port ${port}`);
+      console.log(`server listening in port ${port}, env: ${process.env.ENV}`);
       // const cron = require('./cron/1.get_runs'); // (for testing)
       if (process.env.ENV !== 'development') {
         const cron = require('./cron/1.get_runs');
@@ -51,7 +52,10 @@ models.sequelize
       }
       next();
     });
-    routes(app);
+
+    routes(router);
+    const prefix = process.env.ENV === 'prod_kubernetes' ? '/api' : '';
+    app.use(prefix, router);
 
     // We add socket.io to the request
 

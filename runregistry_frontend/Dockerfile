@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 
 ENV NODE_ENV production
 ENV ENV kubernetes
+ENV NEXT_TELEMETRY_DISABLED 1
 # Installing dependencies
 COPY package*.json ./
 RUN npm install

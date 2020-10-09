@@ -28,6 +28,9 @@ app.prepare().then(() => {
   server.get('/offline', (req, res) => {
     res.redirect(`${root_url_prefix}/offline/datasets/global`);
   });
+  server.get('/ml', (req, res) => {
+    res.redirect(`${root_url_prefix}/ml/datasets/global`);
+  });
 
   //online:
   server.get('/online/:workspace', (req, res) => {
@@ -42,6 +45,12 @@ app.prepare().then(() => {
     req.params.type = 'offline';
     const params = { ...req.headers, ...req.params, filters: req.query };
     app.render(req, res, `/offline`, params);
+  });
+
+  server.get('/ml/:section/:workspace', (req, res) => {
+    req.params.type = 'ml';
+    const params = { ...req.headers, ...req.params, filters: req.query };
+    app.render(req, res, `/ml`, params);
   });
 
   // json:

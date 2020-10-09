@@ -24,7 +24,7 @@ const config = {
   },
   kubernetes: {
     root_url_prefix: '/runregistry',
-    api_url: 'https://cmsrunregistry.web.cern.ch/api',
+    api_url: 'https://cmsweb-auth.cern.ch/runregistry/api',
   },
 };
 exports.config = config;

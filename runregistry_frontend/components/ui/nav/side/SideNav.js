@@ -23,12 +23,17 @@ class SideNav extends Component {
     if (type === 'online') {
       Router.push(
         `${root_url_prefix}/online?type=${type}&workspace=${key}&filters=${url_query}`,
-        `/${type}/${key}?${url_query}`
+        `${root_url_prefix}/${type}/${key}?${url_query}`
       );
-    } else {
+    } else if (type === 'offline') {
       Router.push(
         `${root_url_prefix}/offline?type=${type}&section=${section}&workspace=${key}&filters=${url_query}`,
-        `/offline/${section}/${key}?${url_query}`
+        `${root_url_prefix}/offline/${section}/${key}?${url_query}`
+      );
+    } else if (type === 'ml') {
+      Router.push(
+        `${root_url_prefix}/ml?type=${type}&section=${section}&workspace=${key}&filters=${url_query}`,
+        `${root_url_prefix}/ml/${section}/${key}?${url_query}`
       );
     }
   }

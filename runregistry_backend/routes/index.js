@@ -12,18 +12,18 @@ const visualization = require('./visualization');
 const event = require('./event');
 const version = require('./version');
 
-module.exports = function(app) {
-    classifier(app);
-    run(app);
-    dataset(app);
-    classifier_playground(app);
-    lumisection(app);
-    workspace(app);
-    datasets_accepted(app);
-    cycle(app);
-    dc_tools(app);
-    json(app);
-    visualization(app);
-    event(app);
-    version(app);
+module.exports = function (router) {
+  classifier(router);
+  run(router);
+  dataset(router);
+  classifier_playground(router);
+  lumisection(router);
+  workspace(router);
+  datasets_accepted(router);
+  cycle(router);
+  dc_tools(router);
+  json(router);
+  visualization(router);
+  event(router);
+  version(router);
 };

@@ -155,7 +155,7 @@ module.exports = {
       acquire: 2000000,
     },
     WAITING_DQM_GUI_CONSTANT: 'waiting dqm gui',
-    API_URL: 'http://rr-prod-api:8351',
+    API_URL: 'http://rr-prod-api:8351/api',
     OMS_URL: `https://cmsoms.cern.ch/agg/api/v1`,
     REDIS_URL: `redis://rr-redis:8352`,
     OMS_RUNS: (number_of_runs = 10) =>
