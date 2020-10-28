@@ -9,5 +9,5 @@ module.exports = (app) => {
     catchAPI(Json.calculate_json_based_on_ranges)
   );
   app.post('/json_portal/generate', auth, catchAPI(JsonPortal.calculate_json));
-  app.get('/json_portal/jsons', catchAPI(JsonPortal.get_jsons));
+  app.post('/json_portal/jsons', catchAPI(JsonPortal.get_jsons));
 };

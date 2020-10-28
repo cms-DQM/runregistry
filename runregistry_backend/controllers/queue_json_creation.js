@@ -25,13 +25,56 @@ const { Op } = Sequelize;
 
 const jsonProcessingQueue = new Queue('json processing', REDIS_URL);
 console.log(REDIS_URL);
+
 exports.get_jsons = async (req, res) => {
+  const { filter, reference } = req.body;
+
+  const { email } = req.headers;
   // TODO: paginate
-  const failed = await jsonProcessingQueue.getFailed();
-  const waiting = await jsonProcessingQueue.getWaiting();
-  const active = await jsonProcessingQueue.getActive();
-  const saved_jsons = await GeneratedJson.findAll();
-  const jsons = [
+  let failed = await jsonProcessingQueue.getFailed();
+  let waiting = await jsonProcessingQueue.getWaiting();
+  let active = await jsonProcessingQueue.getActive();
+  const reference_filter = {};
+  if (typeof reference !== 'undefined') {
+    failed = [];
+    waiting = [];
+    active = [];
+    reference_filter['id'] = {
+      [Op.lt]: reference,
+    };
+  }
+  let saved_jsons = [];
+  if (filter === 'by_email') {
+    saved_jsons = await GeneratedJson.findAll({
+      where: {
+        created_by: email,
+        ...reference_filter,
+      },
+      order: [['id', 'DESC']],
+      limit: 10,
+    });
+  }
+  if (filter === 'official') {
+    saved_jsons = await GeneratedJson.findAll({
+      where: {
+        official: true,
+        ...reference_filter,
+      },
+      order: [['id', 'DESC']],
+      limit: 10,
+    });
+  }
+  if (filter === 'all') {
+    saved_jsons = await GeneratedJson.findAll({
+      where: {
+        ...reference_filter,
+      },
+      order: [['id', 'DESC']],
+      limit: 10,
+    });
+  }
+
+  let jsons = [
     ...failed.map(({ id, data, failedReason }) => ({
       ...data,
       id,
@@ -65,6 +108,12 @@ exports.get_jsons = async (req, res) => {
       failed: false,
     })),
   ];
+  if (filter === 'by_email') {
+    jsons = jsons.filter(({ created_by }) => created_by === email);
+  }
+  if (filter === 'official') {
+    jsons = jsons.filter(({ official }) => official);
+  }
   res.json({ jsons: jsons });
 };
 
