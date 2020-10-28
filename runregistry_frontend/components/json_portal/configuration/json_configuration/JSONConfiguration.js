@@ -17,6 +17,7 @@ import {
   addConfiguration,
   editConfiguration,
   deleteJsonConfiguration,
+  clearJson,
 } from '../../../../ducks/json/configuration';
 import { hideModal } from '../../../../ducks/json/ui';
 import stringify from 'json-stringify-pretty-compact';
@@ -115,11 +116,15 @@ class Configuration extends Component {
     return stringify(json);
   }
 
-  toggleCreationMode = () => {
-    this.props.resetJson();
+  enableCreationMode = () => {
+    this.props.clearJson();
     this.setState({ creating: !this.state.creating });
   };
 
+  disableCreationMode = () => {
+    this.setState({ creating: !this.state.creating });
+    this.componentDidMount();
+  };
   toggleEditionMode = () => {
     this.props.resetJson();
     this.setState({ editing: !this.state.editing });
@@ -135,7 +140,7 @@ class Configuration extends Component {
         }
         placeholder="Enter the name of the new configuration"
       />
-      <Button onClick={this.toggleCreationMode}>
+      <Button onClick={this.disableCreationMode}>
         <CloseCircleOutlined />
       </Button>
       <style jsx>{`
@@ -192,6 +197,7 @@ class Configuration extends Component {
       editing,
       dataset_name_filter,
     } = this.state;
+    console.log(json_logic, current_json);
     const download_string =
       'data:text/json;charset=utf-8,' +
       encodeURIComponent(this.getDisplayedJSON(current_json));
@@ -268,21 +274,80 @@ class Configuration extends Component {
             this.addNewConfigurationInput()
           ) : (
             <center>
-              <Menu
-                onClick={({ key }) => this.handleMenuChange(key)}
-                selectedKeys={[menu_selection]}
-                mode="horizontal"
+              <Button
+                type="link"
+                onClick={this.enableCreationMode}
+                icon={<PlusCircleOutlined />}
               >
-                {json_configurations_array.map(({ name }) => (
-                  <Menu.Item key={name}>{name}</Menu.Item>
-                ))}
-                <Menu.Item key="arbitrary">arbitrary configuration</Menu.Item>
-                <Button
-                  type="link"
-                  onClick={this.toggleCreationMode}
-                  icon={<PlusCircleOutlined />}
-                />
-              </Menu>
+                Create new config.
+              </Button>
+              <div
+                style={{
+                  display: 'flex',
+                  border: '1px solid #d9d9d9',
+                  borderRadius: '2px',
+                }}
+              >
+                <div
+                  style={{
+                    width: '10%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginLeft: '5px',
+                    height: '48px',
+                  }}
+                >
+                  <strong>configurations created by me:</strong>
+                </div>
+                <div style={{ width: '88%' }}>
+                  <Menu
+                    onClick={({ key }) => this.handleMenuChange(key)}
+                    selectedKeys={[menu_selection]}
+                    mode="horizontal"
+                  >
+                    {json_configurations_array
+                      .filter(
+                        ({ created_by }) => created_by === this.props.email
+                      )
+                      .map(({ name }) => (
+                        <Menu.Item key={name}>{name}</Menu.Item>
+                      ))}
+                  </Menu>
+                </div>
+              </div>
+              <br />
+              <div
+                style={{
+                  display: 'flex',
+                  border: '1px solid #d9d9d9',
+                  borderRadius: '2px',
+                }}
+              >
+                <div
+                  style={{
+                    width: '10%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginLeft: '5px',
+                  }}
+                >
+                  <strong>all configurations:</strong>
+                </div>
+                <div style={{ width: '88%' }}>
+                  <Menu
+                    onClick={({ key }) => this.handleMenuChange(key)}
+                    selectedKeys={[menu_selection]}
+                    mode="horizontal"
+                  >
+                    <Menu.Item key="arbitrary">
+                      arbitrary configuration
+                    </Menu.Item>
+                    {json_configurations_array.map(({ name }) => (
+                      <Menu.Item key={name}>{name}</Menu.Item>
+                    ))}
+                  </Menu>
+                </div>
+              </div>
             </center>
           )}
           {menu_selection !== 'arbitrary' && !creating && !editing && (
@@ -329,12 +394,14 @@ class Configuration extends Component {
             </p>
           )}
           <br />
-          <TextEditor
-            onChange={this.changeValue}
-            value={json_logic}
-            lan="javascript"
-            theme="github"
-          />
+          <div>
+            <TextEditor
+              onChange={this.changeValue}
+              value={json_logic}
+              lan="javascript"
+              theme="github"
+            />
+          </div>
           <br />
           <center>
             <div className="generate_button">
@@ -399,6 +466,7 @@ function mapStateToProps(state) {
     json_logic: state.json.configuration.json_logic,
     number_of_runs: state.json.configuration.number_of_runs,
     number_of_lumisections: state.json.configuration.number_of_lumisections,
+    email: state.info.email,
   };
 }
 
@@ -411,4 +479,5 @@ export default connect(mapStateToProps, {
   editConfiguration,
   deleteJsonConfiguration,
   hideModal,
+  clearJson,
 })(Configuration);

@@ -5,9 +5,8 @@ const JsonPortal = require('../controllers/queue_json_creation');
 module.exports = (app) => {
   app.post(
     '/json_creation/generate',
-    auth,
     catchAPI(Json.calculate_json_based_on_ranges)
   );
-  app.post('/json_portal/generate', auth, catchAPI(JsonPortal.calculate_json));
+  app.post('/json_portal/generate', catchAPI(JsonPortal.calculate_json));
   app.post('/json_portal/jsons', catchAPI(JsonPortal.get_jsons));
 };
