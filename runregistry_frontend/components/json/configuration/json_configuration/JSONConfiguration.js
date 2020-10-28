@@ -6,7 +6,7 @@ import {
   CloseCircleOutlined,
   PlusCircleOutlined,
   EditOutlined,
-  DeleteOutlined
+  DeleteOutlined,
 } from '@ant-design/icons';
 import Swal from 'sweetalert2';
 import {
@@ -16,7 +16,7 @@ import {
   resetJson,
   addConfiguration,
   editConfiguration,
-  deleteJsonConfiguration
+  deleteJsonConfiguration,
 } from '../../../../ducks/json/configuration';
 import stringify from 'json-stringify-pretty-compact';
 import JSONDenominator from './json_denominator/JSONDenominator';
@@ -27,7 +27,7 @@ const { SubMenu } = Menu;
 const TextEditor = dynamic(
   import('../../../common/ClassifierEditor/JSONEditor/JSONEditor'),
   {
-    ssr: false
+    ssr: false,
   }
 );
 
@@ -38,7 +38,7 @@ class Configuration extends Component {
     creating: false,
     new_name: '',
     show_denominator: false,
-    run_list: false
+    run_list: false,
   };
 
   async componentDidMount() {
@@ -46,7 +46,7 @@ class Configuration extends Component {
     const default_selection = this.state.menu_selection;
     this.handleMenuChange(default_selection);
   }
-  handleMenuChange = new_menu_selection => {
+  handleMenuChange = (new_menu_selection) => {
     if (!new_menu_selection) {
       new_menu_selection = 'golden';
     }
@@ -57,7 +57,7 @@ class Configuration extends Component {
     this.changeValue(formatted);
   };
 
-  createNewConfiguration = async new_configuration => {
+  createNewConfiguration = async (new_configuration) => {
     new_configuration = JSON.parse(new_configuration);
     const { new_name } = this.state;
     await this.props.addConfiguration(new_configuration, new_name);
@@ -67,7 +67,7 @@ class Configuration extends Component {
     await Swal(`New Configuration ${new_name} added`, '', 'success');
   };
 
-  editConfiguration = async new_configuration => {
+  editConfiguration = async (new_configuration) => {
     new_configuration = JSON.parse(new_configuration);
     const { menu_selection } = this.state;
     const { json_configurations_array } = this.props;
@@ -97,7 +97,7 @@ class Configuration extends Component {
       text: '',
       showCancelButton: true,
       confirmButtonText: 'Yes',
-      reverseButtons: true
+      reverseButtons: true,
     });
     if (value) {
       await this.props.deleteJsonConfiguration(selected.id);
@@ -107,7 +107,7 @@ class Configuration extends Component {
     }
   };
 
-  changeValue = new_configuration => {
+  changeValue = (new_configuration) => {
     this.props.changeJsonLogic(new_configuration);
   };
 
@@ -130,7 +130,7 @@ class Configuration extends Component {
       <Input
         onChange={({ target }) =>
           this.setState({
-            new_name: target.value
+            new_name: target.value,
           })
         }
         placeholder="Enter the name of the new configuration"
@@ -146,7 +146,7 @@ class Configuration extends Component {
     </div>
   );
 
-  getRunList = current_json => {
+  getRunList = (current_json) => {
     const runs = [];
     for (const [key, val] of Object.entries(current_json)) {
       runs.push(+key);
@@ -162,7 +162,7 @@ class Configuration extends Component {
       current_json,
       json_logic,
       number_of_runs,
-      number_of_lumisections
+      number_of_lumisections,
     } = this.props;
     const { creating, menu_selection, editing, show_denominator } = this.state;
     const download_string =
@@ -193,7 +193,7 @@ class Configuration extends Component {
               style={{
                 display: 'flex',
                 justifyContent: 'center',
-                marginTop: '10px'
+                marginTop: '10px',
               }}
             >
               <Button type="link" onClick={this.toggleEditionMode}>
@@ -276,7 +276,7 @@ class Configuration extends Component {
           <Button
             onClick={() =>
               this.setState({
-                show_denominator: !this.state.show_denominator
+                show_denominator: !this.state.show_denominator,
               })
             }
           >
@@ -351,7 +351,7 @@ function mapStateToProps(state) {
     current_json: state.json.configuration.current_json,
     json_logic: state.json.configuration.json_logic,
     number_of_runs: state.json.configuration.number_of_runs,
-    number_of_lumisections: state.json.configuration.number_of_lumisections
+    number_of_lumisections: state.json.configuration.number_of_lumisections,
   };
 }
 
@@ -362,5 +362,5 @@ export default connect(mapStateToProps, {
   resetJson,
   addConfiguration,
   editConfiguration,
-  deleteJsonConfiguration
+  deleteJsonConfiguration,
 })(Configuration);

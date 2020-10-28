@@ -8,6 +8,7 @@ const FETCH_CONFIGURATIONS = 'FETCH_CONFIGURATIONS';
 const GENERATE_JSON = 'GENERATE_JSON';
 const CHANGE_JSON_LOGIC = 'CHANGE_JSON_LOGIC';
 const RESET_JSON = 'RESET_JSON';
+const CLEAR_JSON = 'CLEAR_JSON';
 
 export const getJsonConfigurations = () =>
   error_handler(async (dispatch) => {
@@ -29,7 +30,7 @@ export const getJsonConfigurations = () =>
 export const addConfiguration = (new_configuration, name) =>
   error_handler(async (dispatch, getState) => {
     const { data: configuration } = await axios.post(
-      `${api_url}/classifiers/json_classifier`,
+      `${api_url}/json_classifiers/json_classifier`,
       {
         classifier: new_configuration,
         name,
@@ -41,7 +42,7 @@ export const addConfiguration = (new_configuration, name) =>
 export const editConfiguration = (selected_classifier) =>
   error_handler(async (dispatch, getState) => {
     const { data: configuration } = await axios.put(
-      `${api_url}/classifiers/json_classifier/${selected_classifier.id}`,
+      `${api_url}/json_classifiers/json_classifier/${selected_classifier.id}`,
       { ...selected_classifier },
       auth(getState)
     );
@@ -50,7 +51,7 @@ export const editConfiguration = (selected_classifier) =>
 export const deleteJsonConfiguration = (configuration_id) =>
   error_handler(async (dispatch, getState) => {
     const { data: classifier } = await axios.delete(
-      `${api_url}/classifiers/json_classifier/${configuration_id}`,
+      `${api_url}/json_classifiers/json_classifier/${configuration_id}`,
       auth(getState)
     );
   });
@@ -94,6 +95,9 @@ export const changeJsonLogic = (new_json_logic) => ({
 export const resetJson = () => ({
   type: RESET_JSON,
 });
+export const clearJson = () => ({
+  type: CLEAR_JSON,
+});
 
 const INITIAL_STATE = {
   json_logic: '{}',
@@ -131,6 +135,15 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         current_json: '{}',
+        dataset_in_run_in_json: {},
+        number_of_runs: 0,
+        number_of_lumisections: 0,
+      };
+    case CLEAR_JSON:
+      return {
+        ...state,
+        current_json: '{}',
+        json_logic: '{}',
         dataset_in_run_in_json: {},
         number_of_runs: 0,
         number_of_lumisections: 0,
