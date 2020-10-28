@@ -6,6 +6,11 @@ import axios from 'axios';
 import { MailOutlined, AppstoreOutlined } from '@ant-design/icons';
 import { selectJson } from '../../ducks/json/ui';
 import { api_url } from '../../config/config';
+import {
+  getJsons,
+  updateProgress,
+  fetchMoreJsons,
+} from '../../ducks/json/jsons';
 import { error_handler } from '../../utils/error_handlers';
 
 import DebuggingJson from './debuggingJson/DebuggingJson';
@@ -17,10 +22,10 @@ import JsonList from './jsonList/JsonList';
 
 class JsonPortal extends Component {
   state = {
-    selected_tab: 'my_jsons',
-    jsons: [],
+    selected_tab: 'by_email',
     debugging_json: false,
     visualize_luminosity: false,
+    loading: true,
   };
 
   async componentDidMount() {
@@ -41,6 +46,7 @@ class JsonPortal extends Component {
       console.log('new job');
       await this.fetchJsons();
     });
+    this.setState({ loading: false });
   }
 
   componentWillUnmount() {
@@ -49,31 +55,30 @@ class JsonPortal extends Component {
     }
   }
 
-  fetchJsons = error_handler(async () => {
-    const { data } = await axios.get(`${api_url}/json_portal/jsons`);
-    // We want no nulls
-    const jsons = data.jsons.filter((json) => json !== null);
-    this.setState({ jsons });
-  });
+  fetchJsons = async (key) => {
+    this.setState({ loading: true });
+    await this.props.getJsons(key || this.state.selected_tab);
+    this.setState({ loading: false });
+  };
 
-  changeTab = ({ key }) => {
-    this.setState({ selected_tab: key });
+  fetchMoreJsons = async () => {
+    const json_list = this.props.jsons.jsons;
+    const last_reference = json_list[json_list.length - 1].id;
+    const { selected_tab } = this.state;
+    await this.props.fetchMoreJsons(selected_tab, last_reference);
+  };
+
+  changeTab = async ({ key }) => {
+    this.setState({ selected_tab: key, loading: true });
+    await this.fetchJsons(key);
   };
 
   updateProgress = (event) => {
-    const { id, progress } = event;
-    this.setState({
-      jsons: this.state.jsons.map((json) => {
-        if (json.id === id) {
-          json.progress = progress;
-        }
-        return json;
-      }),
-    });
+    this.props.updateProgress(event);
   };
 
   selectJson = (selected_id) => {
-    const json = this.state.jsons.find(({ id }) => id === selected_id);
+    const json = this.props.jsons.jsons.find(({ id }) => id === selected_id);
     this.props.selectJson(json);
     this.setState({ debugging_json: false });
   };
@@ -86,11 +91,13 @@ class JsonPortal extends Component {
   render() {
     const { selected_json } = this.props;
     const {
+      loading,
       selected_tab,
       debugging_json,
       visualize_luminosity,
-      jsons,
     } = this.state;
+    const { jsons } = this.props;
+    let json_list = jsons.jsons;
     return (
       <div className="container">
         <Menu
@@ -98,32 +105,37 @@ class JsonPortal extends Component {
           selectedKeys={[selected_tab]}
           mode="horizontal"
         >
-          <Menu.Item key="my_jsons">
+          <Menu.Item key="by_email">
             <MailOutlined />
             My JSONs
           </Menu.Item>
-          <Menu.Item key="other_jsons">
+          <Menu.Item key="all">
             <AppstoreOutlined />
-            Other JSONs
+            All JSONs
           </Menu.Item>
-          <Menu.Item key="official_jsons">
+          <Menu.Item key="official">
             <AppstoreOutlined />
             Official JSONs
           </Menu.Item>
         </Menu>
         <br />
         <br />
-        <JsonList
-          jsons={jsons}
-          category={selected_tab}
-          selected_json={selected_json}
-          selectJson={this.selectJson}
-          toggleDebugging={this.toggleDebugging}
-          toggleVisualizeLuminosity={this.toggleVisualizeLuminosity}
-          fetchJson={this.fetchJsons}
-        />
+        {loading ? (
+          'loading...'
+        ) : (
+          <JsonList
+            jsons={json_list}
+            category={selected_tab}
+            selected_json={selected_json}
+            fetchMoreJsons={this.fetchMoreJsons}
+            selectJson={this.selectJson}
+            toggleDebugging={this.toggleDebugging}
+            toggleVisualizeLuminosity={this.toggleVisualizeLuminosity}
+            fetchJson={this.fetchJsons}
+          />
+        )}
         {debugging_json && (
-          <DebuggingJson selected_json={selected_json} jsons={jsons} />
+          <DebuggingJson selected_json={selected_json} jsons={json_list} />
         )}
         {visualize_luminosity && (
           <div>
@@ -150,6 +162,12 @@ class JsonPortal extends Component {
 const mapStateToProps = (state) => {
   return {
     selected_json: state.json.ui.selected_json,
+    jsons: state.json.jsons,
   };
 };
-export default connect(mapStateToProps, { selectJson })(JsonPortal);
+export default connect(mapStateToProps, {
+  selectJson,
+  getJsons,
+  updateProgress,
+  fetchMoreJsons,
+})(JsonPortal);

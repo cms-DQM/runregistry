@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Progress, Tag } from 'antd';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
 import JsonDisplay from './jsonDisplay/JsonDisplay';
@@ -86,7 +87,7 @@ class JsonList extends Component {
   };
 
   renderList = () => {
-    const { jsons } = this.props;
+    const { jsons, fetchMoreJsons, more_jsons } = this.props;
     return (
       <div>
         <h4>List of JSONS:</h4>
@@ -95,10 +96,17 @@ class JsonList extends Component {
             return this.renderItem(item);
           })}
         </ul>
+        {more_jsons && (
+          <center>
+            <a onClick={fetchMoreJsons}>
+              <PlusCircleOutlined style={{ fontSize: '30px' }} />
+            </a>
+          </center>
+        )}
         <style jsx>{`
           ul {
             list-style: none;
-            margin-bottom: 0;
+            margin-bottom: 10px;
           }
 
           ul > :global(:first-child) {
@@ -128,9 +136,7 @@ class JsonList extends Component {
             {jsons.length > 0 ? (
               this.renderList()
             ) : (
-              <div>
-                You have not created any JSONs: click here to create one
-              </div>
+              <div>You have not created any JSONs</div>
             )}
           </div>
           <div className="json_content">
@@ -178,6 +184,7 @@ class JsonList extends Component {
 const mapStateToProps = (state) => {
   return {
     user: state.info,
+    more_jsons: state.json.jsons.more_jsons,
   };
 };
 
