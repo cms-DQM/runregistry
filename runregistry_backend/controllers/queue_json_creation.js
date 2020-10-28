@@ -30,10 +30,17 @@ exports.get_jsons = async (req, res) => {
   const { filter, reference } = req.body;
 
   const { email } = req.headers;
-  // TODO: paginate
-  let failed = await jsonProcessingQueue.getFailed();
-  let waiting = await jsonProcessingQueue.getWaiting();
-  let active = await jsonProcessingQueue.getActive();
+  let failed,
+    waiting,
+    active = [];
+
+  try {
+    failed = await jsonProcessingQueue.getFailed();
+    waiting = await jsonProcessingQueue.getWaiting();
+    active = await jsonProcessingQueue.getActive();
+  } catch (err) {
+    console.log(err);
+  }
   const reference_filter = {};
   if (typeof reference !== 'undefined') {
     failed = [];
