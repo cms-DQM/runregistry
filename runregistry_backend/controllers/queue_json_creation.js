@@ -30,8 +30,8 @@ exports.get_jsons = async (req, res) => {
   const { filter, reference } = req.body;
 
   const { email } = req.headers;
-  let failed,
-    waiting,
+  let failed = [],
+    waiting = [],
     active = [];
 
   try {
