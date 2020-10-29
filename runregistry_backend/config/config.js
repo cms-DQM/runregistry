@@ -93,7 +93,7 @@ module.exports = {
     WAITING_DQM_GUI_CONSTANT: 'waiting dqm gui',
     API_URL: 'http://localhost:9500',
     OMS_URL: `https://cmsoms.cern.ch/agg/api/v1`,
-    REDIS_URL: `redis://cmsweb-test4-yvri27sszw3m-node-1:31505`,
+    REDIS_URL: `redis://cmsweb-test4-yvri27sszw3m-node-2:31505`,
     OMS_RUNS: (number_of_runs = 10) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_SPECIFIC_RUN: (run_number) => `runs?filter[run_number]=${run_number}`,
