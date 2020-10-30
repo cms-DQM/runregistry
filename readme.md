@@ -12,15 +12,15 @@ From a technical standpoint, run registry is a full-stack javascript application
 
 - ### [Run Registry Frontend](https://github.com/cms-DQM/runregistry/blob/master/runregistry_frontend/readme.md)
 
-  The frontend of run registry is written in JavaScript using React.js and Next.js. You can read more about it [here]().
+  The frontend of run registry is written in JavaScript using React.js and Next.js. You can read more about it [here](https://github.com/cms-DQM/runregistry/blob/master/runregistry_frontend/readme.md).
 
 - ### [Run Registry Backend](https://github.com/cms-DQM/runregistry/blob/master/runregistry_backend/readme.md)
 
-  The backend of run registry is written in JavaScript using Node.js. You can read more about it [here]().
+  The backend of run registry is written in JavaScript using Node.js. You can read more about it [here](https://github.com/cms-DQM/runregistry/blob/master/runregistry_backend/readme.md).
 
 - ### [The Python API Client](https://github.com/cms-DQM/runregistry/tree/master/runregistry_api_client)
 
-  The API client is a Python PIP package that interfaces via HTTP requests with the API of run registry and allows users to read data easily from the application. You can read more about it [here]().
+  The API client is a Python PIP package that interfaces via HTTP requests with the API of run registry and allows users to read data easily from the application. You can read more about it [here](https://github.com/cms-DQM/runregistry/tree/master/runregistry_api_client).
 
 - ### The Github Action definitions
   They are in charge of building and pushing the frontend and microservices into Dockerhub on every push to the master branch. They are located in the .github folder.
