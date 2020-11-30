@@ -329,7 +329,7 @@ def create_json(json_logic, dataset_name_filter, **kwargs):
     if response.status_code == 200:
         return response.json()['final_json']
     else:
-        if response.status_code == 102:
+        if response.status_code == 202:
           # stil processing
           print('progress creating json: ', response.json()['progress'])
           time.sleep(15)
