@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "/Users/fabioespinosa/Desktop/runregistry/runregistry_api_client/venv/bin/python3.6",
+    "python.linting.enabled": false,
+    "python.formatting.provider": "yapf"
+}

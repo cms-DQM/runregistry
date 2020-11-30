@@ -36,14 +36,18 @@ exports.get_json = async (req, res) => {
   if (saved_json) {
     res.json({ final_json: saved_json });
   } else {
-    const json = await jsonProcessingQueue.getJob(id_json);
-    if (json.isFailed || json.isStuck) {
+    const json = await jsonProcessingQueue.getJob(+id_json);
+    if (json.isWaiting) {
+      // 102 for still processing:
+      res.status(102);
+      res.json({ progress: json.progress });
+    } else if (json.isFailed || json.isStuck) {
       res.status(500);
       res.send();
+    } else {
+      res.status(102);
+      res.json({ progress: json.progress });
     }
-    // 102 for still processing:
-    res.status(102);
-    res.json({ progress: json.progress });
   }
 };
 

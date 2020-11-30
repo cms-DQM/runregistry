@@ -305,7 +305,7 @@ def create_json(json_logic, dataset_name_filter, **kwargs):
   """
   if isinstance(json_logic, str) == False:
         json_logic = json.dumps(json_logic)
-  url = "{}/json_creation/generate".format(api_url)
+  url = "{}/json_portal/generate".format(api_url)
   headers = {"Content-type": "application/json"}
   cookies = _get_cookies(url, **kwargs)
   payload = json.dumps({"json_logic": json_logic, "dataset_name_filter": dataset_name_filter})
@@ -325,9 +325,9 @@ def create_json(json_logic, dataset_name_filter, **kwargs):
     response = requests.post(url,
                       cookies=cookies,
                       headers=headers,
-                      data=payload).json() 
+                      data=payload)
     if response.status_code == 200:
-        return response['final_json']
+        return response.json()['final_json']
     else:
         if response.status_code == 102:
           # stil processing
@@ -337,6 +337,5 @@ def create_json(json_logic, dataset_name_filter, **kwargs):
           print('Error creating json')
           return
   
-
 
 

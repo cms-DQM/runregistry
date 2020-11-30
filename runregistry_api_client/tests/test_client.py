@@ -1,5 +1,5 @@
 import os
-import pytest
+# import pytest
 import json
 
 from runregistry.runregistry import (
@@ -14,6 +14,7 @@ from runregistry.runregistry import (
     get_oms_lumisection_ranges,
     get_joint_lumisection_ranges,
     generate_json,
+    create_json,
 )
 
 common_run_number = 327743
@@ -147,9 +148,9 @@ def test_get_datasets_with_ignore_filter():
     assert len(datasets) > 0
 
 
-test_get_datasets_with_ignore_filter()
+# test_get_datasets_with_ignore_filter()
 
-test_get_runs_with_ignore_filter()
+# test_get_runs_with_ignore_filter()
 
 
 def test_get_runs_not_compressed():
@@ -374,7 +375,30 @@ def test_get_datasets_with_filter():
 
 #     assert final_json2 is not None
 
+json_logic = {
+  "and": [
+      { ">=": [{ "var": "run.oms.energy" }, 6000] },
+      { "<=": [{ "var": "run.oms.energy" }, 7000] },
+      { ">=": [{ "var": "run.oms.b_field" }, 3.7] },
+      { "in": [ "25ns", { "var": "run.oms.injection_scheme" }] },
+      { "==": [{ "in": [ "WMass", { "var": "run.oms.hlt_key" }] }, False] },
 
+      { "==": [{ "var": "lumisection.rr.dt-dt" }, "GOOD"] },
+      { "==": [{ "var": "lumisection.rr.csc-csc" }, "GOOD"] },
+      { "==": [{ "var": "lumisection.rr.l1t-l1tmu" }, "GOOD"] },
+      { "==": [{ "var": "lumisection.rr.l1t-l1tcalo" }, "GOOD"] },
+      { "==": [{ "var": "lumisection.rr.hlt-hlt" }, "GOOD"] },
+
+      { "==": [{ "var": "lumisection.oms.bpix_ready" }, True] }
+  ]
+}
+
+def test_create_json():
+  json = create_json(json_logic=json_logic, dataset_name_filter="/PromptReco/Collisions2018A/DQM")
+  print(json)
+
+
+test_create_json()
 def test_custom_filter():
     filter_arg = {
         'dataset_name': {
