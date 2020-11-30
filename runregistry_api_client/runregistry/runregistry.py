@@ -7,7 +7,7 @@ from runregistry.utils import transform_to_rr_run_filter, transform_to_rr_datase
 import urllib3
 
 # Silence unverified HTTPS warning:
-# urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 PAGE_SIZE = 50
 
 staging_cert = "certs/usercert.pem"
@@ -280,9 +280,10 @@ def get_joint_lumisection_ranges(run_number, dataset_name="online", **kwargs):
     return _get_lumisection_helper(url, run_number, dataset_name, **kwargs)
 
 
-# Using compiler (not-safe):
+# DO NOT USE Using compiler (not-safe):
 def generate_json(json_logic, **kwargs):
     """
+    DO NOT USE, USE THE ONE BELOW (create_json)...
     It receives a json logic configuration and returns a json with lumisections which pass the filter
     """
     if isinstance(json_logic, str) == False:

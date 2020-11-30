@@ -374,50 +374,37 @@ datasets = runregistry.get_datasets(filter={
 
 ## Generating JSONs
 
-In order to generate JSONs (like the golden json) you must send the configuration of the attributes you wish the generated json to satisfy (in json-logic) TODO: make manual.
+In order to generate JSONs (like the golden json) you must send the configuration of the attributes you wish the generated json to satisfy (in json-logic)
 
-The json logic below generates a json file for all datasets that belong to era A,B, C, D, E, F, G, H, I from year 2018, and also
+The json logic below generates a json file for the dataset name: "/PromptReco/Collisions2018A/DQM" although you can use placeholders just as in the json portal as: /PromptReco/Collisions2018(A|B)/DQM or /PromptReco/Collisions2018\_/DQM the underscore '\_' is a wildcard.
 
 ```python
 import runregistry
 json_logic = {
-        "and": [
-            {
-                "or": [
-                    {"==": [{"var": "dataset.name"}, "/PromptReco/Collisions2018A/DQM"]},
-                    {"==": [{"var": "dataset.name"}, "/PromptReco/Collisions2018B/DQM"]},
-                    {"==": [{"var": "dataset.name"}, "/PromptReco/Collisions2018C/DQM"]},
-                    {"==": [{"var": "dataset.name"}, "/PromptReco/Collisions2018D/DQM"]},
-                    {"==": [{"var": "dataset.name"}, "/PromptReco/Collisions2018E/DQM"]},
-                    {"==": [{"var": "dataset.name"}, "/PromptReco/Collisions2018F/DQM"]},
-                    {"==": [{"var": "dataset.name"}, "/PromptReco/Collisions2018G/DQM"]},
-                    {"==": [{"var": "dataset.name"}, "/PromptReco/Collisions2018H/DQM"]},
-                    {"==": [{"var": "dataset.name"}, "/PromptReco/Collisions2018I/DQM"]}
-                ]
-            },
-            { ">=": [{ "var": "run.oms.energy" }, 6000] },
-            { "<=": [{ "var": "run.oms.energy" }, 7000] },
-            { ">=": [{ "var": "run.oms.b_field" }, 3.7] },
-            { "in": [ "25ns", { "var": "run.oms.injection_scheme" }] },
-            { "==": [{ "in": [ "WMass", { "var": "run.oms.hlt_key" }] }, False] },
+  "and": [
+      { ">=": [{ "var": "run.oms.energy" }, 6000] },
+      { "<=": [{ "var": "run.oms.energy" }, 7000] },
+      { ">=": [{ "var": "run.oms.b_field" }, 3.7] },
+      { "in": [ "25ns", { "var": "run.oms.injection_scheme" }] },
+      { "==": [{ "in": [ "WMass", { "var": "run.oms.hlt_key" }] }, False] },
 
-            { "==": [{ "var": "lumisection.rr.dt-dt" }, "GOOD"] },
-            { "==": [{ "var": "lumisection.rr.csc-csc" }, "GOOD"] },
-            { "==": [{ "var": "lumisection.rr.l1t-l1tmu" }, "GOOD"] },
-            { "==": [{ "var": "lumisection.rr.l1t-l1tcalo" }, "GOOD"] },
-            { "==": [{ "var": "lumisection.rr.hlt-hlt" }, "GOOD"] },
+      { "==": [{ "var": "lumisection.rr.dt-dt" }, "GOOD"] },
+      { "==": [{ "var": "lumisection.rr.csc-csc" }, "GOOD"] },
+      { "==": [{ "var": "lumisection.rr.l1t-l1tmu" }, "GOOD"] },
+      { "==": [{ "var": "lumisection.rr.l1t-l1tcalo" }, "GOOD"] },
+      { "==": [{ "var": "lumisection.rr.hlt-hlt" }, "GOOD"] },
 
-            { "==": [{ "var": "lumisection.oms.bpix_ready" }, True] }
-        ]
+      { "==": [{ "var": "lumisection.oms.bpix_ready" }, True] }
+  ]
 }
-generated_json = runregistry.generate_json(json_logic)
+generated_json = runregistry.create_json(json_logic=json_logic, dataset_name_filter="/PromptReco/Collisions2018A/DQM")
 ```
 
 ## Running Tests
 
 ```
 pytest --cov .
-````
+```
 
 ## Troubleshooting
 
@@ -430,7 +417,7 @@ If you have any questions, or the client is not working properly feel free to dr
 ```bash
 python setup.py sdist bdist_wheel
 twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-````
+```
 
 ## FAQ
 

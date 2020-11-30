@@ -46,7 +46,7 @@ exports.get_json = async (req, res) => {
       res.send();
     } else {
       // 202 for still processing:
-      res.status(202).json({ progress: json.progress() || 0 });
+      res.status(202).json({ progress: (await json.progress()) || 0 });
     }
   }
 };

@@ -269,6 +269,7 @@ def test_get_datasets_with_filter():
     assert len(datasets) > 0
 
 
+# UNSAFE:
 # def test_generate_json():
 #     json_logic = """
 #         {
@@ -339,6 +340,7 @@ def test_get_datasets_with_filter():
 #         ]
 #     }
 #     """
+#     UNSAFE:
 #     final_json = generate_json(json_logic)
 #     assert final_json is not None
 #     json_logic2 = {
@@ -398,7 +400,7 @@ def test_create_json():
   print(json)
 
 
-test_create_json()
+
 def test_custom_filter():
     filter_arg = {
         'dataset_name': {
