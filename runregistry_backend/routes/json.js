@@ -9,4 +9,6 @@ module.exports = (app) => {
   );
   app.post('/json_portal/generate', catchAPI(JsonPortal.calculate_json));
   app.post('/json_portal/jsons', catchAPI(JsonPortal.get_jsons));
+
+  app.post('/json_portal/json', catchAPI(JsonPortal.get_json));
 };

@@ -26,6 +26,27 @@ const { Op } = Sequelize;
 const jsonProcessingQueue = new Queue('json processing', REDIS_URL);
 console.log(REDIS_URL);
 
+exports.get_json = async (req, res) => {
+  const { id_json } = req.body;
+  const saved_json = await GeneratedJson.findOne({
+    where: {
+      id: id_json,
+    },
+  });
+  if (saved_json) {
+    res.json({ final_json: saved_json });
+  } else {
+    const json = await jsonProcessingQueue.getJob(id_json);
+    if (json.isFailed || json.isStuck) {
+      res.status(500);
+      res.send();
+    }
+    // 102 for still processing:
+    res.status(102);
+    res.json({ progress: json.progress });
+  }
+};
+
 exports.get_jsons = async (req, res) => {
   const { filter, reference } = req.body;
 

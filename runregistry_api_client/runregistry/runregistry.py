@@ -1,6 +1,7 @@
 import os
 import json
 import requests
+import time
 from cernrequests import get_sso_cookies, certs
 from runregistry.utils import transform_to_rr_run_filter, transform_to_rr_dataset_filter
 import urllib3
@@ -279,6 +280,7 @@ def get_joint_lumisection_ranges(run_number, dataset_name="online", **kwargs):
     return _get_lumisection_helper(url, run_number, dataset_name, **kwargs)
 
 
+# Using compiler (not-safe):
 def generate_json(json_logic, **kwargs):
     """
     It receives a json logic configuration and returns a json with lumisections which pass the filter
@@ -294,3 +296,47 @@ def generate_json(json_logic, **kwargs):
                              headers=headers,
                              data=payload).json()
     return response['final_json']
+
+
+# Using json portal (safe):
+def create_json(json_logic, dataset_name_filter, **kwargs):
+  """
+  It adds a json to the queue and polls until json is either finished or an error occured
+  """
+  if isinstance(json_logic, str) == False:
+        json_logic = json.dumps(json_logic)
+  url = "{}/json_creation/generate".format(api_url)
+  headers = {"Content-type": "application/json"}
+  cookies = _get_cookies(url, **kwargs)
+  payload = json.dumps({"json_logic": json_logic, "dataset_name_filter": dataset_name_filter})
+  response = requests.post(url,
+                            cookies=cookies,
+                            headers=headers,
+                            data=payload).json()
+
+  # Id of json:
+  id_json = response['id']
+  # Poll JSON until job is complete 
+  while True:
+    # polling URL:
+    url = "{}/json_portal/json".format(api_url)
+    cookies = _get_cookies(url, **kwargs)
+    payload = json.dumps({"id_json": id_json})
+    response = requests.post(url,
+                      cookies=cookies,
+                      headers=headers,
+                      data=payload).json() 
+    if response.status_code == 200:
+        return response['final_json']
+    else:
+        if response.status_code == 102:
+          # stil processing
+          print('progress creating json: ', response['progress'])
+          time.sleep(15)
+        if response.status_code == 500:
+          print('Error creating json')
+          return
+  
+
+
+
