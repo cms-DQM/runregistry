@@ -333,9 +333,14 @@ def create_json(json_logic, dataset_name_filter, **kwargs):
           # stil processing
           print('progress creating json: ', response.json()['progress'])
           time.sleep(15)
-        if response.status_code == 500:
+        elif response.status_code == 203:
+          # stil processing
+          print('json process is submited and pending, please wait...')
+          time.sleep(15)
+        elif response.status_code == 500:
           print('Error creating json')
           return
+        else:
+          print('error generating json')
+          return
   
-
-
