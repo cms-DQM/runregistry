@@ -165,7 +165,6 @@ exports.delete_json = async (req, res) => {
   if (!to_delete) {
     throw `JSON with id ${id_json} to delete not found`;
   }
-  console.log('llega');
   if (
     email !== to_delete.created_by &&
     !egroups.includes('cms-dqm-runregistry-experts')
