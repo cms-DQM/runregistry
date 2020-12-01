@@ -79,6 +79,7 @@ exports.get_jsons = async (req, res) => {
   if (filter === 'by_email') {
     saved_jsons = await GeneratedJson.findAll({
       where: {
+        deleted: false,
         created_by: email,
         ...reference_filter,
       },
@@ -89,6 +90,7 @@ exports.get_jsons = async (req, res) => {
   if (filter === 'official') {
     saved_jsons = await GeneratedJson.findAll({
       where: {
+        deleted: false,
         official: true,
         ...reference_filter,
       },
@@ -99,6 +101,7 @@ exports.get_jsons = async (req, res) => {
   if (filter === 'all') {
     saved_jsons = await GeneratedJson.findAll({
       where: {
+        deleted: false,
         ...reference_filter,
       },
       order: [['id', 'DESC']],
@@ -147,6 +150,22 @@ exports.get_jsons = async (req, res) => {
     jsons = jsons.filter(({ official }) => official);
   }
   res.json({ jsons: jsons });
+};
+
+exports.delete_json = async (req, res) => {
+  const { id_json } = req.body;
+  const to_delete = await GeneratedJson.findOne({
+    where: {
+      id: id_json,
+    },
+  });
+  if (!to_delete) {
+    throw `JSON with id ${id_json} to delete not found`;
+  }
+  const deleted_json = await to_delete.update({
+    deleted: true,
+  });
+  res.json({ deleted_json });
 };
 
 exports.calculate_json = async (req, res) => {

@@ -131,7 +131,7 @@ class JsonPortal extends Component {
             selectJson={this.selectJson}
             toggleDebugging={this.toggleDebugging}
             toggleVisualizeLuminosity={this.toggleVisualizeLuminosity}
-            fetchJson={this.fetchJsons}
+            fetchJsons={this.fetchJsons}
           />
         )}
         {debugging_json && (

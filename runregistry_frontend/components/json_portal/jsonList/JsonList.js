@@ -128,7 +128,11 @@ class JsonList extends Component {
 
   render() {
     const { jsons, selected_json } = this.props;
-    const { toggleDebugging, toggleVisualizeLuminosity } = this.props;
+    const {
+      toggleDebugging,
+      toggleVisualizeLuminosity,
+      fetchJsons,
+    } = this.props;
     return (
       <div className="container">
         <div className="inner_container">
@@ -145,6 +149,7 @@ class JsonList extends Component {
                 item={selected_json}
                 toggleDebugging={toggleDebugging}
                 toggleVisualizeLuminosity={toggleVisualizeLuminosity}
+                fetchJsons={fetchJsons}
               />
             ) : (
               <div>Select a JSON on the left</div>

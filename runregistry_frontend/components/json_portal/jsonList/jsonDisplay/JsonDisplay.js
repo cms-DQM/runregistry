@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import dynamic from 'next/dynamic';
 import { Statistic, Button } from 'antd';
 import moment from 'moment';
@@ -10,6 +11,8 @@ import {
   DeleteOutlined,
   CheckCircleTwoTone,
 } from '@ant-design/icons';
+import { deleteJson } from '../../../../ducks/json/jsons';
+import Swal from 'sweetalert2';
 
 const TextEditor = dynamic(
   import('../../../common/ClassifierEditor/JSONEditor/JSONEditor'),
@@ -55,6 +58,23 @@ class JsonDisplay extends Component {
     });
   };
 
+  deleteJson = async () => {
+    const { item } = this.props;
+    const { id } = item;
+    const { value } = await Swal({
+      type: 'warning',
+      title: 'Are you sure you want to delete this JSON',
+      text: '',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      reverseButtons: true,
+    });
+    if (value) {
+      await this.props.deleteJson(id);
+      await this.props.fetchJsons();
+    }
+  };
+
   componentDidUpdate(prevProps) {
     const { item } = prevProps;
     const { item: nextItem } = this.props;
@@ -69,8 +89,14 @@ class JsonDisplay extends Component {
     const {
       number_of_runs_in_json,
       number_of_lumisections_in_json,
+      deleted,
     } = this.state;
-    const { item, toggleDebugging, toggleVisualizeLuminosity } = this.props;
+    const {
+      item,
+      toggleDebugging,
+      toggleVisualizeLuminosity,
+      deleted_jsons,
+    } = this.props;
     const {
       id,
       dataset_name_filter,
@@ -88,9 +114,13 @@ class JsonDisplay extends Component {
     const download_string = `data:text/json;charset=utf-8,${encodeURIComponent(
       this.getDisplayedJSON(generated_json)
     )}`;
+    const has_been_deleted = deleted_jsons.some((json) => json.id === id);
     return (
       <div className="container">
         <div className="json_info">
+          {has_been_deleted && (
+            <h2 style={{ color: 'red' }}>THIS JSON HAS BEEN DELETED</h2>
+          )}
           <h3>JSON Info:</h3>
           <Statistic title="JSON id" value={`#${id}`} />
           <Statistic title="Runs in JSON" value={number_of_runs_in_json} />
@@ -131,7 +161,11 @@ class JsonDisplay extends Component {
           </Button>
           <br />
           <br />
-          <Button icon={<DeleteOutlined />} type="danger">
+          <Button
+            onClick={() => this.deleteJson()}
+            icon={<DeleteOutlined />}
+            type="danger"
+          >
             Delete JSON
           </Button>
         </div>
@@ -180,4 +214,9 @@ class JsonDisplay extends Component {
   }
 }
 
-export default JsonDisplay;
+const mapStateToProps = (state) => {
+  return {
+    deleted_jsons: state.json.jsons.deleted_jsons,
+  };
+};
+export default connect(mapStateToProps, { deleteJson })(JsonDisplay);

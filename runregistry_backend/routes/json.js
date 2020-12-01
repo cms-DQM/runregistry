@@ -11,4 +11,5 @@ module.exports = (app) => {
   app.post('/json_portal/jsons', catchAPI(JsonPortal.get_jsons));
 
   app.post('/json_portal/json', catchAPI(JsonPortal.get_json));
+  app.delete('/json_portal/json', auth, catchAPI(JsonPortal.delete_json));
 };
