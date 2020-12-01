@@ -154,6 +154,9 @@ exports.get_jsons = async (req, res) => {
 
 exports.delete_json = async (req, res) => {
   const { id_json } = req.body;
+  const egroups = req.get('egroups');
+  const email = req.get('email');
+
   const to_delete = await GeneratedJson.findOne({
     where: {
       id: id_json,
@@ -162,6 +165,14 @@ exports.delete_json = async (req, res) => {
   if (!to_delete) {
     throw `JSON with id ${id_json} to delete not found`;
   }
+  console.log('llega');
+  if (
+    email !== to_delete.created_by &&
+    !egroups.includes('cms-dqm-runregistry-experts')
+  ) {
+    throw `To edit this classifier you must be the  creator (${to_delete.created_by}) or be part of cms-dqm-runregistry-experts e-group`;
+  }
+
   const deleted_json = await to_delete.update({
     deleted: true,
   });
