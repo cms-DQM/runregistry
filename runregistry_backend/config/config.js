@@ -37,6 +37,44 @@ module.exports = {
     DQM_GUI_URL: 'https://cmsweb.cern.ch/dqm/offline/data/json/samples?match=',
     SECONDS_PER_DQM_GUI_CHECK: 6000,
   },
+  dev_to_prod: {
+    username: 'admin',
+    password: 'changeme',
+    database: 'runregistry_database',
+    port: 5433,
+    host: process.env.DOCKER_POSTGRES ? 'postgres' : 'localhost',
+    logging: false,
+    benchmark: false,
+    dialect: 'postgres',
+    define: {
+      // Make sequelize not pluralize the name of tables:
+      freezeTableName: true,
+    },
+    pool: {
+      max: 30,
+      min: 0,
+      idle: 20000,
+      acquire: 2000000,
+    },
+    WAITING_DQM_GUI_CONSTANT: 'waiting dqm gui',
+    API_URL: process.env.DOCKER_POSTGRES
+      ? 'http://dev:9500'
+      : 'http://localhost:9500',
+    OMS_URL: `https://cmsoms.cern.ch/agg/api/v1`,
+    REDIS_URL: `redis://redis:6379`,
+    OMS_RUNS: (number_of_runs = 10) =>
+      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
+    OMS_SPECIFIC_RUN: (run_number) => `runs?filter[run_number]=${run_number}`,
+    OMS_LUMISECTIONS: (run_number) =>
+      `lumisections?filter[run_number]=${run_number}&page[limit]=5000`,
+    RUNS_PER_API_CALL: 49,
+    SECONDS_PER_API_CALL: 30,
+    DBS_URL: 'https://cmsweb.cern.ch/dbs/prod/global',
+    DBS_DATASETS: (run_number) => `DBSReader/datasets?run_num=${run_number}`,
+    SECONDS_PER_DBS_CHECK: 6010,
+    DQM_GUI_URL: 'https://cmsweb.cern.ch/dqm/offline/data/json/samples?match=',
+    SECONDS_PER_DQM_GUI_CHECK: 6000,
+  },
   staging: {
     username: 'admin',
     password: 'changeme',

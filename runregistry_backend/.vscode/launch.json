@@ -25,9 +25,22 @@
       "type": "node",
       "request": "launch",
       "name": "API",
+      "runtimeVersion": "12.14.0",
       "program": "${workspaceFolder}/app.js",
       "env": {
         "ENV": "development",
+        "NODE_ENV": "development"
+      },
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "API to prod",
+      "runtimeVersion": "12.14.0",
+      "program": "${workspaceFolder}/app.js",
+      "env": {
+        "ENV": "dev_to_prod",
         "NODE_ENV": "development"
       },
       "skipFiles": ["<node_internals>/**"]
