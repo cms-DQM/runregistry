@@ -1,4 +1,4 @@
-import Document, { Head, Main, NextScript } from 'next/document';
+import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { root_url_prefix } from '../config/config';
 
 export default class MyDocument extends Document {
@@ -11,7 +11,7 @@ export default class MyDocument extends Document {
     // const assetPrefix = this.props.__NEXT_DATA__.assetPrefix || '';
 
     return (
-      <html>
+      <Html>
         <Head>
           <link
             rel="stylesheet"
@@ -29,16 +29,12 @@ export default class MyDocument extends Document {
             href={`${root_url_prefix}/static/react-table.css`}
           />
           <meta charSet="utf-8" />
-          <meta
-            name="viewport"
-            content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
-          />
         </Head>
         <body className="custom_class">
           <Main />
           <NextScript />
         </body>
-      </html>
+      </Html>
     );
   }
 }

@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import App from 'next/app';
 import withRedux from 'next-redux-wrapper';
 import configureStore from '../store/configure-store';
+import Head from 'next/head';
 
 export default withRedux(configureStore, { debug: false })(
   class MyApp extends App {
@@ -12,17 +13,25 @@ export default withRedux(configureStore, { debug: false })(
           // Call page-level getInitialProps
           ...(Component.getInitialProps
             ? await Component.getInitialProps(ctx)
-            : {})
-        }
+            : {}),
+        },
       };
     }
 
     render() {
       const { Component, pageProps, store } = this.props;
       return (
-        <Provider store={store}>
-          <Component {...pageProps} />
-        </Provider>
+        <>
+          <Head>
+            <meta
+              name="viewport"
+              content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+            />
+          </Head>
+          <Provider store={store}>
+            <Component {...pageProps} />
+          </Provider>
+        </>
       );
     }
   }

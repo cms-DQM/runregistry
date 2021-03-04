@@ -116,7 +116,10 @@ class BreadcrumbCmp extends Component {
             </a>
           </div>
           <Dropdown overlay={online ? this.online_menu : this.offline_menu}>
-            <Button style={{ marginTop: '-6px' }}>
+            <Button
+              style={{ marginTop: '-6px' }}
+              onClick={(e) => e.preventDefault()}
+            >
               Configuration
               <DownOutlined />
             </Button>
