@@ -9,7 +9,7 @@ To understand, debug and add new features to Run Registry set up a development e
 In order to do this you must clone this repository and run three commands from the Make file
 
 ```bash
-git clone https://github.com/cms-DQM/runregistry_backend/
+git clone https://github.com/cms-DQM/runregistry/
 cd runregistry_backend
 make setup
 make install
