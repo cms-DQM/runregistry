@@ -1,9 +1,8 @@
-const fs = require('fs');
-const https = require('https');
 const CronJob = require('cron').CronJob;
-const getCookie = require('cern-get-sso-cookie');
 const axios = require('axios');
 const { handleErrors } = require('../utils/error_handlers');
+const { getToken } = require('../auth/get_token')
+const https = require('https');
 const config = require('../config/config');
 const {
   OMS_URL,
@@ -13,10 +12,13 @@ const {
   SECONDS_PER_API_CALL,
 } = config[process.env.ENV || 'development'];
 const { save_runs, update_runs } = require('./2.save_or_update_runs');
-const cert = `${__dirname}/../certs/usercert.pem`;
-const key = `${__dirname}/../certs/userkey.pem`;
 
 let headers;
+const instance = axios.create({
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false,
+  }),
+});
 
 // Will call itself recursively if all runs are new
 const fetch_runs = async (
@@ -28,7 +30,7 @@ const fetch_runs = async (
 
   if (first_time) {
     headers = {
-      Cookie: await getCookie({ url: oms_url, certificate: cert, key }),
+      'Authorization': `Bearer ${await getToken()}`
     };
   }
   if (!first_time) {
@@ -38,11 +40,11 @@ const fetch_runs = async (
     });
   }
 
-  const oms_response = await axios.get(oms_url, {
+  const oms_response = await instance.get(oms_url, {
     headers,
   });
   if (typeof oms_response.data.data === 'undefined') {
-    throw Error('Invalid cookie in request');
+    throw Error('Invalid token in request');
   }
 
   let all_fetched_runs = oms_response.data.data.map(

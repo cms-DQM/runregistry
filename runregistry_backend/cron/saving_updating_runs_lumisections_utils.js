@@ -1,15 +1,17 @@
 const https = require('https');
 const axios = require('axios');
-const getCookie = require('cern-get-sso-cookie');
+const { getToken } = require('../auth/get_token')
 const json_logic = require('json-logic-js');
 const { handleCronErrors: handleErrors } = require('../utils/error_handlers');
 const { API_URL, OMS_URL, OMS_LUMISECTIONS } = require('../config/config')[
   process.env.ENV || 'development'
 ];
 
-const cert = `${__dirname}/../certs/usercert.pem`;
-const key = `${__dirname}/../certs/userkey.pem`;
-
+const instance = axios.create({
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false,
+  }),
+});
 // Takes the 'components included array' from API and turns it into attributes:
 exports.getComponentsIncludedBooleans = oms_attributes => {
   const components = {};
@@ -24,14 +26,10 @@ exports.get_OMS_lumisections = handleErrors(async run_number => {
   // Get lumisections:
   const oms_lumisection_url = `${OMS_URL}/${OMS_LUMISECTIONS(run_number)}`;
   // Keep fetching until totalresourcecount is # of lumisections
-  const oms_lumisection_response = await axios
+  const oms_lumisection_response = await instance
     .get(oms_lumisection_url, {
       headers: {
-        Cookie: await getCookie({
-          url: oms_lumisection_url,
-          certificate: cert,
-          key
-        })
+        'Authorization': `Bearer ${await getToken()}`
       }
     })
     .catch(err => {
@@ -171,7 +169,7 @@ exports.assign_run_class = handleErrors(
         if (
           run_class === '' ||
           classifier.priority <
-            class_classifiers_indexed_by_class[run_class].priority
+          class_classifiers_indexed_by_class[run_class].priority
         ) {
           run_class = assigned_class;
         }
@@ -304,7 +302,7 @@ exports.classify_component_per_lumisection = (
         if (
           previous_status === 'NO VALUE FOUND' ||
           component_classifiers_indexed_by_status[assigned_status].priority <
-            component_classifiers_indexed_by_status[previous_status].priority
+          component_classifiers_indexed_by_status[previous_status].priority
         ) {
           calculated_triplet.status = assigned_status;
           // Add online comment and cause here:
