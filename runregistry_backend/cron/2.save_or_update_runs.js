@@ -1,14 +1,14 @@
 const axios = require('axios');
-const { getToken } = require('../auth/get_token')
+const { getToken } = require('./get_token');
 const https = require('https');
 const queue = require('async').queue;
 const {
-  get_OMS_lumisections
+  get_OMS_lumisections,
 } = require('./saving_updating_runs_lumisections_utils');
 const {
   calculate_rr_attributes,
   calculate_rr_lumisections,
-  calculate_oms_attributes
+  calculate_oms_attributes,
 } = require('./3.calculate_rr_attributes');
 
 const { API_URL, OMS_URL, OMS_SPECIFIC_RUN } = require('../config/config')[
@@ -27,7 +27,7 @@ const instance = axios.create({
 exports.save_runs = async (new_runs, number_of_tries) => {
   let saved_runs = 0;
   const runs_not_saved = [];
-  const promises = new_runs.map(run => async () => {
+  const promises = new_runs.map((run) => async () => {
     try {
       // NORMAL:
       // We get the lumisections from OMS:
@@ -69,14 +69,14 @@ exports.save_runs = async (new_runs, number_of_tries) => {
           oms_attributes,
           oms_lumisections,
           rr_attributes,
-          rr_lumisections
+          rr_lumisections,
         },
         {
           headers: {
             email: 'auto@auto',
-            comment: 'run creation'
+            comment: 'run creation',
           },
-          maxContentLength: 52428890
+          maxContentLength: 52428890,
         }
       );
       saved_runs += 1;
@@ -88,7 +88,7 @@ exports.save_runs = async (new_runs, number_of_tries) => {
 
   // We use 3 workers to save it in first try, if errors, then we want to go slower, just 1:
   const number_of_workers = 1;
-  const asyncQueue = queue(async run => await run(), number_of_workers);
+  const asyncQueue = queue(async (run) => await run(), number_of_workers);
 
   // When runs finished saving:
   asyncQueue.drain = async () => {
@@ -103,9 +103,7 @@ exports.save_runs = async (new_runs, number_of_tries) => {
       console.log('------------------------------');
       console.log('------------------------------');
       if (number_of_tries < 4) {
-        console.log(
-          `TRYING AGAIN: with ${runs_not_saved.length} run(s)`
-        );
+        console.log(`TRYING AGAIN: with ${runs_not_saved.length} run(s)`);
         number_of_tries += 1;
         await exports.save_runs(runs_not_saved, number_of_tries);
       } else {
@@ -116,7 +114,7 @@ exports.save_runs = async (new_runs, number_of_tries) => {
     }
   };
 
-  asyncQueue.error = err => {
+  asyncQueue.error = (err) => {
     console.log(`Critical error saving runs, ${JSON.stringify(err)}`);
   };
 
@@ -131,19 +129,17 @@ exports.update_runs = (
     comment,
     manually_significant,
     previous_rr_attributes,
-    atomic_version
+    atomic_version,
   }
 ) => {
   return new Promise(async (resolve, reject) => {
     let updated_runs = 0;
     const runs_not_updated = [];
-    const promises = runs_to_update.map(run => async () => {
+    const promises = runs_to_update.map((run) => async () => {
       // We only update a run which state is OPEN
       try {
         // We get the lumisections from OMS:
-        const oms_lumisections = await get_OMS_lumisections(
-          run.run_number
-        );
+        const oms_lumisections = await get_OMS_lumisections(run.run_number);
         const oms_attributes = await calculate_oms_attributes(
           run,
           oms_lumisections
@@ -172,7 +168,7 @@ exports.update_runs = (
             oms_lumisections,
             rr_attributes,
             rr_lumisections,
-            atomic_version
+            atomic_version,
           },
           {
             // The email HAS to start with auto, or else API won't know it's an automatic change (unless it was manually requested to update)
@@ -181,9 +177,9 @@ exports.update_runs = (
               // comment: comment || 'automatic update from OMS',
               comment: comment || 'run update',
               // Avoid permission egroups problem:
-              egroups: 'cms-dqm-runregistry-experts;'
+              egroups: 'cms-dqm-runregistry-experts;',
             },
-            maxContentLength: 52428890
+            maxContentLength: 52428890,
           }
         );
         if (updated_run.status === 200) {
@@ -196,15 +192,12 @@ exports.update_runs = (
     });
     if (runs_to_update.length < 10) {
       // If it is less than 10 runs we are refreshing, no need to do a queue
-      await Promise.all(promises.map(async promise => await promise()));
+      await Promise.all(promises.map(async (promise) => await promise()));
       resolve();
     } else {
       // We use 3 workers to save it in first try, if errors, then we want to go slower, just 1:
       const number_of_workers = 1;
-      const asyncQueue = queue(
-        async run => await run(),
-        number_of_workers
-      );
+      const asyncQueue = queue(async (run) => await run(), number_of_workers);
 
       // When runs finished updating:
       asyncQueue.drain = async () => {
@@ -219,20 +212,14 @@ exports.update_runs = (
           console.log('------------------------------');
           console.log('------------------------------');
           if (number_of_tries < 4) {
-            console.log(
-              `TRYING AGAIN: with ${runs_not_updated.length} run(s)`
-            );
+            console.log(`TRYING AGAIN: with ${runs_not_updated.length} run(s)`);
             number_of_tries += 1;
-            await exports.update_runs(
-              runs_not_updated,
-              number_of_tries,
-              {
-                email,
-                comment,
-                manually_significant,
-                previous_rr_attributes
-              }
-            );
+            await exports.update_runs(runs_not_updated, number_of_tries, {
+              email,
+              comment,
+              manually_significant,
+              previous_rr_attributes,
+            });
             resolve();
           } else {
             console.log(
@@ -244,10 +231,8 @@ exports.update_runs = (
         resolve();
       };
 
-      asyncQueue.error = err => {
-        console.log(
-          `Critical error saving runs, ${JSON.stringify(err)}`
-        );
+      asyncQueue.error = (err) => {
+        console.log(`Critical error saving runs, ${JSON.stringify(err)}`);
       };
 
       asyncQueue.push(promises);
@@ -260,9 +245,7 @@ exports.manually_update_a_run = async (
   { email, comment, manually_significant, atomic_version }
 ) => {
   // get rr_attributes:
-  const { data: saved_run } = await axios.get(
-    `${API_URL}/runs/${run_number}`
-  );
+  const { data: saved_run } = await axios.get(`${API_URL}/runs/${run_number}`);
   const previous_rr_attributes = saved_run.rr_attributes;
 
   if (previous_rr_attributes.state !== 'OPEN') {
@@ -271,11 +254,11 @@ exports.manually_update_a_run = async (
   // get oms_attributes:
   const endpoint = `${OMS_URL}/${OMS_SPECIFIC_RUN(run_number)}`;
   const {
-    data: { data: fetched_run }
+    data: { data: fetched_run },
   } = await instance.get(endpoint, {
     headers: {
-      'Authorization': `Bearer ${await getToken()}`
-    }
+      Authorization: `Bearer ${await getToken()}`,
+    },
   });
   const run_oms_attributes = fetched_run[0].attributes;
   await exports.update_runs([run_oms_attributes], 0, {
@@ -283,6 +266,6 @@ exports.manually_update_a_run = async (
     email,
     comment,
     manually_significant,
-    atomic_version
+    atomic_version,
   });
 };

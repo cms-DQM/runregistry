@@ -14,6 +14,8 @@ services:
       - NODE_ENV=development
       - REDIS_HOST=redis
       - DOCKER_POSTGRES=true
+      # Request the secret from conveners for development:
+      - CLIENT_SECRET=
     command: npm run dev
     ports:
       - 9500:9500
