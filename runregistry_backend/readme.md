@@ -28,6 +28,14 @@ Next time you want to run the backend, you just need to run `make dev`.
 
 If you wish to understand how the docker files in this repository work, [read this article](https://jdlm.info/articles/2019/09/06/lessons-building-node-app-docker.html).
 
+## Open ID  authentication
+
+In order to get a **client secret**, for OpenID authentication, need to contact to DQM developer Ernesta Petraityte, *ernesta.petraityte@cern.ch*.
+
+When client secret will be received, it must be set as environment variable in the following file:  https://github.com/cms-DQM/runregistry/blob/master/runregistry_backend/docker-compose.development.yml
+
+It is important to set the environment variable CLIENT_SECRET in **production and development**. Otherwise, backend will not work
+
 ## Adding real data to your development environment's database
 
 It is almost useless to test Run Registry without any data that your development backend can serve.
