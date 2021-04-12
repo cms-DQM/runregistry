@@ -1,6 +1,6 @@
 const https = require('https');
 const axios = require('axios');
-const { getToken } = require('../auth/get_token')
+const { getToken } = require('./get_token');
 const json_logic = require('json-logic-js');
 const { handleCronErrors: handleErrors } = require('../utils/error_handlers');
 const { API_URL, OMS_URL, OMS_LUMISECTIONS } = require('../config/config')[
@@ -13,26 +13,26 @@ const instance = axios.create({
   }),
 });
 // Takes the 'components included array' from API and turns it into attributes:
-exports.getComponentsIncludedBooleans = oms_attributes => {
+exports.getComponentsIncludedBooleans = (oms_attributes) => {
   const components = {};
-  oms_attributes.components.forEach(component => {
+  oms_attributes.components.forEach((component) => {
     const component_name = `${component.toLowerCase()}_included`;
     components[component_name] = true;
   });
   return components;
 };
 
-exports.get_OMS_lumisections = handleErrors(async run_number => {
+exports.get_OMS_lumisections = handleErrors(async (run_number) => {
   // Get lumisections:
   const oms_lumisection_url = `${OMS_URL}/${OMS_LUMISECTIONS(run_number)}`;
   // Keep fetching until totalresourcecount is # of lumisections
   const oms_lumisection_response = await instance
     .get(oms_lumisection_url, {
       headers: {
-        'Authorization': `Bearer ${await getToken()}`
-      }
+        Authorization: `Bearer ${await getToken()}`,
+      },
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(`Error getting lumisections from OMS for run ${run_number}`);
     });
 
@@ -55,7 +55,7 @@ exports.get_OMS_lumisections = handleErrors(async run_number => {
           ...oms_lumisections[index],
           recorded_lumi_per_lumi: null,
           delivered_lumi_per_lumi: null,
-          live_lumi_per_lumi: null
+          live_lumi_per_lumi: null,
         };
       }
       // we parse them to number:
@@ -84,7 +84,7 @@ exports.get_OMS_lumisections = handleErrors(async run_number => {
         ...oms_lumisections[index],
         recorded_lumi_per_lumi,
         delivered_lumi_per_lumi,
-        live_lumi_per_lumi
+        live_lumi_per_lumi,
       };
     }
   );
@@ -92,14 +92,14 @@ exports.get_OMS_lumisections = handleErrors(async run_number => {
   return oms_lumisections;
 }, 'Error getting lumisection attributes for the run');
 
-exports.get_beam_present_and_stable = lumisections => {
+exports.get_beam_present_and_stable = (lumisections) => {
   let beams_present_and_stable = false;
-  lumisections.forEach(lumisection => {
+  lumisections.forEach((lumisection) => {
     const {
       beam1_present,
       beam1_stable,
       beam2_present,
-      beam2_stable
+      beam2_stable,
     } = lumisection;
     // If one of them is null, set the conjunction null:
     if (
@@ -119,10 +119,10 @@ exports.get_beam_present_and_stable = lumisections => {
 };
 
 // Reduces the array of lumisections to truthy if only one is true in whole array
-exports.reduce_ls_attributes = lumisections => {
+exports.reduce_ls_attributes = (lumisections) => {
   const reduced_values = {};
   // If there is at least 1 LS that is true, then its true for the run:
-  lumisections.forEach(lumisection => {
+  lumisections.forEach((lumisection) => {
     Object.keys(lumisection).forEach((key, index) => {
       // We are only interested for either true or null values: (if it was true once, it is true for all)
       if (lumisection[key] === true || lumisection[key] === false) {
@@ -147,7 +147,7 @@ exports.assign_run_class = handleErrors(
     const run = {
       ...reduced_lumisection_attributes,
       ...oms_attributes,
-      ...rr_attributes
+      ...rr_attributes,
     };
     const { data: classifiers_array } = await axios.get(
       `${API_URL}/classifiers/class`
@@ -156,12 +156,12 @@ exports.assign_run_class = handleErrors(
 
     // Setup a hash by class name, to later access the priority of a previously assigned class:
     const class_classifiers_indexed_by_class = {};
-    classifiers_array.forEach(classifier => {
+    classifiers_array.forEach((classifier) => {
       class_classifiers_indexed_by_class[classifier.class] = classifier;
     });
 
     let run_class = '';
-    classifiers_array.forEach(classifier => {
+    classifiers_array.forEach((classifier) => {
       const classifier_json = JSON.parse(classifier.classifier);
       if (json_logic.apply(classifier_json, run)) {
         const assigned_class = classifier.class;
@@ -169,7 +169,7 @@ exports.assign_run_class = handleErrors(
         if (
           run_class === '' ||
           classifier.priority <
-          class_classifiers_indexed_by_class[run_class].priority
+            class_classifiers_indexed_by_class[run_class].priority
         ) {
           run_class = assigned_class;
         }
@@ -188,13 +188,13 @@ exports.is_run_significant = handleErrors(
     const run = {
       ...reduced_lumisection_attributes,
       ...oms_attributes,
-      ...rr_attributes
+      ...rr_attributes,
     };
     let run_is_significant = false;
     const { data: classifiers_array } = await axios.get(
       `${API_URL}/classifiers/dataset`
     );
-    classifiers_array.forEach(classifier => {
+    classifiers_array.forEach((classifier) => {
       const classifier_class = classifier.class;
       classifier = JSON.parse(classifier.classifier);
       if (classifier_class === run.class) {
@@ -221,7 +221,7 @@ exports.assign_lumisection_component_status = handleErrors(
     );
     // We group them now by workspace (notice we don't do this via SQL because we still want to preserve history of objects)
     const workspace_classifiers = {};
-    online_classifiers.forEach(classifier => {
+    online_classifiers.forEach((classifier) => {
       const { workspace } = classifier.WorkspaceColumn.Workspace;
       const column_name = classifier.WorkspaceColumn.name;
       workspace_classifiers[workspace] = workspace_classifiers[workspace] || {};
@@ -232,15 +232,15 @@ exports.assign_lumisection_component_status = handleErrors(
 
       workspace_classifiers[workspace][column_name] = [
         ...classifiers_of_column,
-        classifier
+        classifier,
       ];
     });
     const rr_lumisections = [];
-    oms_lumisections.forEach(oms_lumisection => {
+    oms_lumisections.forEach((oms_lumisection) => {
       // We join the attributes from the run AND the lumisection to produce a per lumisection result:
       const run_and_lumisection_attributes = {
         ...run,
-        ...oms_lumisection
+        ...oms_lumisection,
       };
       const lumisection_components = {};
 
@@ -276,7 +276,7 @@ exports.classify_component_per_lumisection = (
 ) => {
   // Setup a hash of the classifier of this specific component by status (so that it can be accessed later)
   const component_classifiers_indexed_by_status = {};
-  component_classifiers.forEach(classifier => {
+  component_classifiers.forEach((classifier) => {
     component_classifiers_indexed_by_status[classifier.status] = classifier;
   });
 
@@ -284,11 +284,11 @@ exports.classify_component_per_lumisection = (
   const calculated_triplet = {
     status: 'NO VALUE FOUND',
     comment: '',
-    cause: ''
+    cause: '',
   };
 
   // And then for each classifier inside the component, we find its priority and check if its superior then the actual one
-  component_classifiers.forEach(classifier => {
+  component_classifiers.forEach((classifier) => {
     if (classifier.enabled) {
       const classifier_json = JSON.parse(classifier.classifier);
 
@@ -302,7 +302,7 @@ exports.classify_component_per_lumisection = (
         if (
           previous_status === 'NO VALUE FOUND' ||
           component_classifiers_indexed_by_status[assigned_status].priority <
-          component_classifiers_indexed_by_status[previous_status].priority
+            component_classifiers_indexed_by_status[previous_status].priority
         ) {
           calculated_triplet.status = assigned_status;
           // Add online comment and cause here:

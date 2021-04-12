@@ -1,7 +1,7 @@
 const CronJob = require('cron').CronJob;
 const axios = require('axios');
 const { handleErrors } = require('../utils/error_handlers');
-const { getToken } = require('../auth/get_token')
+const { getToken } = require('./get_token');
 const https = require('https');
 const config = require('../config/config');
 const {
@@ -30,7 +30,7 @@ const fetch_runs = async (
 
   if (first_time) {
     headers = {
-      'Authorization': `Bearer ${await getToken()}`
+      Authorization: `Bearer ${await getToken()}`,
     };
   }
   if (!first_time) {
@@ -172,7 +172,7 @@ const get_min_run_number = (array_of_runs) => {
   const min_run_number = array_of_runs.reduce(
     (min_run_number, run) =>
       run.run_number < min_run_number ? run.run_number : min_run_number,
-    array_of_runs[0].run_number
+    array_of_runs[0] ? array_of_runs[0].run_number : -1
   );
   return min_run_number;
 };
@@ -181,7 +181,7 @@ const get_max_run_number = (array_of_runs) => {
   const max_run_number = array_of_runs.reduce(
     (max_run_number, run) =>
       run.run_number > max_run_number ? run.run_number : max_run_number,
-    array_of_runs[0].run_number
+    array_of_runs[0] ? array_of_runs[0].run_number : 300000 * 10
   );
   return max_run_number;
 };
