@@ -128,7 +128,7 @@ const calculate_new_runs = (fetched_runs, last_saved_runs) => {
         // IF THE run_number of the run is way in the past (prior to the last of the already saved runs) then this is not a new run, but a run to update
         // min_run_number is the oldest run_number saved (aka the minimum possible run number from the sample fetched):
         const min_run_number = get_min_run_number(last_saved_runs);
-        if (fetched_run.run_number > min_run_number) {
+        if (+fetched_run.run_number > min_run_number) {
           new_runs.push(fetched_run);
         }
       }
