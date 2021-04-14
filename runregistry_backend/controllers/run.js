@@ -187,6 +187,9 @@ exports.new = async (req, res) => {
     rr_lumisections,
   } = req.body;
   const { run_number } = oms_attributes;
+  if (typeof run_number === 'undefined') {
+    throw 'Run number cannot be undefined';
+  }
   const run = await Run.findByPk(run_number);
   if (run !== null) {
     // Run already exists, we update it
@@ -253,11 +256,15 @@ exports.new = async (req, res) => {
 // The new_attributes are a collection of the attributes that changed with respect to the run
 exports.automatic_run_update = async (req, res) => {
   const { run_number } = req.params;
-
+  if (typeof run_number === 'undefined') {
+    throw 'Run number cannot be undefined';
+  }
   const run = await Run.findByPk(run_number);
   if (run === null) {
     // Run doesn't exist, we create it
-    console.log('Trying to update run when we need to create it first');
+    console.log(
+      `Trying to update run ${run_number} when we need to create it first`
+    );
     await exports.new(req, res);
     return;
   }
