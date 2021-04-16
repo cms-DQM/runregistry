@@ -4,12 +4,6 @@
 
 Python client to retrieve and query data from [CMS Run Registry](https://cmsrunregistry.web.cern.ch).
 
-## Installation
-
-```bash
-pip install runregistry
-```
-
 ## Python version and Virtual env
 
 Python version>=3.6 is required for this package.
@@ -20,6 +14,12 @@ A virtual environment is also required, if you are in lxplus you should run the 
 ```bash
 virtualenv venv
 source venv/bin/activate
+```
+
+## Installation
+
+```bash
+pip install runregistry
 ```
 
 ## Authentication (Prerequisite)
