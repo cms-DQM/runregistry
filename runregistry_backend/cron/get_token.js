@@ -22,13 +22,17 @@ exports.getToken = async () => {
   const cached_access_token = myCache.get("access_token")
 
   if (!cached_access_token) {
-    console.log('not cached')
     data.grant_type = 'client_credentials'
-    const { data: { access_token }, } = await get_tokens_api(data, headers)
-    const token_info = await exchangeTokens(access_token)
-
-    cache_access_token(token_info.access_token, token_info.expires_in)
-    return token_info.access_token
+    
+    try {
+      const { data: { access_token }, } = await get_tokens_api(data, headers)
+      const token_info = await exchangeTokens(access_token)
+      cache_access_token(token_info.access_token, token_info.expires_in)
+      return token_info.access_token
+    }
+    catch (err) {
+      console.error('Error access token from auth service', err);
+    }
   }
   else {
     return cached_access_token
@@ -51,7 +55,7 @@ const exchangeTokens = async (token) => {
     } = await get_tokens_api(data, headers)
     return { access_token, expires_in };
   } catch (err) {
-    console.log('Error exchanging token from auth service', err);
+    console.error('Error exchanging token from auth service', err);
   }
 };
 
