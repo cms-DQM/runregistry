@@ -24,6 +24,10 @@ exports.getComponentsIncludedBooleans = (oms_attributes) => {
 
 exports.get_OMS_lumisections = handleErrors(async (run_number) => {
   // Get lumisections:
+  // Wait in case of error not to overflow OMS API
+  await new Promise((resolve) => {
+    setTimeout(resolve, 2000);
+  });
   const oms_lumisection_url = `${OMS_URL}/${OMS_LUMISECTIONS(run_number)}`;
   // Keep fetching until totalresourcecount is # of lumisections
   const oms_lumisection_response = await instance
