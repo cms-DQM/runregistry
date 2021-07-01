@@ -307,6 +307,7 @@ module.exports = {
     'hbhec_ready',
     'beam2_stable',
     'beam2_present',
+    'gem_ready',
   ],
   oms_lumisection_luminosity_whitelist: [
     // TODO: When OMS provides us with lumisection granular luminosity then we put the attribute here (not the aggregated one). And then there is no need to calculate it from brilcalc using their pip package
