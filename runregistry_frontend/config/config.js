@@ -116,6 +116,7 @@ exports.components = [
   'pixel',
   'rpc',
   'strip',
+  'gem'
 ];
 
 exports.rr_attributes = [
@@ -163,6 +164,7 @@ exports.certifiable_offline_components = {
   rpc: ['rpc'],
   tau: ['tau'],
   tracker: ['track', 'pixel', 'strip'],
+  gem: ['gem'] 
 };
 
 exports.certifiable_online_components = {
@@ -178,6 +180,7 @@ exports.certifiable_online_components = {
   lumi: ['lumi'],
   rpc: ['rpc'],
   tracker: ['pixel', 'strip'],
+  gem: ['gem'] 
 };
 
 exports.lumisection_attributes = [
