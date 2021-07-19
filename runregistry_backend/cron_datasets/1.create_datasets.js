@@ -1,20 +1,20 @@
 const axios = require('axios');
 
-const { API_URL, WAITING_DQM_GUI_CONSTANT } = require('../config/config')[
-  process.env.ENV || 'development'
-];
+const { API_URL, WAITING_DQM_GUI_CONSTANT } =
+  require('../config/config')[process.env.ENV || 'development'];
 
 const { update_or_create_dataset } = require('../controllers/dataset');
 const {
-  fill_dataset_triplet_cache
+  fill_dataset_triplet_cache,
 } = require('../controllers/dataset_triplet_cache');
 const {
   create_rr_lumisections,
-  create_oms_lumisections
+  create_oms_lumisections,
 } = require('../controllers/lumisection');
 const {
-  classify_component_per_lumisection
+  classify_component_per_lumisection,
 } = require('../cron/saving_updating_runs_lumisections_utils');
+const { create_new_version } = require('../controllers/version');
 
 exports.create_offline_waiting_datasets = async (run, transaction) => {
   const { run_number, rr_attributes } = run;
@@ -26,14 +26,14 @@ exports.create_offline_waiting_datasets = async (run, transaction) => {
     `${API_URL}/lumisections/oms_lumisections`,
     {
       dataset_name: 'online',
-      run_number
+      run_number,
     }
   );
   const { data: rr_lumisections } = await axios.post(
     `${API_URL}/lumisections/rr_lumisections`,
     {
       dataset_name: 'online',
-      run_number
+      run_number,
     }
   );
 
@@ -43,7 +43,7 @@ exports.create_offline_waiting_datasets = async (run, transaction) => {
   const lumisections = rr_lumisections.map((rr_lumisection, index) => {
     return {
       oms_attributes: oms_lumisections[index],
-      rr_attributes: rr_lumisection
+      rr_attributes: rr_lumisection,
     };
   });
 
@@ -51,12 +51,11 @@ exports.create_offline_waiting_datasets = async (run, transaction) => {
 
   const standard_waiting_list_dataset_attributes = {
     global_state: WAITING_DQM_GUI_CONSTANT,
-    appeared_in: []
+    appeared_in: [],
   };
   workspaces.forEach(({ workspace }) => {
-    standard_waiting_list_dataset_attributes[
-      `${workspace}_state`
-    ] = WAITING_DQM_GUI_CONSTANT;
+    standard_waiting_list_dataset_attributes[`${workspace}_state`] =
+      WAITING_DQM_GUI_CONSTANT;
   });
 
   let { data: classifiers } = await axios.get(
@@ -78,7 +77,7 @@ exports.create_offline_waiting_datasets = async (run, transaction) => {
           dataset_attributes: standard_waiting_list_dataset_attributes,
           lumisections: classified_lumisections,
           oms_lumisections,
-          transaction
+          transaction,
         });
       }
     }
@@ -95,15 +94,15 @@ const classify_dataset_lumisections = (
   classifiers
 ) => {
   const dataset_lumisections = [];
-  lumisections.forEach(lumisection => {
+  lumisections.forEach((lumisection) => {
     // We join the attributes from the run AND the lumisection to produce a per lumisection result:
     // Same as in classifier_playground.js
     const run_and_lumisection_attributes = {
       run: { oms: run.oms_attributes, rr: run.rr_attributes },
       lumisection: {
         oms: lumisection.oms_attributes,
-        rr: lumisection.rr_attributes
-      }
+        rr: lumisection.rr_attributes,
+      },
     };
     const lumisection_components = {};
     workspaces.forEach(({ workspace, columns }) => {
@@ -116,7 +115,7 @@ const classify_dataset_lumisections = (
       );
       // The namespace rule is the following:
       // Each workspace gets assigned a triplet by workspace-workspace. So csc would be csc-csc. Then other sub_components of that workspace get named workspace-name_of_subcomponent, so occupancy in csc would be csc-occupancy
-      columns.forEach(sub_component => {
+      columns.forEach((sub_component) => {
         // Now we filter the classifiers by column:
         const workspace_column_classifiers = workspace_classifiers.filter(
           ({ WorkspaceColumn }) => {
@@ -127,13 +126,12 @@ const classify_dataset_lumisections = (
 
         const name_of_sub_component = `${workspace}-${sub_component}`;
         // Here we assign workspace-sub_component e.g. csc-occupancy or tracker-pix
-        lumisection_components[
-          name_of_sub_component
-        ] = classify_component_per_lumisection(
-          run_and_lumisection_attributes,
-          workspace_column_classifiers,
-          name_of_sub_component
-        );
+        lumisection_components[name_of_sub_component] =
+          classify_component_per_lumisection(
+            run_and_lumisection_attributes,
+            workspace_column_classifiers,
+            name_of_sub_component
+          );
       });
     });
     dataset_lumisections.push(lumisection_components);
@@ -148,16 +146,16 @@ exports.save_individual_dataset = async ({
   lumisections,
   oms_lumisections,
   transaction,
-  event_info
+  event_info,
 }) => {
   event_info = event_info || {
     email: 'auto@auto',
-    comment: 'dataset creation after a run is signed off'
+    comment: 'dataset creation after a run is signed off',
   };
 
   const { atomic_version } = await create_new_version({
     req: event_info,
-    transaction
+    transaction,
   });
   // The only reason we do not do this via HTTP is because we want it to be a transaction:
   const saved_dataset = await update_or_create_dataset({
@@ -165,7 +163,7 @@ exports.save_individual_dataset = async ({
     run_number,
     dataset_metadata: dataset_attributes,
     atomic_version,
-    transaction
+    transaction,
   });
   if (lumisections.length > 0) {
     const saved_lumisections = await create_rr_lumisections({
@@ -174,7 +172,7 @@ exports.save_individual_dataset = async ({
       lumisections,
       req: event_info,
       atomic_version,
-      transaction
+      transaction,
     });
     const saved_oms_lumisections = await create_oms_lumisections({
       run_number,
@@ -182,7 +180,7 @@ exports.save_individual_dataset = async ({
       lumisections: oms_lumisections,
       req: event_info,
       atomic_version,
-      transaction
+      transaction,
     });
   }
   await fill_dataset_triplet_cache();
@@ -234,14 +232,14 @@ const run_and_lumisection_attributes_example = {
       l1_hlt_mode_stripped: 'cosmics2019/v4',
       hlt_physics_throughput: 0.00165057,
       initial_prescale_index: 0,
-      beams_present_and_stable: false
+      beams_present_and_stable: false,
     },
     rr: {
       class: 'Cosmics19',
       state: 'OPEN',
       significant: true,
-      stop_reason: ''
-    }
+      stop_reason: '',
+    },
   },
   lumisection: {
     oms: {
@@ -278,7 +276,7 @@ const run_and_lumisection_attributes_example = {
       beam2_present: false,
       rp_time_ready: null,
       rp_sect_45_ready: null,
-      rp_sect_56_ready: null
+      rp_sect_56_ready: null,
     },
     rr: {
       dt_triplet: { cause: '', status: 'GOOD', comment: '' },
@@ -296,7 +294,7 @@ const run_and_lumisection_attributes_example = {
       l1tmu_triplet: { cause: '', status: 'NOTSET', comment: '' },
       strip_triplet: { cause: '', status: 'EXCLUDED', comment: '' },
       castor_triplet: { cause: '', status: 'EXCLUDED', comment: '' },
-      l1tcalo_triplet: { cause: '', status: 'NOTSET', comment: '' }
-    }
-  }
+      l1tcalo_triplet: { cause: '', status: 'NOTSET', comment: '' },
+    },
+  },
 };
