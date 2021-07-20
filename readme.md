@@ -59,3 +59,96 @@ Run registry has multiple sources of configuration, some of them can be changed 
 
 There is a great amount of effort in making Run Registry event-sourced on a run and per-lumisection basis.
 If there is a human error, for example if a user sometimes batch-updates runs and sets wrong values, there will always be a way to undo it. And there will be a track of what was done, by whom and when.
+
+# How to update Run Regestry in development and production VM?
+
+## [Run Regestry development](https://dev-cmsrunregistry.web.cern.ch/):
+
+```
+ ssh -tCY username@lxplus.cern.ch ssh  -CY username@dev-runregistry.cern.ch
+ cd /srv/node && export HOME=$PWD
+ export PATH=/srv/node/bin/:$PATH
+ cd /srv/
+ export NODE_ENV=production
+ export ENV=staging
+ export CLIENT_SECRET= #Ask DQM core conveners
+ forever stopall
+ rm -rf node
+ sudo wget https://nodejs.org/dist/v12.17.0/node-v12.17.0-linux-x64.tar.xz
+ sudo tar -xf node-v12.17.0-linux-x64.tar.xz
+ sudo mv node-v12.17.0-linux-x64 node
+ sudo rm node-v12.17.0-linux-x64.tar.xz
+ sudo chmod -R 777 /srv/
+ cd node && export HOME=$PWD
+ cd ..
+ export PATH=/srv/node/bin/:$PATH
+ rm -rf runregestry
+ cd runregistry/runregistry_frontend
+ yarn
+ sudo chmod -R 777 /srv/
+ yarn build
+ sudo chmod -R 777 /srv/
+ forever start server.js
+ cd ../runregestry_backend
+ yarn
+ forever start app.js
+```
+
+After starting the project, it's important to check logs, is everything working fine!
+Logs can be found by running a command: `forever logs`
+
+## [Run Regestry production](https://cmsrunregistry.web.cern.ch/)
+
+```
+ ssh -tCY username@lxplus.cern.ch ssh  -CY username@dev-runregistry.cern.ch
+ cd /srv/node && export HOME=$PWD
+ export PATH=/srv/node/bin/:$PATH
+ cd /srv/
+ export NODE_ENV=production
+ export ENV=production
+ export CLIENT_SECRET= #Ask DQM core conveners
+ forever stopall
+ rm -rf node
+ sudo wget https://nodejs.org/dist/v12.17.0/node-v12.17.0-linux-x64.tar.xz
+ sudo tar -xf node-v12.17.0-linux-x64.tar.xz
+ sudo mv node-v12.17.0-linux-x64 node
+ sudo rm node-v12.17.0-linux-x64.tar.xz
+ sudo chmod -R 777 /srv/
+ cd node && export HOME=$PWD
+ cd ..
+ export PATH=/srv/node/bin/:$PATH
+ rm -rf runregestry
+ cd runregistry/runregistry_frontend
+ yarn
+ sudo chmod -R 777 /srv/
+ yarn build
+ sudo chmod -R 777 /srv/
+ forever start server.js
+ cd ../runregestry_backend
+ yarn
+ forever start app.js
+```
+After starting the project, it's important to check logs, is everything working fine!
+Logs can be found by running a command: `forever logs`
+
+## Are you Run Regestry developer, but cannot connect to RR VMs?
+The person, who has sudo rights to dev-runregestry and runregestry machines has to add you as a user:
+
+```
+sudo useraddcern username
+```
+To give sudo rights (optional):
+```
+sudo usermod -aG wheel username
+```
+Check, can you connect to the machine(-s):
+```
+ssh -tCY username@lxplus.cern.ch ssh  -CY username@dev-runregistry.cern.ch
+```
+```
+ssh -tCY username@lxplus.cern.ch ssh  -CY username@runregistry.cern.ch
+```
+Check do you have sudo rights (optional):
+```
+sudo whoami
+```
