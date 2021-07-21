@@ -82,6 +82,8 @@ If there is a human error, for example if a user sometimes batch-updates runs an
  cd node && export HOME=$PWD
  cd ..
  export PATH=/srv/node/bin/:$PATH
+ npm install forever -g
+ npm i yarn -g
  rm -rf runregestry
  git clone https://github.com/cms-DQM/runregistry
  cd runregistry/runregistry_frontend
@@ -124,6 +126,8 @@ Logs can be found by running a command: `forever logs`
  cd node && export HOME=$PWD
  cd ..
  export PATH=/srv/node/bin/:$PATH
+ npm install forever -g
+ npm i yarn -g
  rm -rf runregestry
  git clone https://github.com/cms-DQM/runregistry
  cd runregistry/runregistry_frontend
