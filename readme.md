@@ -83,7 +83,14 @@ If there is a human error, for example if a user sometimes batch-updates runs an
  cd ..
  export PATH=/srv/node/bin/:$PATH
  rm -rf runregestry
+ git clone https://github.com/cms-DQM/runregistry
  cd runregistry/runregistry_frontend
+ sudo chmod -R 777 /srv/
+ mkdir certs
+ <!--
+ cp your cert usercert.pem certs/usercert.pem
+ cp cp your key certs/userkey.pem 
+ -->
  yarn
  sudo chmod -R 777 /srv/
  yarn build
@@ -118,7 +125,14 @@ Logs can be found by running a command: `forever logs`
  cd ..
  export PATH=/srv/node/bin/:$PATH
  rm -rf runregestry
+ git clone https://github.com/cms-DQM/runregistry
  cd runregistry/runregistry_frontend
+ sudo chmod -R 777 /srv/
+ mkdir certs
+ <!--
+ cp your cert usercert.pem certs/usercert.pem
+ cp cp your key certs/userkey.pem 
+ -->
  yarn
  sudo chmod -R 777 /srv/
  yarn build
