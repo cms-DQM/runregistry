@@ -89,16 +89,16 @@ If there is a human error, for example if a user sometimes batch-updates runs an
  cd runregistry/runregistry_frontend
  sudo chmod -R 777 /srv/
  mkdir certs
- <!--
- cp your cert usercert.pem certs/usercert.pem
- cp cp your key certs/userkey.pem 
- -->
  yarn
  sudo chmod -R 777 /srv/
  yarn build
  sudo chmod -R 777 /srv/
  forever start server.js
  cd ../runregestry_backend
+  <!--
+ cp your cert usercert.pem certs/usercert.pem
+ cp cp your key certs/userkey.pem 
+ -->
  yarn
  forever start app.js
 ```
@@ -132,11 +132,6 @@ Logs can be found by running a command: `forever logs`
  git clone https://github.com/cms-DQM/runregistry
  cd runregistry/runregistry_frontend
  sudo chmod -R 777 /srv/
- mkdir certs
- <!--
- cp your cert usercert.pem certs/usercert.pem
- cp cp your key certs/userkey.pem 
- -->
  yarn
  sudo chmod -R 777 /srv/
  yarn build
@@ -144,6 +139,11 @@ Logs can be found by running a command: `forever logs`
  forever start server.js
  cd ../runregestry_backend
  yarn
+ mkdir certs
+ <!--
+ cp your cert usercert.pem certs/usercert.pem
+ cp cp your key certs/userkey.pem 
+ -->
  forever start app.js
 ```
 After starting the project, it's important to check logs, is everything working fine!
