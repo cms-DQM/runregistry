@@ -95,7 +95,8 @@ If there is a human error, for example if a user sometimes batch-updates runs an
  sudo chmod -R 777 /srv/
  forever start server.js
  cd ../runregistry_backend
-  <!--
+ ## how to generate key and certificate, check the section below
+ <!--
  cp your cert usercert.pem certs/usercert.pem
  cp cp your key certs/userkey.pem 
  -->
@@ -140,6 +141,7 @@ Logs can be found by running a command: `forever logs`
  cd ../runregistry_backend
  yarn
  mkdir certs
+ ## how to generate key and certificate, check the section below
  <!--
  cp your cert usercert.pem certs/usercert.pem
  cp cp your key certs/userkey.pem 
@@ -149,6 +151,18 @@ Logs can be found by running a command: `forever logs`
 After starting the project, it's important to check logs, is everything working fine!
 Logs can be found by running a command: `forever logs`
 
+## How to generate key and certificate?
+You need to have grid certificate, provoded by CERN, https://ca.cern.ch/ca/
+
+After, execute following commands:
+Geberate a private key:
+```
+openssl pkcs12 -in myCertificate.p12 -nokeys -out usercert.pem -nodes
+```
+Geberate a certificate:
+```
+openssl pkcs12 -in myCertificate.p12 -nocerts -out userkey.pem -nodes
+```
 ## Are you Run Regestry developer, but cannot connect to RR VMs?
 The person, who has sudo rights to dev-runregestry and runregestry machines has to add you as a user:
 
