@@ -20,6 +20,7 @@ const {
   API_URL,
   DQM_GUI_URL,
   SECONDS_PER_DQM_GUI_CHECK,
+  WAITING_DQM_GUI_CONSTANT,
 } = require('../config/config')[process.env.ENV || 'development'];
 const { update_or_create_dataset } = require('../controllers/dataset');
 const { create_new_version } = require('../controllers/version');
@@ -128,42 +129,50 @@ const ping_dqm_gui = async () => {
 
     let count_of_dataset_links_added_in_gui = 0;
     const promises = all_datasets_in_rr.map(
-      ({ run_number, name, datasets_in_gui }) => async () => {
-        const datasets_accepted_by_name = datasets_accepted[name] || [];
-        const current_datasets_in_gui =
-          all_datasets_in_gui[`${run_number}`] || [];
-        const future_datasets_in_gui = new Set();
-        datasets_accepted_by_name.forEach(
-          ({ regexp, enabled, run_from, run_to }) => {
-            if (enabled && run_from <= run_number && run_number <= run_to) {
-              const regexs = splitRegex(regexp);
-              regexs.forEach((regexp) => {
-                regexp = new RegExp(regexp.trim());
-                current_datasets_in_gui.forEach((dataset_in_gui) => {
-                  if (
-                    regexp.test(dataset_in_gui) &&
-                    !datasets_in_gui.includes(dataset_in_gui)
-                  ) {
-                    future_datasets_in_gui.add(dataset_in_gui);
-                  }
+      ({ run_number, name, dataset_attributes, datasets_in_gui }) =>
+        async () => {
+          const datasets_accepted_by_name = datasets_accepted[name] || [];
+          const current_datasets_in_gui =
+            all_datasets_in_gui[`${run_number}`] || [];
+          const future_datasets_in_gui = new Set();
+          datasets_accepted_by_name.forEach(
+            ({ regexp, enabled, run_from, run_to }) => {
+              if (enabled && run_from <= run_number && run_number <= run_to) {
+                const regexs = splitRegex(regexp);
+                regexs.forEach((regexp) => {
+                  regexp = new RegExp(regexp.trim());
+                  current_datasets_in_gui.forEach((dataset_in_gui) => {
+                    if (
+                      regexp.test(dataset_in_gui) &&
+                      !datasets_in_gui.includes(dataset_in_gui)
+                    ) {
+                      future_datasets_in_gui.add(dataset_in_gui);
+                    }
+                  });
                 });
-              });
+              }
             }
+          );
+          if (future_datasets_in_gui.size > 0) {
+            const new_states = {};
+            // Insert new state for datasets which appeared:
+            for (const [key, val] of Object.entries(dataset_attributes)) {
+              if (key.endsWith('_state') && val === WAITING_DQM_GUI_CONSTANT) {
+                new_states[key] = 'OPEN';
+              }
+            }
+            // insert into DB:
+            await update_or_create_dataset({
+              dataset_name: name,
+              run_number,
+              dataset_metadata: new_states,
+              datasets_in_gui: Array.from(future_datasets_in_gui),
+              atomic_version,
+              transaction,
+            });
+            count_of_dataset_links_added_in_gui += future_datasets_in_gui.size;
           }
-        );
-        if (future_datasets_in_gui.size > 0) {
-          // insert into DB:
-          await update_or_create_dataset({
-            dataset_name: name,
-            run_number,
-            dataset_metadata: {},
-            datasets_in_gui: Array.from(future_datasets_in_gui),
-            atomic_version,
-            transaction,
-          });
-          count_of_dataset_links_added_in_gui += future_datasets_in_gui.size;
         }
-      }
     );
     await queue.addAll(promises);
     if (count_of_dataset_links_added_in_gui > 0) {
