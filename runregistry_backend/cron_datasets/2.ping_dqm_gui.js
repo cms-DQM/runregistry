@@ -90,7 +90,7 @@ const get_all_datasets_in_rr = async () => {
     where: {
       name: { [Op.ne]: 'online' },
     },
-    attributes: ['run_number', 'name', 'datasets_in_gui'],
+    attributes: ['run_number', 'name', 'dataset_attributes', 'datasets_in_gui'],
     order: [
       ['run_number', 'ASC'],
       ['name', 'ASC'],
