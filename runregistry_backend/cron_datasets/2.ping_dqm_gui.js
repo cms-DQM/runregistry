@@ -8,8 +8,8 @@ require('console-stamp')(console);
 const axios = require('axios').create({
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
-    cert: fs.readFileSync('./cron_datasets/usercert.pem'),
-    key: fs.readFileSync('./cron_datasets/userkey.pem'),
+    cert: fs.readFileSync('../certs/usercert.pem'),
+    key: fs.readFileSync('../certs/userkey.pem'),
     passphrase: 'passphrase',
   }),
 });
