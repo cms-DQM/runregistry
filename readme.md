@@ -94,7 +94,7 @@ If there is a human error, for example if a user sometimes batch-updates runs an
  yarn build
  sudo chmod -R 777 /srv/
  forever start server.js
- cd ../runregestry_backend
+ cd ../runregistry_backend
   <!--
  cp your cert usercert.pem certs/usercert.pem
  cp cp your key certs/userkey.pem 
@@ -137,7 +137,7 @@ Logs can be found by running a command: `forever logs`
  yarn build
  sudo chmod -R 777 /srv/
  forever start server.js
- cd ../runregestry_backend
+ cd ../runregistry_backend
  yarn
  mkdir certs
  <!--
