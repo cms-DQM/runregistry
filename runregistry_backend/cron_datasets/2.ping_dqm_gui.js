@@ -161,7 +161,7 @@ const ping_dqm_gui = async () => {
             atomic_version,
             transaction,
           });
-          count_of_dataset_links_added_in_gui += future_datasets_in_gui.length;
+          count_of_dataset_links_added_in_gui += future_datasets_in_gui.size;
         }
       }
     );
