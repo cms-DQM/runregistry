@@ -157,6 +157,7 @@ const ping_dqm_gui = async () => {
             const new_states = {};
             // Insert new state for datasets which appeared:
             for (const [key, val] of Object.entries(dataset_attributes)) {
+              //uniq for every workspace accroding the classf.
               if (key.endsWith('_state') && val === WAITING_DQM_GUI_CONSTANT) {
                 new_states[key] = 'OPEN';
               }
