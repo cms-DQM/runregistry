@@ -110,6 +110,12 @@ const get_datasets_accepted = async () => {
   return _.chain(datasets_accepted).groupBy('name').value();
 };
 
+const get_offline_dataset_classifiers = async () => {
+  const { data: offline_dataset_classifiers } = await axios.get(`
+  ${API_URL}/classifiers/offline_dataset`);
+  return offline_dataset_classifiers;
+};
+
 /**
  * Goes through all the datasets in RR, and compares them with all the datasets in the gui, if there are new datasets in the GUI it creates a new event to make sure that they are in RR
  */
@@ -126,6 +132,7 @@ const ping_dqm_gui = async () => {
     const datasets_accepted = await get_datasets_accepted();
     const all_datasets_in_rr = await get_all_datasets_in_rr();
     const all_datasets_in_gui = await get_all_datasets_in_gui();
+    const offline_dataset_classifiers = await get_offline_dataset_classifiers();
 
     let count_of_dataset_links_added_in_gui = 0;
     const promises = all_datasets_in_rr.map(
@@ -155,10 +162,35 @@ const ping_dqm_gui = async () => {
           );
           if (future_datasets_in_gui.size > 0) {
             const new_states = {};
+            // We get the full dataset to apply the classifier (with Run and DatasetTripletCache)
+            const this_dataset = await Dataset.findOne({
+              where: { name, run_number },
+              include: [{ model: Run }, { model: DatasetTripletCache }],
+            });
             // Insert new state for datasets which appeared:
             for (const [key, val] of Object.entries(dataset_attributes)) {
               if (key.endsWith('_state') && val === WAITING_DQM_GUI_CONSTANT) {
-                new_states[key] = 'OPEN';
+                const workspace = key.split('_state')[0];
+                const classifier_for_workspace =
+                  offline_dataset_classifiers.find((classifier) => {
+                    return classifier.workspace === workspace;
+                  });
+                if (!classifier_for_workspace) {
+                  console.error(
+                    `There is no offline dataset classifier for workspace ${workspace} therefore we cannot move it down.`
+                  );
+                  continue;
+                } else {
+                  const classifier = JSON.parse(
+                    classifier_for_workspace.classifier
+                  );
+                  if (json_logic.apply(classifier, this_dataset)) {
+                    new_states[key] = 'OPEN';
+                  } else {
+                    // If it didn't pass the json logic test from the dataset classifier, we set it to not significant for worspace (example: Express for many workspaces)
+                    new_states[key] = 'not significant for workspace';
+                  }
+                }
               }
             }
             // insert into DB:
