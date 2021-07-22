@@ -1,5 +1,11 @@
 // This is a microservice, it works independently from the API, it doesn't share computer resources and so it doesn't impact the performance of the API
-const { Sequelize, sequelize, Dataset } = require('../models');
+const {
+  Sequelize,
+  sequelize,
+  Dataset,
+  Run,
+  DatasetTripletCache,
+} = require('../models');
 const _ = require('lodash');
 const fs = require('fs');
 const https = require('https');
