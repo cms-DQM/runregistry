@@ -169,6 +169,7 @@ const ping_dqm_gui = async () => {
             });
             // Insert new state for datasets which appeared:
             for (const [key, val] of Object.entries(dataset_attributes)) {
+              //uniq for every workspace accroding the classf.
               if (key.endsWith('_state') && val === WAITING_DQM_GUI_CONSTANT) {
                 const workspace = key.split('_state')[0];
                 const classifier_for_workspace =
