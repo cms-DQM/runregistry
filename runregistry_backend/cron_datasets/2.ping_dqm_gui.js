@@ -30,7 +30,7 @@ const {
 } = require('../config/config')[process.env.ENV || 'development'];
 const { update_or_create_dataset } = require('../controllers/dataset');
 const { create_new_version } = require('../controllers/version');
-
+const json_logic = require('json-logic-js');
 const { Op } = Sequelize;
 
 /**
