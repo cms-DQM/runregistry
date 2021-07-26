@@ -129,7 +129,7 @@ exports.reduce_ls_attributes = (lumisections) => {
   lumisections.forEach((lumisection) => {
     Object.keys(lumisection).forEach((key, index) => {
       // We are only interested for either true or null values: (if it was true once, it is true for all)
-      if (lumisection[key] === true || lumisection[key] === false) {
+      if (reduced_values[key] !== true && (lumisection[key] === true || lumisection[key] === false)) {
         reduced_values[key] = lumisection[key];
       }
       // If any value is null, we want it to be false (unsure if null can be true later):
