@@ -141,10 +141,17 @@ exports.editItem = async (
   old_item_id,
   author
 ) => {
-  const new_item = await generateNewItem(Item, new_item_data);
-
-  const new_item_list = await generateNewList(ItemList);
   const current_item_entries = await getCurrentEntries(ItemEntries, id);
+  if (
+    typeof current_item_entries.find((item) => item.id === +old_item_id) ===
+    'undefined'
+  ) {
+    throw new Error(
+      'You are trying to edit an item multiple times, please refresh the page and try again'
+    );
+  }
+  const new_item = await generateNewItem(Item, new_item_data);
+  const new_item_list = await generateNewList(ItemList);
   let new_item_entries = generateNewEntries(
     current_item_entries,
     new_item_list,
