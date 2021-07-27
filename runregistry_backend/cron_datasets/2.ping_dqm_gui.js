@@ -190,12 +190,12 @@ const ping_dqm_gui = async () => {
                   const classifier = JSON.parse(
                     classifier_for_workspace.classifier
                   );
-                  if (!!json_logic.apply(classifier, this_dataset)) {
-                    new_states[key] = 'OPEN';
-                  } else {
-                    // If it didn't pass the json logic test from the dataset classifier, we set it to not significant for worspace (example: Express for many workspaces)
-                    new_states[key] = 'not significant for workspace';
-                  }
+//                   if (!!json_logic.apply(classifier, this_dataset)) {
+//                     new_states[key] = 'OPEN';
+//                   } else {
+//                     // If it didn't pass the json logic test from the dataset classifier, we set it to not significant for worspace (example: Express for many workspaces)
+//                     new_states[key] = 'not significant for workspace';
+//                   }
                 }
               }
             }
