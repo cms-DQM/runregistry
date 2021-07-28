@@ -72,6 +72,7 @@ If there is a human error, for example if a user sometimes batch-updates runs an
  export NODE_ENV=production
  export ENV=staging
  export CLIENT_SECRET= #Ask DQM core conveners
+ sudo chmod -R 777 /srv/
  forever stopall
  rm -rf node
  sudo wget https://nodejs.org/dist/v12.17.0/node-v12.17.0-linux-x64.tar.xz
@@ -117,6 +118,7 @@ Logs can be found by running a command: `forever logs`
  export NODE_ENV=production
  export ENV=production
  export CLIENT_SECRET= #Ask DQM core conveners
+ sudo chmod -R 777 /srv/
  forever stopall
  rm -rf node
  sudo wget https://nodejs.org/dist/v12.17.0/node-v12.17.0-linux-x64.tar.xz
