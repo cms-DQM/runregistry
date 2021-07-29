@@ -6,6 +6,7 @@ const {
   findAllItemsFiltered,
   saveNewItem,
   editItem,
+  deleteItem,
 } = require('./version_tracking_helpers');
 
 // Still missing to be changed to versioned items
