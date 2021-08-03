@@ -234,8 +234,6 @@ exports.addDatasetsToCycle = async (req, res) => {
 exports.deleteDatasetsFromCycle = async (req, res) => {
   const { id_cycle, filter } = req.body;
 
-  const cycle = await exports.getOneInternal(id_cycle);
-
   const [calculated_filter, include] = calculate_dataset_filter_and_include(
     filter
   );
@@ -249,9 +247,10 @@ exports.deleteDatasetsFromCycle = async (req, res) => {
   }
 
   let transaction;
+  let cycle = await exports.getOneInternal(id_cycle);
+
   try {
     transaction = await sequelize.transaction();
-    let cycle = await exports.getOneInternal(id_cycle);
     const datasets_promises = datasets_to_delete_from_cycle.map(
       async ({ run_number, name }) => {
         const dataset_to_delete_from_cycle = cycle.datasets.find(
@@ -273,7 +272,6 @@ exports.deleteDatasetsFromCycle = async (req, res) => {
     );
     await Promise.all(datasets_promises);
     await transaction.commit();
-    cycle = await exports.getOneInternal(id_cycle);
     res.json(cycle);
   } catch (err) {
     console.log(err);
