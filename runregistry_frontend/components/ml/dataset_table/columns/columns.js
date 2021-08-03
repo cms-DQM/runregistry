@@ -115,7 +115,7 @@ const column_generator = ({
                           </a>
                           {' --- '}
                           <a
-                            href={`https://dqm-gui.web.cern.ch/?dataset_name=${dataset_in_gui}&run_number=${original.run_number}`}
+                            href={`https://cmsweb-testbed.cern.ch/dqm/offline-test-new/?dataset_name=${dataset_in_gui}&run_number=${original.run_number}`}
                             target="_blank"
                           >
                             Or try the new GUI (beta) by clicking here
