@@ -255,7 +255,9 @@ exports.new = async (req, res) => {
 // This updates the run (triggered by an OMS update) not to be confused with an manual edition of a run
 // The new_attributes are a collection of the attributes that changed with respect to the run
 exports.automatic_run_update = async (req, res) => {
-  const { run_number } = req.params;
+  const { body } = req
+  const  oms_attributes_from_body  = body.oms_attributes
+  const { run_number } = oms_attributes_from_body;
   if (typeof run_number === 'undefined') {
     throw 'Run number cannot be undefined';
   }
