@@ -60,9 +60,9 @@ Run registry has multiple sources of configuration, some of them can be changed 
 There is a great amount of effort in making Run Registry event-sourced on a run and per-lumisection basis.
 If there is a human error, for example if a user sometimes batch-updates runs and sets wrong values, there will always be a way to undo it. And there will be a track of what was done, by whom and when.
 
-# How to update Run Regestry in development and production VM?
+# How to update Run Registry in development and production VM?
 
-## [Run Regestry development](https://dev-cmsrunregistry.web.cern.ch/):
+## [Run Registry development](https://dev-cmsrunregistry.web.cern.ch/):
 
 ```
  ssh -tCY username@lxplus.cern.ch ssh  -CY username@dev-runregistry.cern.ch
@@ -85,7 +85,7 @@ If there is a human error, for example if a user sometimes batch-updates runs an
  export PATH=/srv/node/bin/:$PATH
  npm install forever -g
  npm i yarn -g
- rm -rf runregestry
+ rm -rf runregistry
  git clone https://github.com/cms-DQM/runregistry
  cd runregistry/runregistry_frontend
  sudo chmod -R 777 /srv/
@@ -108,7 +108,7 @@ If there is a human error, for example if a user sometimes batch-updates runs an
 After starting the project, it's important to check logs, is everything working fine!
 Logs can be found by running a command: `forever logs`
 
-## [Run Regestry production](https://cmsrunregistry.web.cern.ch/)
+## [Run Registry production](https://cmsrunregistry.web.cern.ch/)
 
 ```
  ssh -tCY username@lxplus.cern.ch ssh  -CY username@dev-runregistry.cern.ch
@@ -131,7 +131,7 @@ Logs can be found by running a command: `forever logs`
  export PATH=/srv/node/bin/:$PATH
  npm install forever -g
  npm i yarn -g
- rm -rf runregestry
+ rm -rf runregistry
  git clone https://github.com/cms-DQM/runregistry
  cd runregistry/runregistry_frontend
  sudo chmod -R 777 /srv/
@@ -165,8 +165,8 @@ Geberate a certificate:
 ```
 openssl pkcs12 -in myCertificate.p12 -nocerts -out userkey.pem -nodes
 ```
-## Are you Run Regestry developer, but cannot connect to RR VMs?
-The person, who has sudo rights to dev-runregestry and runregestry machines has to add you as a user:
+## Are you Run Registry developer, but cannot connect to RR VMs?
+The person, who has sudo rights to dev-runregistry and runregistry machines has to add you as a user:
 
 ```
 sudo useraddcern username
@@ -186,3 +186,6 @@ Check do you have sudo rights (optional):
 ```
 sudo whoami
 ```
+
+## FAQ
+Check readme_faq.md  

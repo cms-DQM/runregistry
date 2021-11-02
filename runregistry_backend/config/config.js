@@ -19,18 +19,13 @@ module.exports = {
       acquire: 2000000,
     },
     WAITING_DQM_GUI_CONSTANT: 'waiting dqm gui',
-    API_URL: process.env.DOCKER_POSTGRES
-      ? 'http://dev:9500'
-      : 'http://localhost:9500',
+    API_URL: process.env.DOCKER_POSTGRES ? 'http://dev:9500' : 'http://localhost:9500',
     OMS_URL: `https://cmsoms.cern.ch/agg/api/v1`,
-    AUTH_SERVICE_URL:
-      'https://auth.cern.ch/auth/realms/cern/protocol/openid-connect/token',
+    AUTH_SERVICE_URL: 'https://auth.cern.ch/auth/realms/cern/protocol/openid-connect/token',
     REDIS_URL: `redis://redis:6379`,
-    OMS_RUNS: (number_of_runs = 10) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
+    OMS_RUNS: (number_of_runs = 10) => `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_SPECIFIC_RUN: (run_number) => `runs?filter[run_number]=${run_number}`,
-    OMS_LUMISECTIONS: (run_number) =>
-      `lumisections?filter[run_number]=${run_number}&page[limit]=5000`,
+    OMS_LUMISECTIONS: (run_number) => `lumisections?filter[run_number]=${run_number}&page[limit]=5000`,
     RUNS_PER_API_CALL: 49,
     SECONDS_PER_API_CALL: 30,
     DBS_URL: 'https://cmsweb.cern.ch/dbs/prod/global',
@@ -62,9 +57,7 @@ module.exports = {
       acquire: 2000000,
     },
     WAITING_DQM_GUI_CONSTANT: 'waiting dqm gui',
-    API_URL: process.env.DOCKER_POSTGRES
-      ? 'http://dev:9500'
-      : 'http://localhost:9500',
+    API_URL: process.env.DOCKER_POSTGRES ? 'http://dev:9500' : 'http://localhost:9500',
     OMS_URL: `https://cmsoms.cern.ch/agg/api/v1`,
     REDIS_URL: `redis://redis:6379`,
     OMS_RUNS: (number_of_runs = 10) =>
