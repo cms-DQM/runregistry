@@ -7,7 +7,7 @@ from runregistry.utils import transform_to_rr_run_filter, transform_to_rr_datase
 import urllib3
 
 # Silence unverified HTTPS warning:
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+# urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 PAGE_SIZE = 50
 
 staging_cert = "certs/usercert.pem"
@@ -40,7 +40,7 @@ def _get_cookies(url, **kwargs):
         )
     ca_bundle = certs.where()
     # Skip SSL verification since this must be fixed in the cernrequest package
-    cookies = get_sso_cookies(url, cert, verify=False)
+    cookies = get_sso_cookies(url, cert, verify=True)
     return cookies
 
 
@@ -82,7 +82,7 @@ def get_dataset_names_of_run(run_number, **kwargs):
     """
     url = "{}/get_all_dataset_names_of_run/{}".format(api_url, run_number)
     cookies = _get_cookies(url, **kwargs)
-    return requests.get(url, cookies=cookies, verify=False).json()
+    return requests.get(url, cookies=cookies, verify=True).json()
 
 
 def get_run(run_number, **kwargs):
