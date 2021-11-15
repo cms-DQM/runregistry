@@ -12,7 +12,7 @@ To use python 3.6 in lxplus: https://cern.service-now.com/service-portal?id=kb_a
 A virtual environment is also required, if you are in lxplus you should run the following commands:
 
 ```bash
-virtualenv venv
+virtualenv -p `which python3` venv
 source venv/bin/activate
 ```
 
