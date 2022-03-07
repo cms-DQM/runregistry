@@ -111,7 +111,7 @@ Logs can be found by running a command: `forever logs`
 ## [Run Registry production](https://cmsrunregistry.web.cern.ch/)
 
 ```
- ssh -tCY username@lxplus.cern.ch ssh  -CY username@dev-runregistry.cern.ch
+ ssh -tCY username@lxplus.cern.ch ssh  -CY username@runregistry.cern.ch
  cd /srv/node && export HOME=$PWD
  export PATH=/srv/node/bin/:$PATH
  cd /srv/
