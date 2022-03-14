@@ -56,36 +56,6 @@ class EditRunLumisections extends Component {
         {run.significant ? (
           <div style={{ overflowX: 'scroll' }}>
             <br />
-            <div
-              style={{
-                textAlign: 'center',
-              }}
-            >
-              <Button
-                onClick={async (evt) => {
-                  const { value } = await Swal({
-                    type: 'warning',
-                    title: `If a status was previously edited by a shifter, it will not be updated, it will only change those untouched.`,
-                    text: '',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes',
-                    reverseButtons: true,
-                  });
-                  if (value) {
-                    const updated_run = await this.props.refreshRun(
-                      run.run_number
-                    );
-                    await Swal(`Run updated`, '', 'success');
-                    await this.props.showManageRunModal(updated_run);
-                    this.fetchLumisections();
-                  }
-                }}
-                type="primary"
-              >
-                Manually refresh component's statuses
-              </Button>
-            </div>
-            <br />
             <table className="edit_run_form">
               <thead>
                 <tr className="table_header">

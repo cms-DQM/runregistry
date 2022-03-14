@@ -71,6 +71,7 @@ const fetch_runs = async (
   } else {
     // Here we calculate the new_runs with ALL runs, instead of above with only the fetched runs:
     const runs_to_be_saved = calculate_new_runs(all_fetched_runs, last_saved_runs);
+
     if (runs_to_be_saved.length > 0) {
       console.log(`saving: ${runs_to_be_saved.length} runs`);
       // The 0 in the second argument is to indicate is this the first time we try to save the runs (save_runs is recursive if it errors out on any run)
@@ -184,3 +185,8 @@ const get_max_run_number = (array_of_runs) => {
   );
   return max_run_number;
 };
+
+
+
+
+
