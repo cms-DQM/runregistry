@@ -203,6 +203,8 @@ exports.lumisection_attributes = [
   'esm_ready',
   'esp_ready',
   'fpix_ready',
+  'gemp_ready',
+  'gemm_ready',
   'hbhea_ready',
   'hbheb_ready',
   'hbhec_ready',
@@ -218,3 +220,4 @@ exports.lumisection_attributes = [
   'tob_ready',
   'zdc_ready',
 ];
+

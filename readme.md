@@ -186,3 +186,6 @@ Check do you have sudo rights (optional):
 ```
 sudo whoami
 ```
+
+## FAQ
+Check readme_faq.md  

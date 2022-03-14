@@ -172,8 +172,9 @@ exports.update_runs = (
           },
           {
             // The email HAS to start with auto, or else API won't know it's an automatic change (unless it was manually requested to update)
+            const email_template = email ? ` - ${email}` : '';
             headers: {
-              email: `auto@auto${email ? ` - ${email}` : ''}`,
+              email: `auto@auto${email_template}`,
               // comment: comment || 'automatic update from OMS',
               comment: comment || 'run update',
               // Avoid permission egroups problem:
@@ -269,3 +270,7 @@ exports.manually_update_a_run = async (
     atomic_version,
   });
 };
+
+
+
+

@@ -53,8 +53,7 @@ class EditRunLumisections extends Component {
     }
     return (
       <div>
-        {run.significant ? (
-          <div style={{ overflowX: 'scroll' }}>
+
             <br />
             <div
               style={{
@@ -86,6 +85,9 @@ class EditRunLumisections extends Component {
               </Button>
             </div>
             <br />
+
+        {run.significant ? (
+          <div style={{ overflowX: 'scroll' }}>
             <table className="edit_run_form">
               <thead>
                 <tr className="table_header">
@@ -141,7 +143,7 @@ class EditRunLumisections extends Component {
           <div>
             In order to edit a run's lumisections the run{' '}
             <i style={{ textDecoration: 'underline' }}>
-              must be marked significant first
+              must be marked significant first!
             </i>
             . <br /> <br />
             You can mark a run significant by clicking 'make significant' in the
