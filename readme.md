@@ -75,10 +75,10 @@ If there is a human error, for example if a user sometimes batch-updates runs an
  sudo chmod -R 777 /srv/
  forever stopall
  rm -rf node
- sudo wget https://nodejs.org/dist/v12.17.0/node-v12.17.0-linux-x64.tar.xz
- sudo tar -xf node-v12.17.0-linux-x64.tar.xz
- sudo mv node-v12.17.0-linux-x64 node
- sudo rm node-v12.17.0-linux-x64.tar.xz
+ sudo wget https://nodejs.org/dist/v12.20.0/node-v12.20.0-linux-x64.tar.xz
+ sudo tar -xf node-v12.20.0-linux-x64.tar.xz
+ sudo mv node-v12.20.0-linux-x64 node
+ sudo rm node-v12.20.0-linux-x64.tar.xz
  sudo chmod -R 777 /srv/
  cd node && export HOME=$PWD
  cd ..
@@ -121,10 +121,10 @@ Logs can be found by running a command: `forever logs`
  sudo chmod -R 777 /srv/
  forever stopall
  rm -rf node
- sudo wget https://nodejs.org/dist/v12.17.0/node-v12.17.0-linux-x64.tar.xz
- sudo tar -xf node-v12.17.0-linux-x64.tar.xz
- sudo mv node-v12.17.0-linux-x64 node
- sudo rm node-v12.17.0-linux-x64.tar.xz
+ sudo wget https://nodejs.org/dist/v12.20.0/node-v12.20.0-linux-x64.tar.xz
+ sudo tar -xf node-v12.20.0-linux-x64.tar.xz
+ sudo mv node-v12.20.0-linux-x64 node
+ sudo rm node-v12.20.0-linux-x64.tar.xz
  sudo chmod -R 777 /srv/
  cd node && export HOME=$PWD
  cd ..
