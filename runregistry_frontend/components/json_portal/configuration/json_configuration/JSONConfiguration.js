@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import dynamic from 'next/dynamic';
 import { connect } from 'react-redux';
-import { AutoComplete, Menu, Button, Input } from 'antd';
+import { AutoComplete, Menu, Button, Input, Dropdown } from 'antd';
 import {
   PlusCircleOutlined,
   CloseCircleOutlined,
   EditOutlined,
   DeleteOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 import Swal from 'sweetalert2';
 import {
@@ -333,19 +334,16 @@ class Configuration extends Component {
                 >
                   <strong>all configurations:</strong>
                 </div>
-                <div style={{ width: '88%' }}>
-                  <Menu
-                    onClick={({ key }) => this.handleMenuChange(key)}
-                    selectedKeys={[menu_selection]}
-                    mode="horizontal"
-                  >
-                    <Menu.Item key="arbitrary">
-                      arbitrary configuration
-                    </Menu.Item>
-                    {json_configurations_array.map(({ name }) => (
-                      <Menu.Item key={name}>{name}</Menu.Item>
-                    ))}
+                <div style={{ width: '88%', display: 'flex', }}>
+                  <Menu onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]} mode="horizontal">
+                    <Menu.Item key="arbitrary"> arbitrary configuration </Menu.Item>
                   </Menu>
+
+                  <Dropdown overlay={ <Menu onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]}> 
+                                      {json_configurations_array.map(({ name }) => ( <Menu.Item key={name}>{name}</Menu.Item>))} 
+                                      </Menu> } destroyPopupOnHide={true}> 
+                    <a style={{ marginTop: '12px' }} className="ant-dropdown-link" onClick={e => e.preventDefault()}> list of available configurations <DownOutlined /> </a>
+                  </Dropdown>
                 </div>
               </div>
             </center>

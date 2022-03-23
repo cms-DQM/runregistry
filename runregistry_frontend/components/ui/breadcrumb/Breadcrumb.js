@@ -107,22 +107,10 @@ class BreadcrumbCmp extends Component {
         </div>
         <div className="progresscircle_container">
           <div>
-            <a
-              className="jira"
-              target="_blank"
-              href="https://its.cern.ch/jira/projects/NEWRUNREGISTRY/issues/"
-            >
-              Feedback is welcome! (JIRA)
-            </a>
+            <a className="jira" target="_blank" href="https://its.cern.ch/jira/projects/NEWRUNREGISTRY/issues/"> Feedback is welcome! (JIRA) </a>
           </div>
-          <Dropdown overlay={online ? this.online_menu : this.offline_menu}>
-            <Button
-              style={{ marginTop: '-6px' }}
-              onClick={(e) => e.preventDefault()}
-            >
-              Configuration
-              <DownOutlined />
-            </Button>
+          <Dropdown overlay={online ? this.online_menu : this.offline_menu} destroyPopupOnHide={true}>
+            <Button style={{ marginTop: '-6px' }} onClick={(e) => e.preventDefault()} > Configuration <DownOutlined /> </Button>
           </Dropdown>
         </div>
 
