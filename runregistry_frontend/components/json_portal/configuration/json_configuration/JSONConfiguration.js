@@ -339,7 +339,7 @@ class Configuration extends Component {
                     <Menu.Item key="arbitrary"> arbitrary configuration </Menu.Item>
                   </Menu>
 
-                  <Dropdown overlay={ <Menu onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]} style={{ overflowY: 'scroll', maxHeight: '350px' }}> 
+                  <Dropdown overlay={ <Menu style={{ overflowY: 'scroll', maxHeight: '300px' }} onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]}> 
                                       {json_configurations_array.map(({ name }) => ( <Menu.Item key={name}>{name}</Menu.Item>))} 
                                       </Menu> } destroyPopupOnHide={true}> 
                     <a style={{ marginTop: '12px' }} className="ant-dropdown-link" onClick={e => e.preventDefault()}> list of available configurations <DownOutlined /> </a>

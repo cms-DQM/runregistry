@@ -48,3 +48,21 @@ docker push registry.cern.ch/cmsweb/runregistry-frontend:0.2-cmsweb
 There is also tow images we were not able to pull from docker.com:  
 cmssw/runregistry-workers-oms-fetching  
 cmssw/runregistry-workers-json-processing  
+
+#### Redis server
+REDIS server is used by BULL JS package to store configs used to generate JSONs in a queue    
+```
+sudo yum install redis
+sudo nano /etc/redis.conf
+supervised no -> supervised systemd
+sudo systemctl restart redis.service
+```
+Check:
+```
+redis-cli
+ping
+```
+Set REDIS_URL to local redis server `redis://127.0.0.1:6379`
+
+
+
