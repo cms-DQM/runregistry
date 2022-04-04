@@ -289,62 +289,25 @@ class Configuration extends Component {
                   borderRadius: '2px',
                 }}
               >
-                <div
-                  style={{
-                    width: '10%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginLeft: '5px',
-                    height: '48px',
-                  }}
-                >
-                  <strong>configurations created by me:</strong>
-                </div>
-                <div style={{ width: '88%' }}>
-                  <Menu
-                    onClick={({ key }) => this.handleMenuChange(key)}
-                    selectedKeys={[menu_selection]}
-                    mode="horizontal"
-                  >
-                    {json_configurations_array
-                      .filter(
-                        ({ created_by }) => created_by === this.props.email
-                      )
-                      .map(({ name }) => (
-                        <Menu.Item key={name}>{name}</Menu.Item>
-                      ))}
-                  </Menu>
-                </div>
-              </div>
-              <br />
-              <div
-                style={{
-                  display: 'flex',
-                  border: '1px solid #d9d9d9',
-                  borderRadius: '2px',
-                }}
-              >
-                <div
-                  style={{
-                    width: '10%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginLeft: '5px',
-                  }}
-                >
-                  <strong>all configurations:</strong>
-                </div>
-                <div style={{ width: '88%', display: 'flex', }}>
+                  //<Menu onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]} mode="horizontal">
+                  //  {json_configurations_array.filter( ({ created_by }) => created_by === this.props.email).map(({ name }) => ( <Menu.Item key={name}>{name}</Menu.Item> ))}
+                  //</Menu>
+
                   <Menu onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]} mode="horizontal">
-                    <Menu.Item key="arbitrary"> arbitrary configuration </Menu.Item>
+                    <Menu.Item key="arbitrary"> New Configuration </Menu.Item>
                   </Menu>
+
+                  <Dropdown overlay={ <Menu style={{ overflowY: 'scroll', maxHeight: '300px' }} onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]}> 
+                                      {json_configurations_array.filter( ({ created_by }) => created_by === this.props.email).map(({ name }) => ( <Menu.Item key={name}>{name}</Menu.Item> ))}
+                                      </Menu> } destroyPopupOnHide={true}> 
+                    <a style={{ marginTop: '12px' }} className="ant-dropdown-link" onClick={e => e.preventDefault()}> My Configurations <DownOutlined /> </a>
+                  </Dropdown>
 
                   <Dropdown overlay={ <Menu style={{ overflowY: 'scroll', maxHeight: '300px' }} onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]}> 
                                       {json_configurations_array.map(({ name }) => ( <Menu.Item key={name}>{name}</Menu.Item>))} 
                                       </Menu> } destroyPopupOnHide={true}> 
-                    <a style={{ marginTop: '12px' }} className="ant-dropdown-link" onClick={e => e.preventDefault()}> list of available configurations <DownOutlined /> </a>
+                    <a style={{ marginTop: '12px' }} className="ant-dropdown-link" onClick={e => e.preventDefault()}> All Configurations <DownOutlined /> </a>
                   </Dropdown>
-                </div>
               </div>
             </center>
           )}
