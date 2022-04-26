@@ -25,8 +25,6 @@ module.exports = app => {
   // Shifter actions:
   app.post('/runs/mark_significant', auth, catchAPI(Run.markSignificant));
   app.post('/runs/move_run/:from_state/:to_state', auth, catchAPI(Run.moveRun));
-  app.post(
-    '/runs/refresh_run/:run_number',
-    catchAPI(Run.refreshRunClassAndComponents)
-  );
+  app.post('/runs/refresh_run/:run_number',           catchAPI(Run.refreshRunClassAndComponents));
+  app.post('/runs/reset_and_refresh_run/:run_number', catchAPI(Run.resetAndRefreshRunRRatributes));
 };

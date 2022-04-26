@@ -270,6 +270,34 @@ exports.manually_update_a_run = async (
   });
 };
 
+exports.manually_update_a_run_reset_rr_attributes = async (
+  run_number,
+  { email, comment, manually_significant, atomic_version }
+) => {
+  // get rr_attributes:
+  const { data: saved_run } = await axios.get(`${API_URL}/runs/${run_number}`);
+  const previous_rr_attributes = saved_run.rr_attributes;
+  if (previous_rr_attributes.state !== 'OPEN') {
+    throw 'Run must be in state OPEN to be refreshed';
+  }
 
-
+  // get oms_attributes:
+  const endpoint = `${OMS_URL}/${OMS_SPECIFIC_RUN(run_number)}`;
+  const {
+    data: { data: fetched_run },
+  } = await instance.get(endpoint, {
+    headers: {
+      Authorization: `Bearer ${await getToken()}`,
+    },
+  });
+  const empty_var = false;
+  const run_oms_attributes = fetched_run[0].attributes;
+  await exports.update_runs([run_oms_attributes], 0, {
+    empty_var,
+    email,
+    comment,
+    manually_significant,
+    atomic_version,
+  });
+};
 

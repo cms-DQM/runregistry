@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import dynamic from 'next/dynamic';
 import { connect } from 'react-redux';
-import { AutoComplete, Menu, Button, Input } from 'antd';
+import { AutoComplete, Menu, Button, Input, Dropdown } from 'antd';
 import {
   PlusCircleOutlined,
   CloseCircleOutlined,
   EditOutlined,
   DeleteOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 import Swal from 'sweetalert2';
 import {
@@ -288,65 +289,25 @@ class Configuration extends Component {
                   borderRadius: '2px',
                 }}
               >
-                <div
-                  style={{
-                    width: '10%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginLeft: '5px',
-                    height: '48px',
-                  }}
-                >
-                  <strong>configurations created by me:</strong>
-                </div>
-                <div style={{ width: '88%' }}>
-                  <Menu
-                    onClick={({ key }) => this.handleMenuChange(key)}
-                    selectedKeys={[menu_selection]}
-                    mode="horizontal"
-                  >
-                    {json_configurations_array
-                      .filter(
-                        ({ created_by }) => created_by === this.props.email
-                      )
-                      .map(({ name }) => (
-                        <Menu.Item key={name}>{name}</Menu.Item>
-                      ))}
+                  //<Menu onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]} mode="horizontal">
+                  //  {json_configurations_array.filter( ({ created_by }) => created_by === this.props.email).map(({ name }) => ( <Menu.Item key={name}>{name}</Menu.Item> ))}
+                  //</Menu>
+
+                  <Menu onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]} mode="horizontal">
+                    <Menu.Item key="arbitrary"> New Configuration </Menu.Item>
                   </Menu>
-                </div>
-              </div>
-              <br />
-              <div
-                style={{
-                  display: 'flex',
-                  border: '1px solid #d9d9d9',
-                  borderRadius: '2px',
-                }}
-              >
-                <div
-                  style={{
-                    width: '10%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginLeft: '5px',
-                  }}
-                >
-                  <strong>all configurations:</strong>
-                </div>
-                <div style={{ width: '88%' }}>
-                  <Menu
-                    onClick={({ key }) => this.handleMenuChange(key)}
-                    selectedKeys={[menu_selection]}
-                    mode="horizontal"
-                  >
-                    <Menu.Item key="arbitrary">
-                      arbitrary configuration
-                    </Menu.Item>
-                    {json_configurations_array.map(({ name }) => (
-                      <Menu.Item key={name}>{name}</Menu.Item>
-                    ))}
-                  </Menu>
-                </div>
+
+                  <Dropdown overlay={ <Menu style={{ overflowY: 'scroll', maxHeight: '300px' }} onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]}> 
+                                      {json_configurations_array.filter( ({ created_by }) => created_by === this.props.email).map(({ name }) => ( <Menu.Item key={name}>{name}</Menu.Item> ))}
+                                      </Menu> } destroyPopupOnHide={true}> 
+                    <a style={{ marginTop: '12px' }} className="ant-dropdown-link" onClick={e => e.preventDefault()}> My Configurations <DownOutlined /> </a>
+                  </Dropdown>
+
+                  <Dropdown overlay={ <Menu style={{ overflowY: 'scroll', maxHeight: '300px' }} onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]}> 
+                                      {json_configurations_array.map(({ name }) => ( <Menu.Item key={name}>{name}</Menu.Item>))} 
+                                      </Menu> } destroyPopupOnHide={true}> 
+                    <a style={{ marginTop: '12px' }} className="ant-dropdown-link" onClick={e => e.preventDefault()}> All Configurations <DownOutlined /> </a>
+                  </Dropdown>
               </div>
             </center>
           )}

@@ -16,7 +16,7 @@ const {
 const { update_or_create_dataset } = require('./dataset');
 const { create_new_version } = require('./version');
 const { fill_dataset_triplet_cache } = require('./dataset_triplet_cache');
-const { manually_update_a_run } = require('../cron/2.save_or_update_runs');
+const { manually_update_a_run , manually_update_a_run_reset_rr_attributes } = require('../cron/2.save_or_update_runs');
 const {
   create_offline_waiting_datasets,
 } = require('../cron_datasets/1.create_datasets');
@@ -566,6 +566,32 @@ exports.refreshRunClassAndComponents = async (req, res) => {
   await manually_update_a_run(run_number, {
     email,
     comment: `${email} requested refresh from OMS`,
+  });
+  const saved_run = await Run.findByPk(run_number, {
+    include: [
+      {
+        model: DatasetTripletCache,
+        attributes: ['triplet_summary'],
+      },
+    ],
+  });
+  res.json(saved_run);
+};
+
+exports.resetAndRefreshRunRRatributes = async (req, res) => {
+  const { run_number } = req.params;
+  const email = req.get('email');
+  const previously_saved_run = await Run.findByPk(run_number);
+  if (previously_saved_run === null) {
+    throw 'Run not found';
+  }
+  if (previously_saved_run.rr_attributes.state !== 'OPEN') {
+    throw 'Run must be in state OPEN to be refreshed';
+  }
+
+  await manually_update_a_run_reset_rr_attributes(run_number, {
+    email,
+    comment: `${email} requested reset and refresh from OMS`,
   });
   const saved_run = await Run.findByPk(run_number, {
     include: [

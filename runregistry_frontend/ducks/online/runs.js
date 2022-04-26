@@ -83,6 +83,18 @@ export const refreshRun = run_number =>
     return run;
   });
 
+export const resetAndRefreshRun = run_number =>
+  error_handler(async (dispatch, getState) => {
+    let { data: run } = await axios.post(
+      `${api_url}/runs/reset_and_refresh_run/${run_number}`,
+      {},
+      auth(getState)
+    );
+    run = formatRuns([run])[0];
+    dispatch({ type: EDIT_RUN, payload: run });
+    return run;
+  });
+
 // reFetch run will just refetch a run
 export const reFetchRun = run_number =>
   error_handler(async (dispatch, getState) => {
