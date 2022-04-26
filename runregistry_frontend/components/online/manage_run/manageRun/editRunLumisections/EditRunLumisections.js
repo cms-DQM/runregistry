@@ -6,7 +6,7 @@ import axios from 'axios';
 
 import EditComponent from '../../../../../components/common/editComponent/EditComponent';
 import { api_url } from '../../../../../config/config';
-import { refreshRun } from '../../../../../ducks/online/runs';
+import { refreshRun, resetAndRefreshRun } from '../../../../../ducks/online/runs';
 import { showManageRunModal } from '../../../../../ducks/online/ui';
 import { addLumisectionRange } from '../../../../../ducks/online/lumisections';
 import { certifiable_online_components } from '../../../../../config/config';
@@ -81,7 +81,7 @@ class EditRunLumisections extends Component {
               >
                 Manually refresh component's statuses
               </Button>
-
+              &nbsp;
               <Button
                 onClick={async (evt) => {
                   const { value } = await Swal({
