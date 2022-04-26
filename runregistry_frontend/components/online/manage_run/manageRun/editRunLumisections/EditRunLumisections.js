@@ -233,6 +233,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   refreshRun,
+  resetAndRefreshRun,
   showManageRunModal,
   addLumisectionRange,
 })(EditRunLumisections);
