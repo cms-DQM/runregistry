@@ -270,7 +270,7 @@ exports.manually_update_a_run = async (
   });
 };
 
-exports.manually_update_a_run_reset_rr_attributes = (
+exports.manually_update_a_run_reset_rr_attributes = async (
   run_number,
   { email, comment, manually_significant, atomic_version }
 ) => {
