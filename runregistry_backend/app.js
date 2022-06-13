@@ -4,15 +4,24 @@ const cors = require('cors');
 const morgan = require('morgan');
 const models = require('./models/index');
 const router = express.Router();
-// Add timestamps to logs:
-require('console-stamp')(console);
 const { expressError } = require('./utils/error_handlers');
 const routes = require('./routes/index');
 const port = 9500;
-
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
+
+// override console log to use timestamp
+originalLog = console.log;
+console.log = function () {
+    var args = [].slice.call(arguments);
+    originalLog.apply(console.log,[getCurrentDateString()].concat(args));
+};
+function getCurrentDateString() {
+  var date = new Date();
+  return date.getDate() + "/" + date.getMonth() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ' ';
+};
+
 models.sequelize
   .sync({})
   .then(async () => {

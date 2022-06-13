@@ -142,6 +142,8 @@ class BreadcrumbCmp extends Component {
             margin-top: -8px;
             margin-right: 5px;
           }
+
+          .breadcrumb {}
         `}</style>
       </div>
     );

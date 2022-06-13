@@ -8,15 +8,11 @@ const { Header, Content, Footer, Sider } = Layout;
 class TopNav extends Component {
   render() {
     const {
-      router: {
-        query: { type, section, workspace },
-      },
-      user,
-      env,
+      router: { query: { type, section, workspace }, },
+      user, env,
     } = this.props;
     // Log to see who has used the webpage on the server:
-    console.log('user:', user.displayname);
-    console.log(type);
+    console.log('user:', user.displayname, user.id, type);
     const menu_style = { lineHeight: '64px', minWidth: '800px' };
     const header_style = {};
     if (env === 'staging') {
