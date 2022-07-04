@@ -16,6 +16,10 @@ DELETE FROM public."Dataset" WHERE run_number = 346511;
 DELETE FROM public."Run" WHERE run_number = 346511;  
 DELETE FROM public."RunEvent" WHERE run_number = 346511;  
 
+#### Add e-group into DB  
+INSERT INTO public."Permission" VALUES (40, 'cms-dqm-runregistry-offline-gem-certifiers', '["/datasets/gem/move_dataset/OPEN/SIGNOFF", "/datasets/gem/move_dataset/OPEN/COMPLETED", "/datasets/gem/move_dataset/SIGNOFF/COMPLETED", "/datasets/gem/move_dataset/COMPLETED/SIGNOFF", "/dataset_lumisections/gem.*", "/cycles/move_dataset/gem/.*", "/json_portal/generate"]', NOW());  
+INSERT INTO public."PermissionEntries" VALUES (40, 1);  
+
 #### Change DB password  
 Follow:   
 https://dbod-user-guide.web.cern.ch/getting_started/postgresql.html   
