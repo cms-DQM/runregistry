@@ -1,3 +1,19 @@
+### Main workflows
+#### Update runs
+Entrance point - get some runs from OMS:
+https://github.com/cms-DQM/runregistry/blob/e941fe70a419629796dfeed9803b26dc8ee9dc25/runregistry_backend/cron/1.get_runs.js#L28
+Somehow calculate how many we would like to update and update:
+https://github.com/cms-DQM/runregistry/blob/e941fe70a419629796dfeed9803b26dc8ee9dc25/runregistry_backend/cron/1.get_runs.js#L89
+Update OMS atributes and bits per lumisection:
+https://github.com/cms-DQM/runregistry/blob/e941fe70a419629796dfeed9803b26dc8ee9dc25/runregistry_backend/cron/2.save_or_update_runs.js#L142-L143
+Update RR attributes and bits per lumisection:
+https://github.com/cms-DQM/runregistry/blob/e941fe70a419629796dfeed9803b26dc8ee9dc25/runregistry_backend/cron/2.save_or_update_runs.js#L150
+Put the all OMS & RR info to the our server using link:
+https://github.com/cms-DQM/runregistry/blob/e941fe70a419629796dfeed9803b26dc8ee9dc25/runregistry_backend/cron/2.save_or_update_runs.js#L164
+Actually function is:
+https://github.com/cms-DQM/runregistry/blob/3169ae5b2cf923218d2f845839c6d5c2aef260fe/runregistry_backend/controllers/run.js#L257
+
+### Some operations tasks
 #### Connect to DB   
 Like:  
 ```
@@ -91,6 +107,5 @@ redis-cli
 ping
 ```
 Set REDIS_URL to local redis server `redis://127.0.0.1:6379`
-
 
 
