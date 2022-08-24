@@ -118,7 +118,7 @@ module.exports = {
     password: 'changeme',
     database: 'runregistry_database',
     logging: false,
-    host: 'dbod-gc005.cern.ch',
+    host: 'dbod-dqm-rr.cern.ch',
     dialect: 'postgres',
     port: 6601,
     pool: {
