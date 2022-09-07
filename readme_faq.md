@@ -108,4 +108,13 @@ ping
 ```
 Set REDIS_URL to local redis server `redis://127.0.0.1:6379`
 
+#### Upload LS from brilcalc
+Split brilcalc csv to store information per run
+```
+awk -F', ' '{ date = substr($1,0,6) } !(date in outfile) { outfile[date] = date".csv" } { print > (outfile[date]) }' 2022_lumi_355100_357900.csv 
+```
+put files into runregistry/runregistry_backend/uploader/luminosity. Source setup_prod.sh script. Execute updater:
+```
+node upload_lumisection_luminosity_brilcalc.js
+``` 
 
