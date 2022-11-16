@@ -121,8 +121,10 @@ put files into runregistry/runregistry_backend/uploader/luminosity. Source setup
 node upload_lumisection_luminosity_brilcalc.js
 ``` 
 
-#### Antd style fix
-Frontend uses antd js library for some GUI stuff, e.g. dropboxes & breadcrumbs. The style of the original library is overwritten in 
-```public/static/ant-modified.min.css```
-For example in the commit https://github.com/cms-DQM/runregistry/commit/431550037f28e7953b68db7955faa4caedf20c76
-we remove the new lines and enumeration from ordered list as it is expected to be done in antd style we overwrite..
+#### Antd style fix  
+Frontend uses antd js library for some GUI stuff, e.g. dropboxes & breadcrumbs. The style of the original library is overwritten in   
+```
+public/static/ant-modified.min.css
+```  
+For example in the commit https://github.com/cms-DQM/runregistry/commit/431550037f28e7953b68db7955faa4caedf20c76  
+we remove the new lines and enumeration from ordered list as it is expected to be done in antd style we overwrite..  
