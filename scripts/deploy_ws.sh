@@ -14,6 +14,8 @@
 # set RR eviroment
 # export CLIENT_SECRET= put here OMS secret, ask conviners, check secret value at RR VM
 # export ENV=development
+# also to skip authentification:
+# export NO_CHECK_AUTH=True
 
 # set path to local RR code somewhere
 path_to_rr_code=/home/pmandrik/work/projects/DQM/RR_WORKING_SPACE/runregistry/
