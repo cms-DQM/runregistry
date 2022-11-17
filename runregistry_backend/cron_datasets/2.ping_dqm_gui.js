@@ -10,7 +10,6 @@ const _ = require('lodash');
 const fs = require('fs');
 const https = require('https');
 const CronJob = require('cron').CronJob;
-require('console-stamp')(console);
 const axios = require('axios').create({
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
