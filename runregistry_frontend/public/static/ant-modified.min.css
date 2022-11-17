@@ -2948,6 +2948,13 @@ html {
   color: rgba(0, 0, 0, 0.45);
   font-size: 14px;
 }
+.ant-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .ant-breadcrumb .anticon {
   font-size: 14px;
 }
