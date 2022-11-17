@@ -1,0 +1,38 @@
+id,classifier,workspace,enabled,createdAt,created_by,updated_by
+18,"{'if': [{'==': [{'in': ['Cosmics', {'var': 'run.class'}]}, False]}, True, False]}",ctpps,True,2018-08-30 19:53:42.311000+02:00,,
+19,"{'if': [{'and': [{'in': ['Express', {'var': 'name'}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,sandeep.kaur.hundal@cern.ch
+20,"{'if': [{'or': [{'and': [{'in': ['Express', {'var': 'name'}]}]}, {'and': [{'in': ['Express', {'var': 'name'}]}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,sandeep.kaur.hundal@cern.ch
+21,"{'if': [{'or': [{'and': [{'in': ['Express', {'var': 'name'}]}]}, {'and': [{'in': ['Prompt', {'var': 'name'}]}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,sandeep.kaur.hundal@cern.ch
+22,"{'if': [{'or': [{'and': [{'in': ['Express', {'var': 'name'}]}]}, {'and': [{'in': ['Prompt', {'var': 'name'}]}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,sandeep.kaur.hundal@cern.ch
+23,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,sandeep.kaur.hundal@cern.ch
+24,"{'if': [{'or': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, {'and': [{'in': ['Express', {'var': 'name'}]}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,sandeep.kaur.hundal@cern.ch
+25,"{'if': [{'or': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, {'and': [{'in': ['Express', {'var': 'name'}]}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,sandeep.kaur.hundal@cern.ch
+26,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,sandeep.kaur.hundal@cern.ch
+27,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,sandeep.kaur.hundal@cern.ch
+28,"{'if': [{'or': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, {'and': [{'in': ['Express', {'var': 'name'}]}]}]}, True, False]}",tracker,True,2018-08-30 19:53:42.311000+02:00,,sandeep.kaur.hundal@cern.ch
+1,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,
+2,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",btag,True,2018-08-30 19:53:42.311000+02:00,,
+3,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",castor,True,2018-08-30 19:53:42.311000+02:00,,
+4,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",csc,True,2018-08-30 19:53:42.311000+02:00,,
+5,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",ctpps,True,2018-08-30 19:53:42.311000+02:00,,
+6,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",dt,True,2018-08-30 19:53:42.311000+02:00,,
+7,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",ecal,True,2018-08-30 19:53:42.311000+02:00,,
+8,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",egamma,True,2018-08-30 19:53:42.311000+02:00,,
+9,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",hcal,True,2018-08-30 19:53:42.311000+02:00,,
+10,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",hlt,True,2018-08-30 19:53:42.311000+02:00,,
+11,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",jetmet,True,2018-08-30 19:53:42.311000+02:00,,
+12,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",l1t,True,2018-08-30 19:53:42.311000+02:00,,
+13,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",lumi,True,2018-08-30 19:53:42.311000+02:00,,
+14,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",muon,True,2018-08-30 19:53:42.311000+02:00,,
+15,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",rpc,True,2018-08-30 19:53:42.311000+02:00,,
+16,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",tau,True,2018-08-30 19:53:42.311000+02:00,,
+17,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",tracker,True,2018-08-30 19:53:42.311000+02:00,,
+29,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,f.e@cern.ch
+30,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,f.e@cern.ch
+31,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,f.e@cern.ch
+32,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,f.e@cern.ch
+33,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,f.e@cern.ch
+34,"{'if': [{'or': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, {'and': [{'in': ['Express', {'var': 'name'}]}]}]}, True, False]}",tracker,True,2018-08-30 19:53:42.311000+02:00,,sandeep.kaur.hundal@cern.ch
+35,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,m.ahmad@cern.ch
+36,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",gem,True,2022-07-12 17:13:24.452452+02:00,pmandrik,pmandrik@cern.ch
+37,"{'if': [{'and': [{'in': ['Prompt', {'var': 'name'}]}]}, True, False]}",global,True,2018-08-30 19:53:42.311000+02:00,,petr.mandrik@cern.ch
