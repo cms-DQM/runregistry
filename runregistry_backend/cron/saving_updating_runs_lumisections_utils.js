@@ -37,7 +37,7 @@ exports.get_OMS_lumisections = handleErrors(async (run_number) => {
       },
     })
     .catch((err) => {
-      console.log(`Error getting lumisections from OMS for run ${run_number}`);
+      console.log(`get_OMS_lumisections(): Error getting lumisections from OMS for run ${run_number}`);
     });
 
   if (

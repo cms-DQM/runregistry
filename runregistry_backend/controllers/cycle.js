@@ -98,7 +98,7 @@ exports.add = async (req, res) => {
     const saved_cycle = await exports.getOneInternal(id_cycle);
     res.json(saved_cycle);
   } catch (err) {
-    console.log(err);
+    console.log("cycle.js # add():", err);
     await transaction.rollback();
     throw `Error creating cycle: ${err}`;
   }
@@ -225,7 +225,7 @@ exports.addDatasetsToCycle = async (req, res) => {
     const cycle = await exports.getOneInternal(id_cycle);
     res.json(cycle);
   } catch (err) {
-    console.log(err);
+    console.log("addDatasetsToCycle(): ", err);
     await transaction.rollback();
     throw `Error adding runs to cycle: ${err}`;
   }
@@ -274,7 +274,7 @@ exports.deleteDatasetsFromCycle = async (req, res) => {
     await transaction.commit();
     res.json(cycle);
   } catch (err) {
-    console.log(err);
+    console.log("deleteDatasetsFromCycle(): ", err);
     await transaction.rollback();
     throw `Error deleting runs from cycle: ${err}`;
   }
@@ -334,7 +334,7 @@ exports.moveAllDatasetsInCycleTo = async (req, res) => {
     const updated_cycle = await exports.getOneInternal(id_cycle);
     res.json(updated_cycle);
   } catch (err) {
-    console.log(err);
+    console.log("moveAllDatasetsInCycleTo(): ", err);
     await transaction.rollback();
     throw `Error moving all datasets in cycle ${id_cycle} to completed. Error: ${err}`;
   }

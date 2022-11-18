@@ -7,6 +7,7 @@ const config = require('../config/config')[process.env.ENV || 'development'];
 // It will make sure there is at least 1 value in all "Lists"
 // It will make sure there is at least 1 Setting referencing the maximum list value
 module.exports = async () => {
+    console.log("initialise.js() call");
     let transaction;
     try {
         transaction = await sequelize.transaction();
@@ -114,15 +115,17 @@ module.exports = async () => {
             );
         }
         await transaction.commit();
+        console.log("initialise.js() call ok");
     } catch (err) {
         await transaction.rollback();
         if (err.message === 'relation "Settings" does not exist') {
             console.log(
-                'ERROR: Try running again, table Settings was not created yet, it should be created by now, and running it again should show no errors'
+                'initialise.js(): ERROR: Try running again, table Settings was not created yet, it should be created by now, and running it again should show no errors'
             );
         } else {
-            console.log('Error initializing schema');
+            console.log('initialise.js(): Error initializing schema');
             console.log(err);
         }
     }
+    console.log("initialise.js() call done");
 };

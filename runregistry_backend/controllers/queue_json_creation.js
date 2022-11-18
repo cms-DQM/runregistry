@@ -27,7 +27,7 @@ let jsonProcessingQueue;
 if (process.env.ENV !== 'development' && process.env.ENV !== 'dev_to_prod') {
   jsonProcessingQueue = new Queue('json processing', REDIS_URL);
 }
-console.log(REDIS_URL);
+console.log("queue_json_creation.js : ", REDIS_URL);
 
 exports.get_json = async (req, res) => {
   const { id_json } = req.body;
@@ -67,7 +67,7 @@ exports.get_jsons = async (req, res) => {
     waiting = await jsonProcessingQueue.getWaiting();
     active = await jsonProcessingQueue.getActive();
   } catch (err) {
-    console.log(err);
+    console.log('queue_json_creation.js # get_json(): ', err);
   }
   const reference_filter = {};
   if (typeof reference !== 'undefined') {
@@ -237,7 +237,7 @@ exports.calculate_json = async (req, res) => {
 
   jsonProcessingQueue.on('completed', (job, result) => {
     req.io.emit('completed', { id: job.id, result });
-    console.log(`completed job ${job.id}: `);
+    console.log(`queue_json_creation.js # calculate_json(): completed job ${job.id}: `);
   });
   req.io.emit('new_json_added_to_queue', { id: json.id, job: json });
   res.json(json);
@@ -247,7 +247,7 @@ exports.calculate_json = async (req, res) => {
 if (process.env.ENV !== 'development' && process.env.ENV !== 'dev_to_prod') {
   jsonProcessingQueue.process(async (job, done) => {
     try {
-      console.log('started processing job', job.id);
+      console.log('queue_json_creation.js # started processing job', job.id);
       const { dataset_name_filter, json_logic } = job.data;
       const datasets = await sequelize.query(
         `
@@ -479,7 +479,7 @@ if (process.env.ENV !== 'development' && process.env.ENV !== 'dev_to_prod') {
         generated_json_with_dataset_names,
       });
     } catch (err) {
-      console.log(err);
+      console.log("queue_json_creation.js # ", err);
       done(err);
     }
   });

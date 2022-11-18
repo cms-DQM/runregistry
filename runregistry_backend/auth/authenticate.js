@@ -1,11 +1,11 @@
 const Permission = require('../controllers/permission');
 const requireAuth = async (req, res, next) => {
   try {
-    if (process.env.NODE_ENV === 'development') {
-      // next();
-      // return;
-      // https://authorization-service-api.web.cern.ch/api/v1.0/Identity/current/groups?field=groupIdentifier
+    if( process.env.NO_CHECK_AUTH ){
+      next();
+      return;
     }
+    // https://authorization-service-api.web.cern.ch/api/v1.0/Identity/current/groups?field=groupIdentifier
     let authenticated = false;
     const email = req.get('email') || '';
     if (email.startsWith('auto@auto')) {

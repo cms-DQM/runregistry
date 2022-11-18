@@ -27,22 +27,26 @@ if [ ! -d `pwd`/"node" ]; then
   mv node-v12.22.0-linux-x64 node
 fi;
 
-export HOME=`pwd`/node/:$HOME
 export PATH=`pwd`/node/bin/:$PATH
 export ENV=development
 
-cp -r $path_to_rr_code/runregistry_backend .
-cp -r $path_to_rr_code/runregistry_frontend .
+if [ "$1" = "backend" ]; then
+  echo "remade backend..."
+  cp -r $path_to_rr_code/runregistry_backend .
+  cd runregistry_backend
+  yarn
+  mkdir certs
+  cp ~/CERT_TEST/userkey.pem ./certs/.
+  cp ~/CERT_TEST/usercert.pem ./certs/.
+fi
 
-cd runregistry_backend
-yarn
-mkdir certs
-cp ~/CERT_TEST/userkey.pem ./certs/.
-cp ~/CERT_TEST/usercert.pem ./certs/.
-
-cd runregistry_frontend
-yarn
-yarn build
+if [ "$1" = "frontend" ]; then
+  echo "remade frontend..."
+  cp -r $path_to_rr_code/runregistry_frontend .
+  cd runregistry_frontend
+  yarn
+  yarn build
+fi
 
 # Run backend as `node app.js`
 # Run frontend as `node server.js`

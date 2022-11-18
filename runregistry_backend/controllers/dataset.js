@@ -120,7 +120,7 @@ exports.update_or_create_dataset = async ({
     return datasetEvent;
   } catch (err) {
     // Rollback transaction if any errors were encountered
-    console.log(err);
+    console.log("update_or_create_dataset():", err);
     if (local_transaction) {
       await transaction.rollback();
     }
@@ -225,7 +225,7 @@ exports.new = async (req, res) => {
     await fill_dataset_triplet_cache();
     res.json(datasetEvent);
   } catch (err) {
-    console.log(err.message);
+    console.log("dataset.js # new(): ", err.message);
     await transaction.rollback();
     throw `Error saving dataset ${dataset_name} of run ${run_number}`;
   }
@@ -645,7 +645,7 @@ exports.duplicate_datasets = async (req, res) => {
     asyncQueue.drain = async () => {
       // We only commit when the datasets are already duplicated
       await transaction.commit();
-      console.log(`${datasets_to_copy.length} duplicated`);
+      console.log(`duplicate_datasets().drain(): ${datasets_to_copy.length} duplicated`);
       // You can only fill the cache when transaction has commited:
       await fill_dataset_triplet_cache();
       const saved_datasets_promises = datasets_to_copy.map(
@@ -672,8 +672,8 @@ exports.duplicate_datasets = async (req, res) => {
 
     asyncQueue.push(promises);
   } catch (err) {
-    console.log('Error duplicating datasets');
-    console.log(err);
+    console.log('duplicate_datasets(): Error duplicating datasets');
+    console.log('duplicate_datasets(): ', err);
     await transaction.rollback();
     throw `Error duplicating datasets: ${err.message}`;
   }
@@ -800,7 +800,7 @@ exports.copy_column_from_datasets = async (req, res) => {
     asyncQueue.drain = async () => {
       // We only commit when the datasets are already duplicated
       await transaction.commit();
-      console.log(`${datasets_to_copy.length} duplicated`);
+      console.log(`copy_column_from_datasets(): ${datasets_to_copy.length} duplicated`);
       // You can only fill the cache when transaction has commited:
       await fill_dataset_triplet_cache();
       const saved_datasets_promises = target_datasets.map(
@@ -827,8 +827,8 @@ exports.copy_column_from_datasets = async (req, res) => {
 
     asyncQueue.push(promises);
   } catch (e) {
-    console.log('Error duplicating column of datasets');
-    console.log(err);
+    console.log('copy_column_from_datasets(): Error duplicating column of datasets');
+    console.log('copy_column_from_datasets(): ', err);
     await transaction.rollback();
     throw `Error duplicating datasets: ${err.message}`;
   }
@@ -929,8 +929,8 @@ exports.change_multiple_states = async (req, res) => {
     // We refill the dataset triplet cache, even though its not necessary, we do it to keep the max version synced
     await fill_dataset_triplet_cache();
   } catch (err) {
-    console.log('Error changing states in batch');
-    console.log(err);
+    console.log('change_multiple_states(): Error changing states in batch');
+    console.log('change_multiple_states(): ', err);
     await transaction.rollback();
     throw `Error duplicating datasets: ${err}`;
   }
@@ -1034,8 +1034,8 @@ exports.datasetColumnBatchUpdate = async (req, res) => {
 
     asyncQueue.push(promises);
   } catch (e) {
-    console.log('Error updating status of datasets in batch');
-    console.log(err);
+    console.log('datasetColumnBatchUpdate(): Error updating status of datasets in batch');
+    console.log('datasetColumnBatchUpdate(): ', err);
     await transaction.rollback();
     throw `Error updating status of column of datasets in batch: ${err.message}`;
   }
@@ -1085,8 +1085,8 @@ exports.hide_datasets = async (req, res) => {
     await transaction.commit();
     res.json(datasets_to_hide);
   } catch (e) {
-    console.log('Error hiding datasets');
-    console.log(err);
+    console.log('hide_datasets(): Error hiding datasets');
+    console.log('hide_datasets(): ', err);
     await transaction.rollback();
     throw `Error hiding datasets: ${err}`;
   }

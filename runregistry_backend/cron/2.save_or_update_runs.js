@@ -82,7 +82,7 @@ exports.save_runs = async (new_runs, number_of_tries) => {
       saved_runs += 1;
     } catch (e) {
       runs_not_saved.push(run);
-      console.log(`Error saving run ${run.run_number}`);
+      console.log(`2.save_or_update_runs.js # save_runs(): Error saving run ${run.run_number}`);
     }
   });
 
@@ -92,30 +92,28 @@ exports.save_runs = async (new_runs, number_of_tries) => {
 
   // When runs finished saving:
   asyncQueue.drain = async () => {
-    console.log(`${saved_runs} run(s) saved`);
+    console.log(`2.save_or_update_runs.js # save_runs(): ${saved_runs} run(s) saved`);
     if (runs_not_saved.length > 0) {
       const run_numbers_of_runs_not_saved = runs_not_saved.map(
         ({ run_number }) => run_number
       );
       console.log(
-        `WARNING: ${runs_not_saved.length} run(s) were not saved. They are: ${run_numbers_of_runs_not_saved}.`
+        `2.save_or_update_runs.js # save_runs(): WARNING: ${runs_not_saved.length} run(s) were not saved. They are: ${run_numbers_of_runs_not_saved}.`
       );
-      console.log('------------------------------');
-      console.log('------------------------------');
       if (number_of_tries < 4) {
-        console.log(`TRYING AGAIN: with ${runs_not_saved.length} run(s)`);
+        console.log(`2.save_or_update_runs.js # save_runs(): TRYING AGAIN: with ${runs_not_saved.length} run(s)`);
         number_of_tries += 1;
         await exports.save_runs(runs_not_saved, number_of_tries);
       } else {
         console.log(
-          `After trying 4 times, ${run_numbers_of_runs_not_saved} run(s) were not saved`
+          `2.save_or_update_runs.js # save_runs(): After trying 4 times, ${run_numbers_of_runs_not_saved} run(s) were not saved`
         );
       }
     }
   };
 
   asyncQueue.error = (err) => {
-    console.log(`Critical error saving runs, ${JSON.stringify(err)}`);
+    console.log(`2.save_or_update_runs.js # save_runs(): Critical error saving runs, ${JSON.stringify(err)}`);
   };
 
   asyncQueue.push(promises);
@@ -187,7 +185,7 @@ exports.update_runs = (
           updated_runs += 1;
         }
       } catch (e) {
-        console.log(`Error updating run ${run.run_number}`);
+        console.log(`2.save_or_update_runs.js # update_runs(): Error updating run ${run.run_number}`);
       }
     });
     if (runs_to_update.length < 10) {
@@ -201,18 +199,16 @@ exports.update_runs = (
 
       // When runs finished updating:
       asyncQueue.drain = async () => {
-        console.log(`${updated_runs} run(s) updated`);
+        console.log(`2.save_or_update_runs.js # update_runs(): ${updated_runs} run(s) updated`);
         if (runs_not_updated.length > 0) {
           const run_numbers_of_runs_not_updated = runs_not_updated.map(
             ({ run_number }) => run_number
           );
           console.log(
-            `WARNING: ${runs_not_updated.length} run(s) were not updated. They are: ${run_numbers_of_runs_not_updated}.`
+            `2.save_or_update_runs.js # update_runs(): WARNING: ${runs_not_updated.length} run(s) were not updated. They are: ${run_numbers_of_runs_not_updated}.`
           );
-          console.log('------------------------------');
-          console.log('------------------------------');
           if (number_of_tries < 4) {
-            console.log(`TRYING AGAIN: with ${runs_not_updated.length} run(s)`);
+            console.log(`2.save_or_update_runs.js # update_runs(): TRYING AGAIN: with ${runs_not_updated.length} run(s)`);
             number_of_tries += 1;
             await exports.update_runs(runs_not_updated, number_of_tries, {
               email,
@@ -223,7 +219,7 @@ exports.update_runs = (
             resolve();
           } else {
             console.log(
-              `After trying 4 times, ${run_numbers_of_runs_not_updated} run(s) were not updated`
+              `2.save_or_update_runs.js # update_runs(): After trying 4 times, ${run_numbers_of_runs_not_updated} run(s) were not updated`
             );
             reject();
           }
@@ -232,7 +228,7 @@ exports.update_runs = (
       };
 
       asyncQueue.error = (err) => {
-        console.log(`Critical error saving runs, ${JSON.stringify(err)}`);
+        console.log(`2.save_or_update_runs.js # update_runs(): Critical error saving runs, ${JSON.stringify(err)}`);
       };
 
       asyncQueue.push(promises);

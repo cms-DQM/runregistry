@@ -27,13 +27,12 @@ models.sequelize
   .sync({})
   .then(async () => {
     // Initialize DB data
-    // await require('./initialization/initialize')();
+    if (process.env.ENV === 'development') {
+      await require('./initialization/initialize')();
+    }
     server.listen(port, () => {
-      console.log(`server listening in port ${port}, env: ${process.env.ENV}`);
-      // const cron = require('./cron/1.get_runs'); // (for testing)
-      if (process.env.ENV !== 'development') {
-        const cron = require('./cron/1.get_runs');
-      }
+      console.log('app.js(): server listening in port', port, 'env:', process.env.ENV);
+      const cron = require('./cron/1.get_runs');
       const dqm_gui_pinging = require('./cron_datasets/2.ping_dqm_gui');
       // const dbs_pinging = require('./cron_datasets/2.ping_dbs');
     });
@@ -46,7 +45,7 @@ models.sequelize
       next();
     });
     io.on('connect', (socket) => {
-      console.log('connection established for new client');
+      console.log('app.js(): connection established for new client');
     });
 
     // For use in json_creation:
@@ -58,7 +57,7 @@ models.sequelize
     // Log the user
     app.use('*', (req, res, next) => {
       if (process.env.NODE_ENV === 'production') {
-        console.log(req.get('displayname'));
+        console.log('app.js(): displayname = ', req.get('displayname'));
       }
       next();
     });
@@ -74,13 +73,13 @@ models.sequelize
 
     // Catch Application breaking error and label it here:
     process.on('uncaughtException', (err) => {
-      console.log('CRITICAL ERROR: ', err);
+      console.log('app.js(): CRITICAL ERROR: ', err);
     });
     // Catch Promise error and label it here:
     process.on('unhandledRejection', (reason, p) => {
-      console.log('Unhandled Promise Rejection at:', p, 'reason:', reason);
+      console.log('app.js(): Unhandled Promise Rejection at:', p, 'reason:', reason);
     });
   })
   .catch((err) => {
-    console.log(err);
+    console.log('app.js(): ', err);
   });

@@ -1,8 +1,8 @@
 module.exports = {
   development: {
-    username: 'hackathon',
+    username: 'postgres',
     password: '',
-    database: 'runregistry_database',
+    database: 'postgres',
     port: 5432,
     host: process.env.DOCKER_POSTGRES ? 'postgres' : 'localhost',
     logging: false,

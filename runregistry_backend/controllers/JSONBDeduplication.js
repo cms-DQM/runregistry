@@ -45,13 +45,13 @@ exports.findOrCreateJSONB = async (jsonb, tries) => {
             // It may happen when adding several records, it may try to save the same jsonb twice, we try 1000 times just to be sure:
             if (e.name === 'SequelizeUniqueConstraintError') {
                 console.log(
-                    `Race condition saving JSONBs, trying again for ${tries} time`
+                    `findOrCreateJSONB(): Race condition saving JSONBs, trying again for ${tries} time`
                 );
                 // This means the jsonb already existed (race with other one trying to save the same jsonb ), so we run the method again recursively:
                 tries += 1;
                 return exports.findOrCreateJSONB(jsonb, tries);
             } else {
-                console.log(e);
+                console.log("findOrCreateJSONB(): ", e);
             }
         }
     }

@@ -102,7 +102,7 @@ const update_or_create_run = async ({
     return runEvent;
   } catch (err) {
     // Rollback transaction if any errors were encountered
-    console.log(err);
+    console.log("update_or_create_run():", err);
     if (local_transaction) {
       await transaction.rollback();
     }
@@ -246,7 +246,7 @@ exports.new = async (req, res) => {
     await fill_dataset_triplet_cache();
     res.json(runEvent);
   } catch (err) {
-    console.log(err);
+    console.log("run.js # new(): ", err);
     await transaction.rollback();
     throw `Error saving run ${run_number}`;
   }
@@ -265,7 +265,7 @@ exports.automatic_run_update = async (req, res) => {
   if (run === null) {
     // Run doesn't exist, we create it
     console.log(
-      `Trying to update run ${run_number} when we need to create it first`
+      `automatic_run_update(): Trying to update run ${run_number} when we need to create it first`
     );
     await exports.new(req, res);
     return;
@@ -408,7 +408,7 @@ exports.automatic_run_update = async (req, res) => {
     if (was_run_updated) {
       await transaction.commit();
       await fill_dataset_triplet_cache();
-      console.log(`updated run ${run_number}`);
+      console.log(`automatic_run_update(): updated run ${run_number}`);
       const run = await Run.findByPk(run_number, {
         include: [
           {
@@ -425,7 +425,7 @@ exports.automatic_run_update = async (req, res) => {
       res.send();
     }
   } catch (err) {
-    console.log(err);
+    console.log('automatic_run_update(): ', err);
     await transaction.rollback();
     throw `Error updating run ${run_number}`;
   }
@@ -468,7 +468,7 @@ exports.manual_edit = async (req, res) => {
         atomic_version,
         transaction,
       });
-      console.log(`updated run ${run_number}`);
+      console.log(`run.js # manual_edit(): updated run ${run_number}`);
     }
     await transaction.commit();
     // Now that it is commited we should find the updated run:
@@ -482,7 +482,7 @@ exports.manual_edit = async (req, res) => {
     });
     res.json(run.dataValues);
   } catch (err) {
-    console.log(err);
+    console.log('run.js # manual_edit():', err);
     await transaction.rollback();
     throw `Error updating run ${run_number}`;
   }
@@ -545,8 +545,8 @@ exports.markSignificant = async (req, res) => {
     });
     res.json(updated_run);
   } catch (e) {
-    console.log('Error marking run significant');
-    console.log(err);
+    console.log('markSignificant(): Error marking run significant');
+    console.log('markSignificant(): ', err);
     await transaction.rollback();
     throw `Error marking run significant: ${err.message}`;
   }
@@ -688,7 +688,7 @@ exports.moveRun = async (req, res) => {
     });
     res.json(saved_run.dataValues);
   } catch (e) {
-    console.log(e);
+    console.log("run.js # moveRun(): ", e);
     await transaction.rollback();
     throw `Error SIGNING OFF run, creating the datasets from run in OFFLINE`;
   }

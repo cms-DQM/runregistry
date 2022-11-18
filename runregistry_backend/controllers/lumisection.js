@@ -89,7 +89,7 @@ const update_or_create_lumisection = async ({
     }
     return lumisectionEvent;
   } catch (err) {
-    console.log(err);
+    console.log("update_or_create_lumisection():", err);
     if (local_transaction) {
       await transaction.rollback();
     }
@@ -677,7 +677,7 @@ exports.edit_rr_lumisections = async (req, res) => {
     await fill_dataset_triplet_cache();
     res.json(new_range);
   } catch (err) {
-    console.log(err);
+    console.log("edit_rr_lumisections():", err);
     await transaction.rollback();
     throw `Error updating lumisections of ${dataset_name} dataset, run number: ${run_number}: ${
       err.message || err
@@ -760,7 +760,7 @@ exports.edit_oms_lumisections = async (req, res) => {
     await fill_dataset_triplet_cache();
     res.json(new_range);
   } catch (err) {
-    console.log(err);
+    console.log("edit_oms_lumisections():", err);
     await transaction.rollback();
     throw `Error updating oms lumisections of ${dataset_name} dataset, run number: ${run_number}: ${
       err.message || err
