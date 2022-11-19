@@ -78,7 +78,7 @@ module.exports = {
     password: 'changeme',
     database: 'runregistry_database_dev',
     logging: false,
-    host: 'dbod-gc005.cern.ch',
+    host: 'dbod-dqm-rr.cern.ch',
     dialect: 'postgres',
     port: 6601,
     pool: {
@@ -153,7 +153,7 @@ module.exports = {
     CLIENT_SECRET: process.env.CLIENT_SECRET,
     OMS_AUDIENCE: 'cmsoms-prod',
   },
-  dev_kubernetes: {
+  dev_kubernetes: { // we do not support this, so far during RUN III operation k8 cluster is more buggy than VM 
     username: 'admin',
     password: 'changeme',
     database: 'runregistry_database_dev',
