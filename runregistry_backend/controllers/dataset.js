@@ -180,7 +180,7 @@ exports.new = async (req, res) => {
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: 'dataset creation',
+      comment: `dataset creation "${dataset_name}" of run ${run_number}`,
     });
 
     const datasetEvent = await exports.update_or_create_dataset({

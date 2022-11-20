@@ -150,7 +150,7 @@ exports.save_individual_dataset = async ({
 }) => {
   event_info = event_info || {
     email: 'auto@auto',
-    comment: 'dataset creation after a run is signed off',
+    comment: `dataset ${dataset_name} creation after a run ${run_number} is signed off`,
   };
 
   const { atomic_version } = await create_new_version({

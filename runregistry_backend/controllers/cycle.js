@@ -311,7 +311,7 @@ exports.moveAllDatasetsInCycleTo = async (req, res) => {
     transaction = await sequelize.transaction();
     const { atomic_version } = await create_new_version({
       req,
-      comment: `Change all datasets in cycle ${id_cycle} to ${to_state}.`,
+      comment: `Change all datasets in cycle ${id_cycle} to ${to_state}. Workspace = ${workspace}. Datasets to move ${datasets_to_move.length}.`,
     });
 
     const promises = datasets_to_move.map(

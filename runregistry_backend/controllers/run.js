@@ -205,7 +205,7 @@ exports.new = async (req, res) => {
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: 'run creation',
+      comment: `run ${run_number} creation`,
     });
     const runEvent = await update_or_create_run({
       run_number,
@@ -274,6 +274,8 @@ exports.automatic_run_update = async (req, res) => {
   let was_run_updated = false;
   let transaction;
   try {
+    const { oms_lumisections, rr_lumisections } = req.body;
+
     transaction = await sequelize.transaction();
     let atomic_version;
     if (req.body.atomic_version) {
@@ -282,13 +284,12 @@ exports.automatic_run_update = async (req, res) => {
       const version_result = await create_new_version({
         req,
         transaction,
-        comment: 'run automatic update',
+        comment: `run ${run_number} automatic update`,
       });
       atomic_version = version_result.atomic_version;
     }
 
     // Lumisection stuff:
-    const { oms_lumisections, rr_lumisections } = req.body;
     const newRRLumisectionRanges = await update_rr_lumisections({
       run_number,
       dataset_name: 'online',
@@ -323,7 +324,7 @@ exports.automatic_run_update = async (req, res) => {
           const { atomic_version } = await create_new_version({
             req,
             overwriteable_comment:
-              'run flagged: run is not in OPEN state, received update from OMS which affected the RR Lumisections. It needs revision',
+              `run flagged: run ${run_number} is not in OPEN state, received update from OMS which affected the RR Lumisections. It needs revision`,
           });
           // Notice we do not pass transaction in the following call
           const runEvent = await update_or_create_run({
@@ -333,7 +334,7 @@ exports.automatic_run_update = async (req, res) => {
             atomic_version,
             req,
           });
-          throw 'Run is not in state OPEN, and received update from OMS which affected the RR Lumisections, it is now flagged so that it is later updated manually';
+          throw `Run ${run_number} is not in state OPEN, and received update from OMS which affected the RR Lumisections, it is now flagged so that it is later updated manually`;
         }
       }
     }
@@ -381,7 +382,7 @@ exports.automatic_run_update = async (req, res) => {
       const { atomic_version } = await create_new_version({
         req,
         overwriteable_comment:
-          'run flagged: run is not in OPEN state, received update from OMS which affected the rr_attributes of the run. It needs revision',
+          `run flagged: run ${run_number} is not in OPEN state, received update from OMS which affected the rr_attributes of the run. It needs revision`,
       });
       // If there are new RR attributes and the run is no longer in state OPEN, the run needs to be flagged:
       const runEvent = await update_or_create_run({
@@ -391,7 +392,7 @@ exports.automatic_run_update = async (req, res) => {
         atomic_version,
         req,
       });
-      throw 'Run is not in state OPEN, and received update from OMS which affected the rr_attributes of the run, it is now flagged so that it is later updated manually';
+      throw `Run ${run_number} is not in state OPEN, and received update from OMS which affected the rr_attributes of the run, it is now flagged so that it is later updated manually`;
     }
     // If there was actually something to update in the RR attributes, we update it, if it was a change in oms_attributes, we don't update it (since it doesn't affect RR attributes) unless the run is already over.
     if (new_rr_attributes_length > 0 || was_run_updated) {
@@ -451,7 +452,7 @@ exports.manual_edit = async (req, res) => {
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: 'run manual edit',
+      comment: `run ${run_number} manual edit, ${req.body.rr_attributes}`,
     });
     const new_rr_attributes = getObjectWithAttributesThatChanged(
       rr_attributes,
@@ -516,7 +517,7 @@ exports.markSignificant = async (req, res) => {
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: 'mark run significant',
+      comment: `mark run ${run_number} significant`,
     });
     await update_or_create_run({
       run_number,
@@ -532,7 +533,7 @@ exports.markSignificant = async (req, res) => {
     await manually_update_a_run(run_number, {
       email,
       manually_significant: true,
-      comment: `${email} marked run significant, component statuses refreshed`,
+      comment: `${email} marked run ${run_number} significant, component statuses refreshed`,
       atomic_version,
     });
     const updated_run = await Run.findByPk(run_number, {
@@ -662,7 +663,7 @@ exports.moveRun = async (req, res) => {
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: 'move state (e.g. OPEN, SIGNOFF) of run',
+      comment: `move state run ${run_number} to state ${to_state}`,
     });
     await update_or_create_run({
       run_number,

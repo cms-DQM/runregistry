@@ -18,7 +18,7 @@ const upload_luminosity = async () => {
   try {
     transaction = await sequelize.transaction();
 
-    const { atomic_version } = await create_new_version({
+    const { atomic_version } = await create_new_version({ // FIX THIS SOMEHOW
       req: { email: 'f.e@cern.ch', comment: 'import luminosity from brilcalc' },
       transaction
     });

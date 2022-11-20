@@ -6,6 +6,27 @@ import { error_handler } from '../../utils/error_handlers';
 import { api_url } from '../../config/config';
 import Event from './event/Event';
 
+import { Space, Table, Tag } from 'antd';
+const { Column, ColumnGroup } = Table;
+
+const columns = [
+  {
+    title: 'Time',
+    dataIndex: 'createdAt',
+    key: 'createdAt',
+  },
+  {
+    title: 'Author',
+    dataIndex: 'by',
+    key: 'by',
+  },
+  {
+    title: 'Comment',
+    dataIndex: 'comment',
+    key: 'comment',
+  },
+];
+
 const INITIAL_PAGE_SIZE = 100;
 class LogViewer extends Component {
   state = {
@@ -32,8 +53,9 @@ class LogViewer extends Component {
     });
   });
 
-  generateDot = event => {
-    const {
+  /// TODO fix this when figure out when we have RunEvent !== null etc
+  generateComment = event => {
+    let {
       version,
       comment,
       by,
@@ -43,21 +65,19 @@ class LogViewer extends Component {
       LumisectionEvent,
       OMSLumisectionEvent
     } = event;
-    let dot = <ClockCircleOutlined style={{ fontSize: '16px' }} />;
-    let color = 'white';
-    if (RunEvent !== null) {
-      color = 'blue';
-      dot = <ClockCircleOutlined style={{ fontSize: '20px' }} />;
+    if (RunEvent !== null && typeof RunEvent !== 'undefined' ) {
+      comment += " RunEvent";
     }
-    if (DatasetEvent !== null) {
-      color = 'yellow';
+    if (DatasetEvent !== null && typeof RunEvent !== 'undefined') {
+      comment += " DatasetEvent";
     }
-    if (LumisectionEvent !== null) {
-      color = 'gray';
+    if (LumisectionEvent !== null && typeof RunEvent !== 'undefined') {
+      comment += " LumisectionEvent";
     }
-    if (OMSLumisectionEvent !== null) {
-      color = 'black';
+    if (OMSLumisectionEvent !== null && typeof RunEvent !== 'undefined') {
+      comment += " OMSLumisectionEvent";
     }
+    return {createdAt, by, comment};
   };
 
   render() {
@@ -68,16 +88,10 @@ class LogViewer extends Component {
         </center>
         <br />
         <div>
-          <Timeline mode="alternate">
-            {this.state.versions.map(event => (
-              <Timeline.Item
-                key={event.version}
-                // dot={event => this.generateDot(event)}
-              >
-                <Event event={event}></Event>
-              </Timeline.Item>
-            ))}
-          </Timeline>
+
+        <Table columns={columns} dataSource={ this.state.versions.map(event => this.generateComment(event)) } />;
+
+
         </div>
         <center>
           <Button onClick={() => this.fetchVersions(this.state.page + 1)}>

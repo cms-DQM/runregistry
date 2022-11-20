@@ -650,7 +650,7 @@ exports.edit_rr_lumisections = async (req, res) => {
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: 'edit lumisections of a dataset',
+      comment: `Edit run ${run_number} lumisections of a dataset ${dataset_name} for component ${component}`,
     });
     const new_range = await update_or_create_lumisection({
       run_number,
@@ -733,7 +733,7 @@ exports.edit_oms_lumisections = async (req, res) => {
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: `Edit OMS lumisection ranges, user comment: '${comment}'`,
+      comment: `Edit run ${run_number} dataset ${dataset_name} component ${component} OMS lumisection ranges, user comment: '${comment}', range [${start},${end}]`,
     });
     const new_range = await update_or_create_lumisection({
       run_number,
