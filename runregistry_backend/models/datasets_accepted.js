@@ -33,7 +33,10 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      updatedAt: false,
+      // the RR DB was created and filled only with createdAt field. But for the operation we need updatedAt instead, actually. 
+      // So, we alias updatedAt as createdAt for sequelize that will update it properly.
+      createdAt: false,
+      updatedAt: 'createdAt',
     }
   );
   DatasetsAccepted.associate = function (models) {
