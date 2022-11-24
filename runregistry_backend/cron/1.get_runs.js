@@ -94,11 +94,11 @@ const fetch_runs = async (
 if (process.env.ENV === 'production' || process.env.ENV === 'staging') {
   const job = new CronJob(
     `*/${SECONDS_PER_API_CALL} * * * * *`,
-    handleErrors(fetch_runs, 'Error fetching new runs ')
+    handleErrors(fetch_runs, 'cron/1.get_runs.js # Error fetching new runs ')
   ).start();
 }
 // If in a dev environment we want to do this at least once:
-handleErrors(fetch_runs, 'Error fetching new runs')();
+handleErrors(fetch_runs, 'cron/1.get_runs.js # Error fetching new runs ')();
 
 // makes left outer join between fetched_runs and last_saved_runs, returns the difference of runs (the ones which have not been saved)
 // Case when run from way in the past is updated, it will think it is a new run, since it doesn't appear in the fetch of the local 50 runs,

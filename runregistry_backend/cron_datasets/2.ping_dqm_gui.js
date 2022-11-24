@@ -231,7 +231,7 @@ const ping_dqm_gui = async () => {
 if (process.env.NODE_ENV !== 'development') {
   const job = new CronJob(
     `*/${SECONDS_PER_DQM_GUI_CHECK} * * * * *`,
-    handleErrors(ping_dqm_gui, 'Error pinging DQM GUI')
+    handleErrors(ping_dqm_gui, 'cron_datasets/2.ping_dqm_gui.js # Error pinging DQM GUI')
   ).start();
 } else {
   // For development:
