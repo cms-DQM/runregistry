@@ -106,7 +106,7 @@ const update_or_create_run = async ({
     if (local_transaction) {
       await transaction.rollback();
     }
-    throw `Error updating/saving run ${run_number}, ${err.message}`;
+    throw `Error updating/saving run ${run_number}, ${err}`;
   }
 };
 exports.update_or_create_run = update_or_create_run;
@@ -545,11 +545,11 @@ exports.markSignificant = async (req, res) => {
       ],
     });
     res.json(updated_run);
-  } catch (e) {
+  } catch (err) {
     console.log('markSignificant(): Error marking run significant');
     console.log('markSignificant(): ', err);
     await transaction.rollback();
-    throw `Error marking run significant: ${err.message}`;
+    throw `Error marking run significant: ${err}`;
   }
 };
 

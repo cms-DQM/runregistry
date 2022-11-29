@@ -91,6 +91,7 @@ app.prepare().then(() => {
     app.render(req, res, `/log`, params);
   });
   server.get('*', (req, res) => {
+    console.log( req.headers, req.params, req.query );
     return handle(req, res);
   });
 

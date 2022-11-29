@@ -23,7 +23,7 @@ const pMap = require('p-map');
 const Queue = require('bull');
 const { Op } = Sequelize;
 
-let jsonProcessingQueue = new Queue('json processing', REDIS_URL);
+let jsonProcessingQueue = new Queue('rr_jsons', REDIS_URL);
 console.log("queue_json_creation.js : ", REDIS_URL);
 
 exports.get_json = async (req, res) => {
