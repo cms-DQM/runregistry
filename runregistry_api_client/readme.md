@@ -4,6 +4,12 @@
 
 Python client to retrieve and query data from [CMS Run Registry](https://cmsrunregistry.web.cern.ch).
 
+To switch to [Dev CMS Run Registry](https://dev-cmsrunregistry.web.cern.ch) do:
+```
+import runregistry
+runregistry.setup( "development" )
+```
+
 ## Python version and Virtual env
 
 Python version>=3.6 is required for this package.
@@ -399,6 +405,12 @@ json_logic = {
 }
 generated_json = runregistry.create_json(json_logic=json_logic, dataset_name_filter="/PromptReco/Collisions2018A/DQM")
 ```
+
+### Advanced
+You can also manipulate with runs via API:
+1. mark run significant `runregistry.make_significant_runs( run=362761 )`
+2. reset RR attributes and reload data from OMS `runregistry.reset_RR_attributes_and_refresh_runs( run=362761 )`
+3. move runs from one state to another `runregistry.move_runs( "OPEN", "SIGNOFF", run=362761 )`
 
 ## Running Tests
 
