@@ -373,7 +373,8 @@ def create_json(json_logic, dataset_name_filter, **kwargs):
           return
   
 
-# advanced RR operations
+# advanced RR operations ==============================================================================
+# Online Table
 def move_runs(from_, to_, run = None, runs = [], **kwargs):
     """
     move run/runs from one state to another
@@ -453,4 +454,34 @@ def reset_RR_attributes_and_refresh_runs(run = None, runs = [], **kwargs):
 
     return answers
 
+# Offline table
+WAITING_DQM_GUI_CONSTANT = 'waiting dqm gui'
+def move_datasets(from_, to_, dataset_name, workspace = 'global', run = None, runs = [], **kwargs):
+    """
+    move offline dataset/datasets from one state to another
+    """
+    if not run and not runs :
+      print("move_datasets(): no 'run' and 'runs' arguments were provided, return")
+      return
 
+    states = [ "SIGNOFF", "OPEN", "COMPLETED", WAITING_DQM_GUI_CONSTANT ]
+    if from_ not in states or to_ not in states :
+      print("move_datasets(): get states '", from_, "' , '", to_, "', while allowed states are ", states, ", return")
+      return
+    
+    url = "%s/datasets/%s/move_dataset/%s/%s"  % (api_url, workspace, from_, to_)
+
+    headers = _get_headers()
+    cookies = _get_cookies(url, **kwargs)
+    
+    if run : 
+      payload = json.dumps( { "run_number" : run , "dataset_name" : dataset_name, "workspace" : workspace } )
+      return requests.post(url, cookies=cookies, headers=headers, data=payload)
+
+    answers = []
+    for run_number in runs :
+      payload = json.dumps( { "run_number" : run , "dataset_name" : dataset_name, "workspace" : workspace } )
+      answer  = requests.post(url, cookies=cookies, headers=headers, data=payload).json()
+      answers += [ answer ]
+
+    return answers
