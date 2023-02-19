@@ -5,6 +5,10 @@ sys.path.append(os.path.dirname(os.path.realpath("../runregistry")))
 import runregistry
 runregistry.setup( "development" )
 
+#answer = runregistry.edit_rr_lumisections(363534, 101, 111, "gem", "GOOD", "API TEST")
+#print( answer, answer.text )
+#exit()
+
 answer = runregistry.move_datasets( 'waiting dqm gui', 'OPEN', "/PromptReco/Commissioning2021/DQM", run=362874, workspace="global" )
 print( answer, answer.text )
 

@@ -453,6 +453,22 @@ def reset_RR_attributes_and_refresh_runs(run = None, runs = [], **kwargs):
       answers += [ answer ]
 
     return answers
+  
+def edit_rr_lumisections(run, lumi_start, lumi_end, component, status, comment='', cause='', dataset_name='online', **kwargs):
+    """
+    WIP edit RR lumisections attributes
+    """
+    states = ["GOOD", "BAD", "STANDBY", "EXCLUDED", "NONSET"]
+    if status not in states :
+      print("move_runs(): get status '", status, "', while allowed statuses are ", states, ", return")
+      return
+    
+    url = "%s/lumisections/edit_rr_lumisections"  % (api_url)
+
+    headers = _get_headers()
+    cookies = _get_cookies(url, **kwargs)
+    payload = json.dumps( { "new_lumisection_range" : { "start" : lumi_start, "end" : lumi_end, "status" : status, "comment" : comment, "cause" : cause }, "run_number" : run, "dataset_name" : dataset_name, "component" : component } )
+    return requests.post(url, cookies=cookies, headers=headers, data=payload)
 
 # Offline table
 WAITING_DQM_GUI_CONSTANT = 'waiting dqm gui'
