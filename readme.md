@@ -60,12 +60,43 @@ Run registry has multiple sources of configuration, some of them can be changed 
 There is a great amount of effort in making Run Registry event-sourced on a run and per-lumisection basis.
 If there is a human error, for example if a user sometimes batch-updates runs and sets wrong values, there will always be a way to undo it. And there will be a track of what was done, by whom and when.
 
-# How to update Run Registry in development and production VM?
+## Deployment
 
-## [Run Registry development](https://dev-cmsrunregistry.web.cern.ch/):
+Both the production and development instances are deployed on [Openstack](https://openstack.cern.ch/). You should have been given access to the projects automatically by the DQM-DC egroups. 
+To handle authentication/authorization, a proxy is deployed on [PaaS/OpenShift](https://paas.cern.ch/), one for each instance. The proxy is running custom code found [here](https://github.com/cms-DQM/cern-oauth2-sso-node-proxy). To access the proxies' deployment, you will need to login to PaaS with the `cmsdqm` service account. 
 
+TODO: This proxy uses the old CERN SSO with ADFS, to be deprecated in Summer 2023. 
+
+```mermaid
+flowchart TD
+    user[fa:fa-user User] -->|HTTPS|proxy("SSO Proxy") 
+    subgraph OpenShift 
+        proxy
+    end
+
+    subgraph OpenStack
+        fe[Frontend:7001]
+        be[Backend:9500]
+    end
+    
+    proxy-->|HTTP|fe
+    proxy-->|HTTP|be
+    fe-->be
 ```
+
+## How to update the Run Registry instances?
+
+### [Run Registry development](https://dev-cmsrunregistry.web.cern.ch/):
+
+From your computer:
+
+```bash
  ssh -tCY username@lxplus.cern.ch ssh  -CY username@dev-runregistry.cern.ch
+```
+
+On `dev-runregistry.cern.ch`:
+
+```bash
  cd /srv/node && export HOME=$PWD
  export PATH=/srv/node/bin/:$PATH
  cd /srv/
@@ -110,8 +141,14 @@ Logs can be found by running a command: `forever logs`
 
 ## [Run Registry production](https://cmsrunregistry.web.cern.ch/)
 
-```
+On your computer:
+
+```bash
  ssh -tCY username@lxplus.cern.ch ssh  -CY username@runregistry.cern.ch
+```
+On `runregistry.cern.ch`:
+
+```bash
  cd /srv/node && export HOME=$PWD
  export PATH=/srv/node/bin/:$PATH
  cd /srv/
@@ -158,34 +195,34 @@ You need to have grid certificate, provoded by CERN, https://ca.cern.ch/ca/
 
 After, execute following commands:
 Geberate a private key:
-```
+```bash
 openssl pkcs12 -in myCertificate.p12 -nokeys -out usercert.pem -nodes
 ```
 Geberate a certificate:
-```
+```bash
 openssl pkcs12 -in myCertificate.p12 -nocerts -out userkey.pem -nodes
 ```
 ## Are you Run Registry developer, but cannot connect to RR VMs?
 The person, who has sudo rights to dev-runregistry and runregistry machines has to add you as a user:
 
-```
+```bash
 sudo useraddcern username
 ```
 To give sudo rights (optional):
-```
+```bash
 sudo usermod -aG wheel username
 ```
 Check, can you connect to the machine(-s):
-```
+```bash
 ssh -tCY username@lxplus.cern.ch ssh  -CY username@dev-runregistry.cern.ch
 ```
-```
+```bash
 ssh -tCY username@lxplus.cern.ch ssh  -CY username@runregistry.cern.ch
 ```
 Check do you have sudo rights (optional):
-```
+```bash
 sudo whoami
 ```
 
 ## FAQ
-Check readme_faq.md  
+Check out [the dedicated FAQ](readme_faq.md).  
