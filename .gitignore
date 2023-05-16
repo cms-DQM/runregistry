@@ -1,2 +1,6 @@
 /dumps
 /importing_data
+node_modules/
+node/
+yarn.lock
+.vscode
