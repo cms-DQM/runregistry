@@ -4,9 +4,32 @@ This repository contains the API and all the microservices that compose the back
 
 ## Getting Started
 
+
+###  Development
+
+#### The manual way
+
+1. Install a `redis-server` locally and run it, using the default settings.
+2. Install a `postgres` database (version >= 11) locally and start it.
+3. Create a `.env` file inside the `runregistry_backend` directory with the following variables:
+```
+NODE_ENV=development
+ENV=development
+CLIENT_SECRET=<Get it from DQM conveners>
+DB_HOSTNAME=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_NAME=run_registry
+```
+4. Make sure you have `node` v12 installed (e.g. `node-v12.22.12`) and it's in your `PATH`.   
+5. Populate your local database with data, see [here](#adding-real-data-to-your-development-environment's-database)
+
+#### With `docker-compose`:
+
 To understand, debug and add new features to Run Registry set up a development environment in which you can run and modify the code without further consequences.
 
-In order to do this you must clone this repository and run three commands from the Make file
+In order to do this you must clone this repository and run three commands from the `Makefile`:
 
 ```bash
 git clone https://github.com/cms-DQM/runregistry/
@@ -16,7 +39,7 @@ make install
 make dev
 ```
 
-This will then run Run Registry Backend API in port 9500 along with the microservices that are enabled in the docker-compose.development.yml file.
+This will then run Run Registry Backend API in port `9500` along with the microservices that are enabled in the `docker-compose.development.yml` file.
 
 It will also perform hot-reloading of the API, therefore any changes you make will automatically trigger a reload of the application with the new changes in place.
 
@@ -28,15 +51,8 @@ Next time you want to run the backend, you just need to run `make dev`.
 
 If you wish to understand how the docker files in this repository work, [read this article](https://jdlm.info/articles/2019/09/06/lessons-building-node-app-docker.html).
 
-## Open ID  authentication
 
-In order to get a **client secret**, for OpenID authentication, need to contact to DQM developer Ernesta Petraityte, *ernesta.petraityte@cern.ch*.
-
-When client secret will be received, it must be set as environment variable in the following file:  https://github.com/cms-DQM/runregistry/blob/master/runregistry_backend/docker-compose.development.yml
-
-It is important to set the environment variable CLIENT_SECRET in **production and development**. Otherwise, backend will not work
-
-## Adding real data to your development environment's database
+#### Adding real data to your development environment's database
 
 It is almost useless to test Run Registry without any data that your development backend can serve.
 
@@ -52,14 +68,14 @@ To do this you must follow the following steps:
 ssh -L localhost:5433:<production-url-of-database>:<port-of-production-database> <your-username>@lxplus.cern.ch
 ```
 
-2. Make the dump using pg_dump to a .sql file (you must have postgres version >11 in your computer installed, along with pg_dump and psql). The dump might take a while to complete depending on how big the database is, at the moment of writing this, a dump is in the order of ~4 GB. You can always check progress by typing `watch "ls -ltrh"` in the folder where you are performing the command to see the size of the file increasing.
+2. Make the dump using `pg_dump` to an `.sql` file (you must have postgres version >11 in your computer installed, along with `pg_dump` and `psql`). The dump might take a while to complete depending on how big the database is; as of writing (May 2023) it's ~5 GB. You can always check progress by typing `watch "ls -ltrh"` in the folder where you are performing the command to see the size of the file increasing.
 
 ```bash
-pg_dump -f dump.sql -d runregistry_database -U admin -h localhost -p 5433
-# The password you must ask the DQM conveners to provide you with
+pg_dump -f dump.sql -d runregistry_database -U admin -h <DBoD URL> -p <DBoD port>
+# You will also need the DB password; you must ask the DQM conveners to provide you with that
 ```
 
-3. Restore the dump.sql to the postgres docker container. If you already started the development environment using `make dev` before, make sure to delete the database and create it again using your postgres client (if not it will throw errors saying that the tables already exist), once the database is virginly created, and the admin role has been created, you can run the following command (this will also take a while depending on the size of the dump):
+3. Restore the `dump.sql` to the postgres docker container. If you already started the development environment using `make dev` before, make sure to delete the database and create it again using your postgres client (if not it will throw errors saying that the tables already exist), once the database is virginly created, and the admin role has been created, you can run the following command (this will also take a while depending on the size of the dump):
 
 ```bash
 psql -h localhost -p 6543 -U hackathon -d runregistry_database -f dump.sql
@@ -67,10 +83,22 @@ psql -h localhost -p 6543 -U hackathon -d runregistry_database -f dump.sql
 
 Now if you run `make dev` the API will connect to a fresh copy of the production data of run registry running in your local postgres database container. Now, your local environment resembles the production environment as much as possible, you can run runregistry_frontend locally to then interact with your development API.
 
+## Open ID  authentication
+
+In order to get a **client secret** which will be used by the RunRegistry backend for OpenID authentication, in order to connect to the OMS API, you will need to contact [`cms-dqm-coreTeam`](mailto:cms-dqm-coreteam@cern.ch).
+
+Once you have the secret, it must be set as environment variable in the following file: https://github.com/cms-DQM/runregistry/blob/master/runregistry_backend/docker-compose.development.yml.
+
+It is important to set the environment variable CLIENT_SECRET in **production and development**. Otherwise, the backend will not work.
+
+
 ## The Stack
 
-Run registry is a full-stack javascript application. Meaning both its front-end and back-end are written using JavaScript. There is also a python API pip client[https://github.com/fabioespinosa/runregistry_api_client] for users who want to acces
+Run registry is a full-stack javascript application. Meaning both its front-end and back-end are written using JavaScript. There is also a python API pip client[https://github.com/fabioespinosa/runregistry_api_client] for users who want to acces the API.
 
 ## Performing migrations
 
-To migrate in development: docker-compose -f docker-compose.development.yml run dev npm run migrate
+To migrate in development: 
+```bash
+docker-compose -f docker-compose.development.yml run dev npm run migrate
+```

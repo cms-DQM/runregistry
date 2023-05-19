@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   dev:
-    image: node:12.10.0
+    image: node:12.22.2
     depends_on:
       - postgres
       - redis
@@ -13,6 +13,8 @@ services:
     environment:
       - NODE_ENV=development
       - REDIS_HOST=redis
+      # This variable dictates to the backend to use the 
+      # Postgres instance deployed by this yaml file, see below.
       - DOCKER_POSTGRES=true
       # Request the secret from conveners for development:
       - CLIENT_SECRET=
@@ -58,7 +60,7 @@ services:
   #   - 9229:9229 # For debugger
 
   postgres:
-    image: postgres:11.2-alpine
+    image: postgres:11.20-alpine
     shm_size: 4gb
     environment:
       - POSTGRES_USER=hackathon

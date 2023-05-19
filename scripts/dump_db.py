@@ -66,9 +66,6 @@ def main():
             ["Dataset", 100, 'ORDER BY "run_number" DESC'],
             ["DatasetEvent", 100, 'ORDER BY "run_number" DESC'],
         ]
-        # ["", -1]
-
-        # SELECT * FROM public."Version" ORDER BY "createdAt" DESC LIMIT 10;
 
         for dat in tables:
             table = dat[0]
