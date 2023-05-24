@@ -13,6 +13,11 @@ import {
 import { addOMSLumisectionRange } from '../../../../../ducks/online/lumisections';
 import { error_handler } from '../../../../../utils/error_handlers';
 
+
+/*
+Top component, which creates an EditComponent for each of the
+dcs bits available.
+*/
 class EditDCSBits extends Component {
   state = {
     lumisections: {},
@@ -25,6 +30,8 @@ class EditDCSBits extends Component {
   fetchLumisections = error_handler(async () => {
     this.setState({ lumisections: {}, loading: true });
     const { name, run_number } = this.props.dataset;
+
+    // Get Lumisection data, grouped by DCS bit
     const { data: lumisections } = await axios.post(
       `${api_url}/lumisections/oms_lumisection_ranges_by_dcs_bit`,
       {
@@ -45,8 +52,8 @@ class EditDCSBits extends Component {
             <center>
               <h1>Editing DCS bits is reserved for the DC team only</h1>
               <h2>
-                This feature should only be used to RECOVER ls bits, bits we
-                thought were BAD and are actually good
+                This feature should only be used to RECOVER lumisection bits, bits we
+                thought were BAD but are actually good
               </h2>
               <h3>
                 In order for a lumisection to be considered GOOD it must be good
@@ -63,6 +70,10 @@ class EditDCSBits extends Component {
                 </tr>
               </thead>
               <tbody>
+                {/* 
+                  Loop over DCS bits, defined in lumisection_attributes
+                  and create EditComponents to display and edit them.
+                   */}
                 {lumisection_attributes.map((dcs_bit) => {
                   if (this.state.loading) {
                     return (

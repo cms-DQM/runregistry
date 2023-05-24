@@ -11,7 +11,7 @@ This repository contains the API and all the microservices that compose the back
 
 1. Install a `redis-server` locally and run it, using the default settings.
 2. Install a `postgres` database (version >= 11) locally and start it.
-3. Create a `.env` file inside the `runregistry_backend` directory with the following variables:
+3. Create a `.env` file inside the `runregistry_backend` directory (example: the `.env_sample` file) with the following variables:
 ```
 NODE_ENV=development
 ENV=development
@@ -23,7 +23,9 @@ DB_PASSWORD=postgres
 DB_NAME=run_registry
 ```
 4. Make sure you have `node` v12 installed (e.g. `node-v12.22.12`) and it's in your `PATH`.   
-5. Populate your local database with data, see [here](#adding-real-data-to-your-development-environment's-database)
+5. Populate your local database with data, see [here](#adding-real-data-to-your-development-environments-database)
+6. `npm install`
+6. `npm run dev`
 
 #### With `docker-compose`:
 
@@ -43,7 +45,7 @@ This will then run Run Registry Backend API in port `9500` along with the micros
 
 It will also perform hot-reloading of the API, therefore any changes you make will automatically trigger a reload of the application with the new changes in place.
 
-It will also open port 9229 as a debugging port. Based on the configuration in .vscode/launch.json you can debug using VS code. By default the `Docker: Attach to Node` configuration will work out of the box, after running `make dev`, feel free to set break-points in the code.
+It will also open port 9229 as a debugging port. Based on the configuration in `.vscode/launch.json` you can debug using VS code. By default the `Docker: Attach to Node` configuration will work out of the box, after running `make dev`, feel free to set break-points in the code.
 
 In order to stop all run registry services just press ctrl + c
 

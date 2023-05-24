@@ -25,7 +25,8 @@ module.exports = {
                                             'http://localhost:9500',
     OMS_URL : `https://cmsoms.cern.ch/agg/api/v1`,
     AUTH_SERVICE_URL : 'https://auth.cern.ch/auth/realms/cern/protocol/openid-connect/token',
-    REDIS_URL : `redis://127.0.0.1:6379`,
+    REDIS_URL : `redis://${process.env.REDIS_URL || '127.0.0.1'}:${
+                  process.env.REDIS_PORT || 6379}`,
     OMS_RUNS : (number_of_runs = 10) =>
                  `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_SPECIFIC_RUN : (run_number) => `runs?filter[run_number]=${run_number}`,
@@ -66,7 +67,8 @@ module.exports = {
     API_URL : process.env.DOCKER_POSTGRES ? 'http://dev:9500' :
                                             'http://localhost:9500',
     OMS_URL : `https://cmsoms.cern.ch/agg/api/v1`,
-    REDIS_URL : `redis://127.0.0.1:6379`,
+    REDIS_URL : `redis://${process.env.REDIS_URL || '127.0.0.1'}:${
+                  process.env.REDIS_PORT || 6379}`,
     OMS_RUNS : (number_of_runs = 10) =>
                  `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_SPECIFIC_RUN : (run_number) => `runs?filter[run_number]=${run_number}`,
@@ -102,7 +104,9 @@ module.exports = {
     API_URL : 'http://localhost:9500',
     OMS_URL : `https://cmsoms.cern.ch/agg/api/v1`,
     AUTH_SERVICE_URL : 'https://auth.cern.ch/auth/realms/cern/protocol/openid-connect/token',
-    REDIS_URL : `redis://127.0.0.1:6379`,  // `redis://dev-rr-redis.runregistry.svc.cluster.local`,
+    REDIS_URL : `redis://${process.env.REDIS_URL || '127.0.0.1'}:${
+                  process.env.REDIS_PORT || 6379}`,
+    // `redis://dev-rr-redis.runregistry.svc.cluster.local`,
     OMS_RUNS : (number_of_runs = 10) =>
                  `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_SPECIFIC_RUN : (run_number) => `runs?filter[run_number]=${run_number}`,
@@ -141,7 +145,9 @@ module.exports = {
     API_URL : 'http://localhost:9500',
     OMS_URL : `https://cmsoms.cern.ch/agg/api/v1`,
     AUTH_SERVICE_URL : 'https://auth.cern.ch/auth/realms/cern/protocol/openid-connect/token',
-    REDIS_URL : `redis://127.0.0.1:6379`,  // redis://cmsweb-test4-yvri27sszw3m-node-2:31505`,
+    REDIS_URL : `redis://${process.env.REDIS_URL || '127.0.0.1'}:${
+                  process.env.REDIS_PORT || 6379}`,
+    // redis://cmsweb-test4-yvri27sszw3m-node-2:31505`,
     OMS_RUNS : (number_of_runs = 10) =>
                  `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_SPECIFIC_RUN : (run_number) => `runs?filter[run_number]=${run_number}`,
@@ -176,7 +182,8 @@ module.exports = {
     API_URL : 'http://dev-rr-api:8354',
     OMS_URL : `https://cmsoms.cern.ch/agg/api/v1`,
     AUTH_SERVICE_URL : 'https://auth.cern.ch/auth/realms/cern/protocol/openid-connect/token',
-    REDIS_URL : `redis://dev-rr-redis:8356`,
+    REDIS_URL : `redis://${process.env.REDIS_URL || 'dev-rr-redis'}:${
+                  process.env.REDIS_PORT || 8356}`,
     OMS_RUNS : (number_of_runs = 49) =>
                  `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_SPECIFIC_RUN : (run_number) => `runs?filter[run_number]=${run_number}`,
@@ -215,7 +222,8 @@ module.exports = {
     API_URL : 'http://rr-prod-api:8351/api',
     OMS_URL : `https://cmsoms.cern.ch/agg/api/v1`,
     AUTH_SERVICE_URL : 'https://auth.cern.ch/auth/realms/cern/protocol/openid-connect/token',
-    REDIS_URL : `redis://rr-redis:8352`,
+    REDIS_URL : `redis://${process.env.REDIS_URL || 'rr-redis'}:${
+                  process.env.REDIS_PORT || 8352}`,
     OMS_RUNS : (number_of_runs = 10) =>
                  `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_SPECIFIC_RUN : (run_number) => `runs?filter[run_number]=${run_number}`,
