@@ -35,7 +35,6 @@ export const fetchOMSLumisectionRanges = (run_number) =>
 
 export const fetchRRLumisectionRanges = (run_number, dataset_name) =>
   error_handler(async (dispatch) => {
-    console.log('here');
     const {
       data: lumisections,
     } = await axios.post(`${api_url}/lumisections/rr_lumisection_ranges`, {

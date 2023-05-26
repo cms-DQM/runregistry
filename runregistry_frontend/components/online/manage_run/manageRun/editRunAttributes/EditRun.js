@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
-import { Formik, Field } from 'formik';
-import { Select, Input, Button } from 'antd';
+import { Formik } from 'formik';
+import { Select, Input, Button, Collapse } from 'antd';
 import axios from 'axios';
 import { api_url } from '../../../../../config/config';
 import { editRun } from '../../../../../ducks/online/runs';
@@ -40,12 +41,19 @@ class EditRun extends Component {
                                 const updated_run = {
                                     rr_attributes: form_values
                                 };
-                                await editRun(run.run_number, updated_run);
+                                const warnings = await editRun(run.run_number, updated_run);
                                 await Swal(
-                                    `Run ${run.run_number} component's edited successfully`,
-                                    '',
+                                    `Run ${run.run_number}'s components edited successfully`,
+                                    warnings ? ((warnings) => {
+                                        let msg = 'Warnings occured when updating run: <ul>';
+                                        warnings.forEach(warning => msg += `<li>${String(warning)}</li>`);
+                                        msg += '</ul>';
+                                        return msg;
+                                    })(warnings) : '',
+
                                     'success'
                                 );
+
                             }}
                             render={({
                                 values,

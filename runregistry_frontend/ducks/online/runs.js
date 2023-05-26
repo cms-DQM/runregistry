@@ -36,16 +36,64 @@ export const filterRuns = (page_size, page, sortings, filter) =>
     false
   );
 
+
+
+// Callback when submitting updated run info (class and stop_reason). Initially, it was done
+// through a single API route, meaning that there was a single Permission tied
+// to this action. Later, it was decided that only experts can change the run class,
+// so the API route had to be split to two separate ones: one for changing the class
+// and the other for changing the stop reason. In order not to change the UI, a single form is
+// used, but two separate requests are made.
+// This leads us to have to check if any of the two succeeded:
+// if only one succeeded, this means that the request was partially successful, but,
+// due to missing permissions, you could not change all the run attributes. In order
+// not to show a scary warning message to the shifters, partial success is still 
+// shown as success, but with a message on what attribute failed to update.
+// A workaround would be to have separate forms for updating each attribute.  
 export const editRun = (run_number, updated_run) =>
   error_handler(async (dispatch, getState) => {
-    let { data: run } = await axios.put(
-      `${api_url}/manual_run_edit/${run_number}`,
-      updated_run,
-      auth(getState)
-    );
+    let warnings = [];
+    let first_req_failed = false;
+    let response_class, response_stop_reason;
+    try {
+      let { data: run } = await axios.put(
+        `${api_url}/manual_run_edit/${run_number}/class`,
+        { "class": updated_run.rr_attributes.class },
+        auth(getState)
+      );
+      response_class = run;
+    } catch (err) {
+      const { status, statusText } = err.response;
+
+      console.warn(err);
+      first_req_failed = true;
+      // warnings.push(err.response.data.message);
+      warnings.push(`Could not update run class. You may not have the required permissions.`)
+    }
+
+    try {
+      let { data: run } = await axios.put(
+        `${api_url}/manual_run_edit/${run_number}/stop_reason`,
+        { "stop_reason": updated_run.rr_attributes.stop_reason },
+        auth(getState)
+      );
+      response_stop_reason = run;
+    } catch (err) {
+      const { status, statusText } = err.response;
+      console.warn(err);
+      // Both requests failed, error
+      if (first_req_failed) {
+        throw err;
+      }
+      // warnings.push(err.response.data.message);
+      warnings.push(`Could not update run stop reason. You may not have the required permissions.`)
+    }
+
+    let run = response_stop_reason;
     run = formatRuns([run])[0];
     dispatch({ type: EDIT_RUN, payload: run });
     dispatch(hideManageRunModal());
+    return warnings;
   });
 
 export const markSignificant = run_number =>
@@ -114,7 +162,7 @@ const INITIAL_STATE = {
   count: 0
 };
 
-export default function(state = INITIAL_STATE, action) {
+export default function (state = INITIAL_STATE, action) {
   const { type, payload } = action;
   switch (type) {
     case FILTER_RUNS:

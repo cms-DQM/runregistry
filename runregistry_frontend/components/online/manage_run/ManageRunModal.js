@@ -12,7 +12,6 @@ class ManageRunModal extends Component {
       children,
       run,
     } = this.props;
-    console.log(manage_run_modal_visible);
     return (
       <div>
         <Modal

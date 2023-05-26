@@ -109,7 +109,6 @@ class EditComponent extends Component {
                   this.setState({ loading_submit: true });
                   const { run_number, dataset_name } = this.props;
                   let component_triplet_name = component;
-                  console.log(form_values);
                   await this.props.addLumisectionRange(
                     form_values,
                     run_number,
@@ -123,7 +122,7 @@ class EditComponent extends Component {
                     await this.props.reFetchDataset(run_number, dataset_name);
                   }
                   this.setState({ loading_submit: false });
-                  await Swal(`Component's edited successfully`, '', 'success');
+                  await Swal(`Component edited successfully`, '', 'success');
                 } catch (err) {
                   this.setState({ loading_submit: false });
                   throw err;
