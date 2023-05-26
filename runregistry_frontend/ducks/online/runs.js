@@ -44,56 +44,56 @@ export const filterRuns = (page_size, page, sortings, filter) =>
 // so the API route had to be split to two separate ones: one for changing the class
 // and the other for changing the stop reason. In order not to change the UI, a single form is
 // used, but two separate requests are made.
-// This leads us to have to check if any of the two succeeded:
-// if only one succeeded, this means that the request was partially successful, but,
-// due to missing permissions, you could not change all the run attributes. In order
-// not to show a scary warning message to the shifters, partial success is still 
-// shown as success, but with a message on what attribute failed to update.
-// A workaround would be to have separate forms for updating each attribute.  
+// See https://github.com/cms-DQM/runregistry/pull/21
 export const editRun = (run_number, updated_run) =>
   error_handler(async (dispatch, getState) => {
-    let warnings = [];
+    let failed_attributes = [];
     let first_req_failed = false;
-    let response_class, response_stop_reason;
+    let run;
     try {
-      let { data: run } = await axios.put(
+      await axios.put(
         `${api_url}/manual_run_edit/${run_number}/class`,
         { "class": updated_run.rr_attributes.class },
         auth(getState)
       );
-      response_class = run;
     } catch (err) {
-      const { status, statusText } = err.response;
+      const { status } = err.response;
 
-      console.warn(err);
       first_req_failed = true;
-      // warnings.push(err.response.data.message);
-      warnings.push(`Could not update run class. You may not have the required permissions.`)
+      if (status === 401) {
+        failed_attributes.push("class")
+      }
+      // If any other non-authorized error happens, pass it to the error_handler
+      else {
+        throw err;
+      }
     }
 
     try {
-      let { data: run } = await axios.put(
+      // Parentheses needed to destructure data to existing run var, 
+      // which is outside of try-catch.
+      ({ data: run } = await axios.put(
         `${api_url}/manual_run_edit/${run_number}/stop_reason`,
         { "stop_reason": updated_run.rr_attributes.stop_reason },
         auth(getState)
-      );
-      response_stop_reason = run;
+      ));
     } catch (err) {
-      const { status, statusText } = err.response;
-      console.warn(err);
+      const { status } = err.response;
       // Both requests failed, error
       if (first_req_failed) {
         throw err;
       }
-      // warnings.push(err.response.data.message);
-      warnings.push(`Could not update run stop reason. You may not have the required permissions.`)
+      if (status === 401) {
+        failed_attributes.push("stop reason")
+      } else {
+        throw err;
+      }
     }
 
-    let run = response_stop_reason;
     run = formatRuns([run])[0];
     dispatch({ type: EDIT_RUN, payload: run });
     dispatch(hideManageRunModal());
-    return warnings;
+    return failed_attributes;
   });
 
 export const markSignificant = run_number =>

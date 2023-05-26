@@ -12,6 +12,16 @@ import { error_handler } from '../../../../../utils/error_handlers';
 const { TextArea } = Input;
 const { Option, OptGroup } = Select;
 
+// Helper function for formatting a list of attributes that 
+// were not updated correctly into an unordered list.
+const format_failed_attributes = (failed_attributes) => {
+    let msg = 'Note: some attributes have not been been updated.<ul>';
+    failed_attributes.forEach(failed_attribute => msg += `<li>You do not have the required permissions to edit the run's ${String(failed_attribute)}</li>`);
+    msg += '</ul>';
+    return msg;
+
+}
+
 class EditRun extends Component {
     state = { classes: [], not_in_the_list: false };
     componentDidMount = error_handler(async () => {
@@ -41,16 +51,10 @@ class EditRun extends Component {
                                 const updated_run = {
                                     rr_attributes: form_values
                                 };
-                                const warnings = await editRun(run.run_number, updated_run);
+                                const failed_attributes = await editRun(run.run_number, updated_run);
                                 await Swal(
-                                    `Run ${run.run_number}'s components edited successfully`,
-                                    warnings ? ((warnings) => {
-                                        let msg = 'Warnings occured when updating run: <ul>';
-                                        warnings.forEach(warning => msg += `<li>${String(warning)}</li>`);
-                                        msg += '</ul>';
-                                        return msg;
-                                    })(warnings) : '',
-
+                                    `Run ${run.run_number}'s attributes edited successfully`,
+                                    failed_attributes.length > 0 ? format_failed_attributes(failed_attributes) : '',
                                     'success'
                                 );
 
@@ -265,6 +269,7 @@ class EditRun extends Component {
                         display: flex;
                         justify-content: flex-end;
                     }
+                
                 `}</style>
             </div>
         );
