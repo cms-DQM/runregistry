@@ -10,7 +10,6 @@ const _ = require('lodash');
 const fs = require('fs');
 const https = require('https');
 const CronJob = require('cron').CronJob;
-require('console-stamp')(console);
 const axios = require('axios').create({
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
@@ -46,9 +45,9 @@ const queue = new PQueue({ concurrency: 2 });
 const get_all_datasets_in_gui = async () => {
   let all_datasets_in_gui;
   if (process.env.NODE_ENV === 'production') {
-    console.log('fetching all GUI data');
+    console.log('cron_datasets/2.ping_dqm_gui.js # get_all_datasets_in_gui(): fetching all GUI data');
     const { data } = await axios.get(`${DQM_GUI_URL}*.`);
-    console.log('all GUI data fetched');
+    console.log('cron_datasets/2.ping_dqm_gui.js # get_all_datasets_in_gui(): all GUI data fetched');
     all_datasets_in_gui = data;
   } else {
     all_datasets_in_gui = JSON.parse(
@@ -214,16 +213,16 @@ const ping_dqm_gui = async () => {
     );
     await queue.addAll(promises);
     if (count_of_dataset_links_added_in_gui > 0) {
-      console.log(`Added ${count_of_dataset_links_added_in_gui} dataset links`);
+      console.log(`cron_datasets/2.ping_dqm_gui.js # ping_dqm_gui(): Added ${count_of_dataset_links_added_in_gui} dataset links`);
       await transaction.commit();
     } else {
       await transaction.rollback();
     }
     console.log(
-      'finished job of fecthing all GUI datasets and comparing them with RR'
+      'cron_datasets/2.ping_dqm_gui.js # ping_dqm_gui(): finished job of fecthing all GUI datasets and comparing them with RR'
     );
   } catch (err) {
-    console.log(err.message);
+    console.log('cron_datasets/2.ping_dqm_gui.js # ping_dqm_gui(): ERROR: ', err.message);
     await transaction.rollback();
   }
 };
@@ -232,7 +231,7 @@ const ping_dqm_gui = async () => {
 if (process.env.NODE_ENV !== 'development') {
   const job = new CronJob(
     `*/${SECONDS_PER_DQM_GUI_CHECK} * * * * *`,
-    handleErrors(ping_dqm_gui, 'Error pinging DQM GUI')
+    handleErrors(ping_dqm_gui, 'cron_datasets/2.ping_dqm_gui.js # Error pinging DQM GUI')
   ).start();
 } else {
   // For development:

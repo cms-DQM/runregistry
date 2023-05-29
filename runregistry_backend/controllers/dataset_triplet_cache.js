@@ -48,17 +48,17 @@ exports.fill_dataset_triplet_cache = async (transaction) => {
         number_of_processed_datasets += processed_datasets.length;
       });
     }
-    console.log(`Processing for ${count} datasets.`);
+    console.log(`fill_dataset_triplet_cache(): Processing for ${count} datasets.`);
     const asyncQueue = queue(async (dataset_batch) => await dataset_batch(), 1);
     asyncQueue.drain = async () => {
       console.log(
-        `Cache generated for ${number_of_processed_datasets} datasets`
+        `fill_dataset_triplet_cache(): Cache generated for ${number_of_processed_datasets} datasets`
       );
       resolve();
     };
     asyncQueue.error = (err) => {
-      console.log('Error: ');
-      console.log(err);
+      console.log('fill_dataset_triplet_cache(): Error: ');
+      console.log("fill_dataset_triplet_cache():", err);
       reject();
       throw err;
     };
@@ -113,13 +113,13 @@ exports.processDatasets = async (
       return;
     } catch (err) {
       console.log(
-        `Failed for dataset ${dataset.name} of run ${dataset.run_number}`
+        `processDatasets(): Failed for dataset ${dataset.name} of run ${dataset.run_number}`
       );
       if (!number_of_tries || number_of_tries < 5) {
         if (typeof number_of_tries === 'undefined') {
           number_of_tries = 0;
         }
-        console.log(`Trying again for ${number_of_tries} time`);
+        console.log(`processDatasets(): Trying again for ${number_of_tries} time`);
         setImmediate(
           exports.processDatasets.bind(
             null,
@@ -130,9 +130,9 @@ exports.processDatasets = async (
         );
       } else {
         console.log(
-          `Failed completely for ${dataset.name} of run ${dataset.run_number}`
+          `processDatasets(): Failed completely for ${dataset.name} of run ${dataset.run_number}`
         );
-        console.log(err);
+        console.log("processDatasets(): ", err);
       }
     }
   });
@@ -181,28 +181,28 @@ exports.fill_for_unfilled_datasets = async (transaction) => {
     });
   }
 
-  console.log(`Processing for ${count} datasets.`);
+  console.log(`fill_for_unfilled_datasets(): Processing for ${count} datasets.`);
   const number_of_workers = 4;
   const asyncQueue = queue(
     async (dataset_batch) => await dataset_batch(),
     number_of_workers
   );
   asyncQueue.drain = async () => {
-    console.log(`Cache generated for ${number_of_processed_datasets} datasets`);
+    console.log(`fill_for_unfilled_datasets(): Cache generated for ${number_of_processed_datasets} datasets`);
 
     // There might still be some datasets that need to be calculated that due to the offset haven't been calculated:
     const new_count_result = await count_query_function();
     const new_count = new_count_result[0].count;
     if (new_count > 0) {
       console.log(
-        `Still ${new_count} datasets that need to be calculated, please wait`
+        `fill_for_unfilled_datasets(): Still ${new_count} datasets that need to be calculated, please wait`
       );
       await exports.fill_for_unfilled_datasets(transaction);
     }
   };
   asyncQueue.error = (err) => {
-    console.log('Error: ');
-    console.log(err);
+    console.log('fill_for_unfilled_datasets(): Error: ');
+    console.log('fill_for_unfilled_datasets():', err);
     throw err;
   };
   await asyncQueue.push(async_functions);
@@ -231,14 +231,14 @@ exports.recalculate_all_triplet_cache = async (transaction) => {
     });
   }
 
-  console.log(`Processing for ${count} datasets.`);
+  console.log(`recalculate_all_triplet_cache(): Processing for ${count} datasets.`);
   const asyncQueue = queue(async (dataset_batch) => await dataset_batch(), 4);
   asyncQueue.drain = async () => {
-    console.log(`Cache generated for ${number_of_processed_datasets} datasets`);
+    console.log(`recalculate_all_triplet_cache(): Cache generated for ${number_of_processed_datasets} datasets`);
   };
   asyncQueue.error = (err) => {
-    console.log('Error: ');
-    console.log(err);
+    console.log('recalculate_all_triplet_cache(): Error: ');
+    console.log('recalculate_all_triplet_cache:', err);
     throw err;
   };
   await asyncQueue.push(async_functions);

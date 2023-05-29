@@ -30,7 +30,6 @@
     "bull": "^3.12.1",
     "cern-get-sso-cookie": "^1.0.0",
     "change-name-of-all-keys": "^1.0.3",
-    "console-stamp": "^0.2.9",
     "cookiefile": "^1.0.10",
     "cors": "^2.8.5",
     "cron": "^1.6.0",
@@ -54,7 +53,8 @@
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.21.5",
     "sequelize-cli": "^5.5.1",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "dotenv": "^16.0.3"
   },
   "devDependencies": {
     "chai": "^4.2.0",

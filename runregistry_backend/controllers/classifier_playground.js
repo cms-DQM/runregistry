@@ -77,7 +77,7 @@ exports.return_classifier_evaluated_tuple = (run_data, classifier_rules) => {
                 try {
                     result = json_logic.apply(if_rule, run_data);
                 } catch (e) {
-                    console.log(e);
+                    console.log("return_classifier_evaluated_tuple():", e);
                     throw e;
                 }
                 result = result === true; // Make null values false

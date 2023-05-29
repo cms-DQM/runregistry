@@ -65,7 +65,7 @@ const fetch_runs = async (
   // Therefore, it is good to call recursively until at least some run that is fetched was previously fetched and saved, and then save them all.
   if (new_runs.length === fetched_runs.length) {
     console.log(
-      `All fetched runs are new, fetching ${fetch_amount * 2} runs...`
+      `cron/1.get_runs.js # fetch_runs(): All fetched runs are new, fetching ${fetch_amount * 2} runs...`
     );
     await fetch_runs(fetch_amount * 2, false);
   } else {
@@ -73,7 +73,7 @@ const fetch_runs = async (
     const runs_to_be_saved = calculate_new_runs(all_fetched_runs, last_saved_runs);
 
     if (runs_to_be_saved.length > 0) {
-      console.log(`saving: ${runs_to_be_saved.length} runs`);
+      console.log(`cron/1.get_runs.js # fetch_runs(): saving: ${runs_to_be_saved.length} runs`);
       // The 0 in the second argument is to indicate is this the first time we try to save the runs (save_runs is recursive if it errors out on any run)
       await save_runs(runs_to_be_saved, 0);
     }
@@ -94,11 +94,11 @@ const fetch_runs = async (
 if (process.env.ENV === 'production' || process.env.ENV === 'staging') {
   const job = new CronJob(
     `*/${SECONDS_PER_API_CALL} * * * * *`,
-    handleErrors(fetch_runs, 'Error fetching new runs ')
+    handleErrors(fetch_runs, 'cron/1.get_runs.js # Error fetching new runs ')
   ).start();
 }
 // If in a dev environment we want to do this at least once:
-handleErrors(fetch_runs, 'Error fetching new runs')();
+handleErrors(fetch_runs, 'cron/1.get_runs.js # Error fetching new runs ')();
 
 // makes left outer join between fetched_runs and last_saved_runs, returns the difference of runs (the ones which have not been saved)
 // Case when run from way in the past is updated, it will think it is a new run, since it doesn't appear in the fetch of the local 50 runs,

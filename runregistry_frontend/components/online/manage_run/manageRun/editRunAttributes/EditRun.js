@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
-import { Formik, Field } from 'formik';
-import { Select, Input, Button } from 'antd';
+import { Formik } from 'formik';
+import { Select, Input, Button, Collapse } from 'antd';
 import axios from 'axios';
 import { api_url } from '../../../../../config/config';
 import { editRun } from '../../../../../ducks/online/runs';
@@ -10,6 +11,16 @@ import { showManageRunModal } from '../../../../../ducks/online/ui';
 import { error_handler } from '../../../../../utils/error_handlers';
 const { TextArea } = Input;
 const { Option, OptGroup } = Select;
+
+// Helper function for formatting a list of attributes that 
+// were not updated correctly into an unordered list.
+const format_failed_attributes = (failed_attributes) => {
+    let msg = 'Note: some attributes have not been been updated.<ul>';
+    failed_attributes.forEach(failed_attribute => msg += `<li>You do not have the required permissions to edit the run's ${String(failed_attribute)}</li>`);
+    msg += '</ul>';
+    return msg;
+
+}
 
 class EditRun extends Component {
     state = { classes: [], not_in_the_list: false };
@@ -40,12 +51,13 @@ class EditRun extends Component {
                                 const updated_run = {
                                     rr_attributes: form_values
                                 };
-                                await editRun(run.run_number, updated_run);
+                                const failed_attributes = await editRun(run.run_number, updated_run);
                                 await Swal(
-                                    `Run ${run.run_number} component's edited successfully`,
-                                    '',
+                                    `Run ${run.run_number}'s attributes edited successfully`,
+                                    failed_attributes.length > 0 ? format_failed_attributes(failed_attributes) : '',
                                     'success'
                                 );
+
                             }}
                             render={({
                                 values,
@@ -257,6 +269,7 @@ class EditRun extends Component {
                         display: flex;
                         justify-content: flex-end;
                     }
+                
                 `}</style>
             </div>
         );

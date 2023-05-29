@@ -8,15 +8,11 @@ const { Header, Content, Footer, Sider } = Layout;
 class TopNav extends Component {
   render() {
     const {
-      router: {
-        query: { type, section, workspace },
-      },
-      user,
-      env,
+      router: { query: { type, section, workspace }, },
+      user, env,
     } = this.props;
     // Log to see who has used the webpage on the server:
-    console.log('user:', user.displayname);
-    console.log(type);
+    console.log(`user: ${user.displayname}, ${user.id}, Type: ${type}`);
     const menu_style = { lineHeight: '64px', minWidth: '800px' };
     const header_style = {};
     if (env === 'staging') {
@@ -103,7 +99,7 @@ class TopNav extends Component {
               style={{ opacity: 1, color: 'red !important' }}
             >
               <span
-                onClick={() => {}}
+                onClick={() => { }}
                 style={{
                   color: 'red !important',
                   fontSize: '0.9em',
@@ -120,7 +116,7 @@ class TopNav extends Component {
               'No User Specified in the Headers, or User is Developing'}
           </h3>
 
-          <a className="white" href="https://cmsrunregistry.web.cern.ch/logout">
+          <a className="white" href="/logout">
             Log out
           </a>
         </div>

@@ -16,6 +16,7 @@ const include_conditions = (List, max_settings_id) => [
     ],
   },
 ];
+
 // This will join the Item with the Setting configuration of higher ID (the current one).
 exports.findAllItems = async (List, Item) => {
   const max_settings_id = await Settings.max('id');
@@ -55,7 +56,6 @@ exports.findOneItem = async (List, Item, conditions) => {
 };
 
 // generateNewItem, generateNewList, getCurrentEntries, generateNewEntries and generateNewSettings are all helpers of the CUD (CREATE UPDATE or DELETE) operations down below
-
 const generateNewItem = async (Item, data) => {
   const new_item = await Item.build({
     ...data,

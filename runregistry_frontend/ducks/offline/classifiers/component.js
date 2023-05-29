@@ -20,7 +20,8 @@ export const fetchComponentClassifiers = component_id =>
 export const newComponentClassifier = (
     new_classifier,
     status_selected,
-    component
+    component,
+    priority_selected
 ) =>
     error_handler(async (dispatch, getState) => {
         const { data: classifier } = await axios.post(
@@ -30,7 +31,7 @@ export const newComponentClassifier = (
                 status: status_selected,
                 component,
                 // This are for testing:
-                priority: 1,
+                priority: priority_selected,
                 enabled: true
             },
             auth(getState)

@@ -10,16 +10,43 @@ import urllib3
 # urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 PAGE_SIZE = 50
 
-staging_cert = "certs/usercert.pem"
-staging_key = "certs/userkey.pem"
-api_url = "https://cmsrunregistry.web.cern.ch/api"
-if os.getenv("ENVIRONMENT") == "development":
+staging_cert = ""
+staging_key = ""
+api_url = ""
+use_cookies = True
+email = "api@api"
+
+def setup( target ):
+  global api_url
+  global staging_cert
+  global staging_key
+  global use_cookies
+  if target == "local" :
     api_url = "http://localhost:9500"
+    staging_cert = ""
+    staging_key = ""
+    use_cookies = False
+  if target == "development" :
+    api_url = "https://dev-cmsrunregistry.web.cern.ch/api"
     staging_cert = "certs/usercert.pem"
     staging_key = "certs/userkey.pem"
+    use_cookies = True
+  if target == "production" :
+    api_url = "https://cmsrunregistry.web.cern.ch/api"
+    staging_cert = "certs/usercert.pem"
+    staging_key = "certs/userkey.pem"
+    use_cookies = True
 
+def _get_headers():
+  headers = {"Content-type": "application/json"}
+  if not use_cookies :
+    headers["email"] = email
+  return headers
+
+setup("production")
 
 def _get_cookies(url, **kwargs):
+    if not use_cookies : return {"dummy":"yammy"}
     """
     Gets the cookies required to query RR API
     :return: the cookies required to query Run Registry API. In particular 'connect.sid' is the one we are interested in
@@ -54,7 +81,7 @@ def _get_page(url,
     :param filter: The filter to be transformed into RR syntax, and then sent for querying
     :return: A page in Run registry
     """
-    headers = {"Content-type": "application/json"}
+    headers = _get_headers()
     cookies = _get_cookies(url, **kwargs)
     query_filter = kwargs.pop("filter", {})
     if data_type == "runs" and not ignore_filter_transformation:
@@ -227,7 +254,7 @@ def _get_lumisection_helper(url, run_number, dataset_name="online", **kwargs):
     """
     Puts the headers, and cookies for all other lumisection methods
     """
-    headers = {"Content-type": "application/json"}
+    headers = _get_headers()
     cookies = _get_cookies(url, **kwargs)
     payload = json.dumps({
         "run_number": run_number,
@@ -289,7 +316,7 @@ def generate_json(json_logic, **kwargs):
     if isinstance(json_logic, str) == False:
         json_logic = json.dumps(json_logic)
     url = "{}/json_creation/generate".format(api_url)
-    headers = {"Content-type": "application/json"}
+    headers = _get_headers()
     cookies = _get_cookies(url, **kwargs)
     payload = json.dumps({"json_logic": json_logic})
     response = requests.post(url,
@@ -307,7 +334,7 @@ def create_json(json_logic, dataset_name_filter, **kwargs):
   if isinstance(json_logic, str) == False:
         json_logic = json.dumps(json_logic)
   url = "{}/json_portal/generate".format(api_url)
-  headers = {"Content-type": "application/json"}
+  headers = _get_headers()
   cookies = _get_cookies(url, **kwargs)
   payload = json.dumps({"json_logic": json_logic, "dataset_name_filter": dataset_name_filter})
   response = requests.post(url,
@@ -345,3 +372,132 @@ def create_json(json_logic, dataset_name_filter, **kwargs):
           print('error generating json')
           return
   
+
+# advanced RR operations ==============================================================================
+# Online Table
+def move_runs(from_, to_, run = None, runs = [], **kwargs):
+    """
+    move run/runs from one state to another
+    """
+    if not run and not runs :
+      print("move_runs(): no 'run' and 'runs' arguments were provided, return")
+      return
+
+    states = ["SIGNOFF", "OPEN", "COMPLETED"]
+    if from_ not in states or to_ not in states :
+      print("move_runs(): get states '", from_, "' , '", to_, "', while allowed states are ", states, ", return")
+      return
+    
+    url = "%s/runs/move_run/%s/%s"  % (api_url, from_, to_)
+
+    headers = _get_headers()
+    cookies = _get_cookies(url, **kwargs)
+    
+    if run : 
+      payload = json.dumps( { "run_number" : run } )
+      return requests.post(url, cookies=cookies, headers=headers, data=payload)
+
+    answers = []
+    for run_number in runs :
+      payload = json.dumps( { "run_number" : run_number } )
+      answer = requests.post(url, cookies=cookies, headers=headers, data=payload).json()
+      answers += [ answer ]
+
+    return answers
+
+def make_significant_runs(run = None, runs = [], **kwargs):
+    """
+    mark run/runs significant
+    """
+    if not run and not runs :
+      print("move_runs(): no 'run' and 'runs' arguments were provided, return")
+      return
+    
+    url = "%s/runs/mark_significant"  % (api_url)
+    headers = _get_headers()
+
+    cookies = _get_cookies(api_url, **kwargs)
+    
+    if run : 
+      data = { "run_number" : run }
+      return requests.post( url, cookies=cookies, headers=headers, json=data )
+
+    answers = []
+    for run_number in runs :
+      data = { "run_number" : run }
+      answer = requests.post( url, cookies=cookies, headers=headers, json=data )
+      answers += [ answer ]
+
+    return answers
+
+def reset_RR_attributes_and_refresh_runs(run = None, runs = [], **kwargs):
+    """
+    reset RR attributes and refresh run/runs
+    """
+    if not run and not runs :
+      print("move_runs(): no 'run' and 'runs' arguments were provided, return")
+      return
+    
+    url = "%s/runs/reset_and_refresh_run"  % (api_url)
+    headers = _get_headers()
+    cookies = _get_cookies(url, **kwargs)
+    
+    if run : 
+      url = "%s/runs/reset_and_refresh_run/%d"  % (api_url, run)
+      return requests.post(url, cookies=cookies, headers=headers)
+
+    answers = []
+    for run_number in runs :
+      url = "%s/runs/reset_and_refresh_run/%d"  % (api_url, run_number)
+      answer = requests.post(url, cookies=cookies, headers=headers)
+      answers += [ answer ]
+
+    return answers
+  
+def edit_rr_lumisections(run, lumi_start, lumi_end, component, status, comment='', cause='', dataset_name='online', **kwargs):
+    """
+    WIP edit RR lumisections attributes
+    """
+    states = ["GOOD", "BAD", "STANDBY", "EXCLUDED", "NONSET"]
+    if status not in states :
+      print("move_runs(): get status '", status, "', while allowed statuses are ", states, ", return")
+      return
+    
+    url = "%s/lumisections/edit_rr_lumisections"  % (api_url)
+
+    headers = _get_headers()
+    cookies = _get_cookies(url, **kwargs)
+    payload = json.dumps( { "new_lumisection_range" : { "start" : lumi_start, "end" : lumi_end, "status" : status, "comment" : comment, "cause" : cause }, "run_number" : run, "dataset_name" : dataset_name, "component" : component } )
+    return requests.post(url, cookies=cookies, headers=headers, data=payload)
+
+# Offline table
+WAITING_DQM_GUI_CONSTANT = 'waiting dqm gui'
+def move_datasets(from_, to_, dataset_name, workspace = 'global', run = None, runs = [], **kwargs):
+    """
+    move offline dataset/datasets from one state to another
+    """
+    if not run and not runs :
+      print("move_datasets(): no 'run' and 'runs' arguments were provided, return")
+      return
+
+    states = [ "SIGNOFF", "OPEN", "COMPLETED", WAITING_DQM_GUI_CONSTANT ]
+    if from_ not in states or to_ not in states :
+      print("move_datasets(): get states '", from_, "' , '", to_, "', while allowed states are ", states, ", return")
+      return
+    
+    url = "%s/datasets/%s/move_dataset/%s/%s"  % (api_url, workspace, from_, to_)
+
+    headers = _get_headers()
+    cookies = _get_cookies(url, **kwargs)
+    
+    if run : 
+      payload = json.dumps( { "run_number" : run , "dataset_name" : dataset_name, "workspace" : workspace } )
+      return requests.post(url, cookies=cookies, headers=headers, data=payload)
+
+    answers = []
+    for run_number in runs :
+      payload = json.dumps( { "run_number" : run , "dataset_name" : dataset_name, "workspace" : workspace } )
+      answer  = requests.post(url, cookies=cookies, headers=headers, data=payload).json()
+      answers += [ answer ]
+
+    return answers

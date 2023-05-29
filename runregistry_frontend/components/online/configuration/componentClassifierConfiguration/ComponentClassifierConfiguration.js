@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import dynamic from 'next/dynamic';
 import ReactTable from 'react-table';
-import { Select } from 'antd';
+import { Select, InputNumber } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import Swal from 'sweetalert2';
 import { components } from '../../../../config/config';
@@ -36,14 +36,20 @@ class ComponentClassifierConfiguration extends Component {
   getDisplayedClassifier(classifier) {
     if (typeof classifier === 'string') {
       classifier = JSON.parse(classifier);
+      if (typeof classifier === 'string') return classifier;
     }
     const displayed_text = classifier.if[0];
     return stringify(displayed_text);
   }
 
   formatClassifierCorrectly = inside_input => {
-    const { status_selected } = this.state;
-    const parsed_input = JSON.parse(inside_input);
+    const { status_selected, priority_selected } = this.state;
+    let parsed_input;
+    try {
+      parsed_input = JSON.parse(inside_input);
+    } catch(e) {
+      parsed_input = e.toString();
+    }
     let classifier = {
       if: [parsed_input, true, false]
     };
@@ -65,7 +71,7 @@ class ComponentClassifierConfiguration extends Component {
       deleteComponentClassifier,
       classifiers
     } = this.props;
-    const { component, status_selected } = this.state;
+    const { component, status_selected, priority_selected } = this.state;
     const columns = [
       {
         Header: 'Priority',
@@ -120,8 +126,7 @@ class ComponentClassifierConfiguration extends Component {
           return <span>{displayed_text}</span>;
         }
       },
-      { Header: 'Created at', accessor: 'createdAt', width: 100 },
-      { Header: 'Updated at', accessor: 'updatedAt', width: 100 },
+      { Header: 'Updated at', accessor: 'createdAt', width: 100 },
       {
         Header: 'Edit',
         width: 100,
@@ -130,7 +135,8 @@ class ComponentClassifierConfiguration extends Component {
             <a
               onClick={() => {
                 this.setState({
-                  status_selected: row.original.status,
+                  status_selected: row.original.status, 
+                  priority_selected: row.original.priority,
                   is_editing: true
                 });
                 const classifier = this.getDisplayedClassifier(
@@ -200,7 +206,7 @@ class ComponentClassifierConfiguration extends Component {
           formatClassifierCorrectly={this.formatClassifierCorrectly}
           editClassifier={editComponentClassifier}
           newClassifier={valid_js_object =>
-            newComponentClassifier(valid_js_object, status_selected, component)
+            newComponentClassifier(valid_js_object, status_selected, component, priority_selected)
           }
           onCancel={() => this.setState({ is_editing: false })}
         >
@@ -223,6 +229,14 @@ class ComponentClassifierConfiguration extends Component {
               <Option value="EXCLUDED">EXCLUDED</Option>
               <Option value="NOTSET">NOT SET</Option>
             </Select>
+            &nbsp;
+            Priority:{' '}
+            <InputNumber
+              min={1}
+              onChange={value => this.setState({ priority_selected: value })}
+              value={priority_selected}
+              disabled={this.state.is_editing}
+            />
           </div>
         </Editor>
         <style jsx>{`

@@ -104,7 +104,7 @@ class DatasetsAcceptedConfiguration extends Component {
           </div>
         )
       },
-      { Header: 'Updated at', accessor: 'updatedAt', width: 100 },
+      { Header: 'Updated at', accessor: 'createdAt', width: 100 },
       {
         Header: 'Edit',
         width: 100,

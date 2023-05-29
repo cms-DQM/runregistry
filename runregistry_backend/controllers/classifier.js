@@ -135,6 +135,7 @@ exports.getClassifiersFiltered = async (req, res) => {
 };
 
 exports.new = async (req, res) => {
+  console.log( "classifier.js # new(): start");
   const { category } = req.params;
   const new_classifier_data = { ...req.body, created_by: req.headers.email };
   const { Classifier, Entries, List, id } = ClassifierTypes[category];
@@ -149,9 +150,12 @@ exports.new = async (req, res) => {
   );
   new_classifier.classifier = JSON.stringify(new_classifier.classifier);
   res.json(new_classifier);
+
+  console.log( "classifier.js # new():", new_classifier );
 };
 
 exports.edit = async (req, res) => {
+  console.log( "classifier.js # edit(): start" );
   const { category, classifier_id } = req.params;
   const new_classifier_data = { ...req.body, updated_by: req.headers.email };
   const { Classifier, Entries, List, id } = ClassifierTypes[category];
@@ -167,9 +171,12 @@ exports.edit = async (req, res) => {
   );
   edited_classifier.classifier = JSON.stringify(edited_classifier.classifier);
   res.json(edited_classifier);
+
+  console.log( "classifier.js # edit():", edited_classifier );
 };
 
 exports.delete = async (req, res) => {
+  console.log( "classifier.js # delete(): start" );
   const { category, classifier_id } = req.params;
   const { Classifier, Entries, List, id } = ClassifierTypes[category];
   const deleted_classifier = await deleteItem(
@@ -181,6 +188,8 @@ exports.delete = async (req, res) => {
     req.get('email')
   );
   res.json(deleted_classifier);
+
+  console.log( "classifier.js # delete:", deleted_classifier );
 };
 
 exports.edit_json_classifier = async (req, res) => {

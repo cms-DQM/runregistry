@@ -89,7 +89,7 @@ const update_or_create_lumisection = async ({
     }
     return lumisectionEvent;
   } catch (err) {
-    console.log(err);
+    console.log("update_or_create_lumisection():", err);
     if (local_transaction) {
       await transaction.rollback();
     }
@@ -440,9 +440,8 @@ exports.get_rr_lumisections_for_dataset = async (
 ) => {
   const merged_lumisections = await sequelize.query(
     `
-        SELECT run_number, "name", lumisection_number, mergejsonb(lumisection_metadata ORDER BY ${
-          without_manual_changes ? '' : 'manual_change,'
-        } version ) as "triplets"
+        SELECT run_number, "name", lumisection_number, mergejsonb(lumisection_metadata ORDER BY ${without_manual_changes ? '' : 'manual_change,'
+    } version ) as "triplets"
         FROM(
         SELECT "LumisectionEvent"."version", run_number, "name", jsonb AS "lumisection_metadata", lumisection_number, manual_change  FROM "LumisectionEvent" INNER JOIN "LumisectionEventAssignation" 
         ON "LumisectionEvent"."version" = "LumisectionEventAssignation"."version" INNER JOIN "JSONBDeduplication" ON "lumisection_metadata_id" = "id"
@@ -611,7 +610,7 @@ exports.edit_rr_lumisections = async (req, res) => {
   const {
     run_number,
     dataset_name,
-    component,
+    component: dcs_bit,
     new_lumisection_range,
   } = req.body;
   let { start, end, status, comment, cause } = new_lumisection_range;
@@ -622,7 +621,7 @@ exports.edit_rr_lumisections = async (req, res) => {
     throw 'When setting lumisections as BAD, there MUST be a comment for this action.';
   }
   const lumisection_metadata = {
-    [component]: {
+    [dcs_bit]: {
       // For consistency we want triplet values to be either their value or empty strings:
       status: status || '',
       comment: comment || '',
@@ -650,7 +649,7 @@ exports.edit_rr_lumisections = async (req, res) => {
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: 'edit lumisections of a dataset',
+      comment: `Edit run ${run_number} lumisections of a dataset ${dataset_name} for component ${dcs_bit}`,
     });
     const new_range = await update_or_create_lumisection({
       run_number,
@@ -677,10 +676,9 @@ exports.edit_rr_lumisections = async (req, res) => {
     await fill_dataset_triplet_cache();
     res.json(new_range);
   } catch (err) {
-    console.log(err);
+    console.log("edit_rr_lumisections():", err);
     await transaction.rollback();
-    throw `Error updating lumisections of ${dataset_name} dataset, run number: ${run_number}: ${
-      err.message || err
+    throw `Error updating lumisections of ${dataset_name} dataset, run number: ${run_number}: ${err.message || err
     }`;
   }
 };
@@ -692,6 +690,7 @@ exports.edit_oms_lumisections = async (req, res) => {
     component: dcs_bit,
     new_lumisection_range,
   } = req.body;
+  console.log("!!!!!", req.body);
   let { start, end, status, comment } = new_lumisection_range;
   if (status === 'true') {
     status = true;
@@ -733,7 +732,7 @@ exports.edit_oms_lumisections = async (req, res) => {
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: `Edit OMS lumisection ranges, user comment: '${comment}'`,
+      comment: `Edit run ${run_number} dataset ${dataset_name} component ${dcs_bit} OMS lumisection ranges, user comment: '${comment}', range [${start},${end}]`,
     });
     const new_range = await update_or_create_lumisection({
       run_number,
@@ -760,10 +759,9 @@ exports.edit_oms_lumisections = async (req, res) => {
     await fill_dataset_triplet_cache();
     res.json(new_range);
   } catch (err) {
-    console.log(err);
+    console.log("edit_oms_lumisections():", err);
     await transaction.rollback();
-    throw `Error updating oms lumisections of ${dataset_name} dataset, run number: ${run_number}: ${
-      err.message || err
+    throw `Error updating oms lumisections of ${dataset_name} dataset, run number: ${run_number}: ${err.message || err
     }`;
   }
 };

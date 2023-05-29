@@ -33,13 +33,20 @@ class ClassClassifierConfiguration extends Component {
   getDisplayedClassifier = classifier => {
     if (typeof classifier === 'string') {
       classifier = JSON.parse(classifier);
+      if (typeof classifier === 'string') return classifier;
     }
     const displayed_text = classifier.if[0];
     return stringify(displayed_text);
   };
 
   formatClassifierCorrectly = inside_input => {
-    const parsed_input = JSON.parse(inside_input);
+    let parsed_input;
+    try {
+      parsed_input = JSON.parse(inside_input);
+    } catch(e) {
+      parsed_input = e.toString();
+    }
+
     let classifier = {
       if: [parsed_input, true, false]
     };
@@ -111,8 +118,7 @@ class ClassClassifierConfiguration extends Component {
           return <span>{displayed_text}</span>;
         }
       },
-      { Header: 'Created at', accessor: 'createdAt', width: 100 },
-      { Header: 'Updated at', accessor: 'updatedAt', width: 100 },
+      { Header: 'Updated at', accessor: 'createdAt', width: 100 },
       {
         Header: 'Edit',
         width: 100,

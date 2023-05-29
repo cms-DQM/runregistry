@@ -16,7 +16,7 @@ const {
 const { update_or_create_dataset } = require('./dataset');
 const { create_new_version } = require('./version');
 const { fill_dataset_triplet_cache } = require('./dataset_triplet_cache');
-const { manually_update_a_run , manually_update_a_run_reset_rr_attributes } = require('../cron/2.save_or_update_runs');
+const { manually_update_a_run, manually_update_a_run_reset_rr_attributes } = require('../cron/2.save_or_update_runs');
 const {
   create_offline_waiting_datasets,
 } = require('../cron_datasets/1.create_datasets');
@@ -102,11 +102,11 @@ const update_or_create_run = async ({
     return runEvent;
   } catch (err) {
     // Rollback transaction if any errors were encountered
-    console.log(err);
+    console.log("update_or_create_run():", err);
     if (local_transaction) {
       await transaction.rollback();
     }
-    throw `Error updating/saving run ${run_number}, ${err.message}`;
+    throw `Error updating/saving run ${run_number}, ${err}`;
   }
 };
 exports.update_or_create_run = update_or_create_run;
@@ -205,7 +205,7 @@ exports.new = async (req, res) => {
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: 'run creation',
+      comment: `run ${run_number} creation`,
     });
     const runEvent = await update_or_create_run({
       run_number,
@@ -246,7 +246,7 @@ exports.new = async (req, res) => {
     await fill_dataset_triplet_cache();
     res.json(runEvent);
   } catch (err) {
-    console.log(err);
+    console.log("run.js # new(): ", err);
     await transaction.rollback();
     throw `Error saving run ${run_number}`;
   }
@@ -256,7 +256,7 @@ exports.new = async (req, res) => {
 // The new_attributes are a collection of the attributes that changed with respect to the run
 exports.automatic_run_update = async (req, res) => {
   const { body } = req
-  const  oms_attributes_from_body  = body.oms_attributes
+  const oms_attributes_from_body = body.oms_attributes
   const { run_number } = oms_attributes_from_body;
   if (typeof run_number === 'undefined') {
     throw 'Run number cannot be undefined';
@@ -265,7 +265,7 @@ exports.automatic_run_update = async (req, res) => {
   if (run === null) {
     // Run doesn't exist, we create it
     console.log(
-      `Trying to update run ${run_number} when we need to create it first`
+      `automatic_run_update(): Trying to update run ${run_number} when we need to create it first`
     );
     await exports.new(req, res);
     return;
@@ -274,6 +274,8 @@ exports.automatic_run_update = async (req, res) => {
   let was_run_updated = false;
   let transaction;
   try {
+    const { oms_lumisections, rr_lumisections } = req.body;
+
     transaction = await sequelize.transaction();
     let atomic_version;
     if (req.body.atomic_version) {
@@ -282,13 +284,12 @@ exports.automatic_run_update = async (req, res) => {
       const version_result = await create_new_version({
         req,
         transaction,
-        comment: 'run automatic update',
+        comment: `run ${run_number} automatic update`,
       });
       atomic_version = version_result.atomic_version;
     }
 
     // Lumisection stuff:
-    const { oms_lumisections, rr_lumisections } = req.body;
     const newRRLumisectionRanges = await update_rr_lumisections({
       run_number,
       dataset_name: 'online',
@@ -323,7 +324,7 @@ exports.automatic_run_update = async (req, res) => {
           const { atomic_version } = await create_new_version({
             req,
             overwriteable_comment:
-              'run flagged: run is not in OPEN state, received update from OMS which affected the RR Lumisections. It needs revision',
+              `run flagged: run ${run_number} is not in OPEN state, received update from OMS which affected the RR Lumisections. It needs revision`,
           });
           // Notice we do not pass transaction in the following call
           const runEvent = await update_or_create_run({
@@ -333,7 +334,7 @@ exports.automatic_run_update = async (req, res) => {
             atomic_version,
             req,
           });
-          throw 'Run is not in state OPEN, and received update from OMS which affected the RR Lumisections, it is now flagged so that it is later updated manually';
+          throw `Run ${run_number} is not in state OPEN, and received update from OMS which affected the RR Lumisections, it is now flagged so that it is later updated manually`;
         }
       }
     }
@@ -381,7 +382,7 @@ exports.automatic_run_update = async (req, res) => {
       const { atomic_version } = await create_new_version({
         req,
         overwriteable_comment:
-          'run flagged: run is not in OPEN state, received update from OMS which affected the rr_attributes of the run. It needs revision',
+          `run flagged: run ${run_number} is not in OPEN state, received update from OMS which affected the rr_attributes of the run. It needs revision`,
       });
       // If there are new RR attributes and the run is no longer in state OPEN, the run needs to be flagged:
       const runEvent = await update_or_create_run({
@@ -391,7 +392,7 @@ exports.automatic_run_update = async (req, res) => {
         atomic_version,
         req,
       });
-      throw 'Run is not in state OPEN, and received update from OMS which affected the rr_attributes of the run, it is now flagged so that it is later updated manually';
+      throw `Run ${run_number} is not in state OPEN, and received update from OMS which affected the rr_attributes of the run, it is now flagged so that it is later updated manually`;
     }
     // If there was actually something to update in the RR attributes, we update it, if it was a change in oms_attributes, we don't update it (since it doesn't affect RR attributes) unless the run is already over.
     if (new_rr_attributes_length > 0 || was_run_updated) {
@@ -408,7 +409,7 @@ exports.automatic_run_update = async (req, res) => {
     if (was_run_updated) {
       await transaction.commit();
       await fill_dataset_triplet_cache();
-      console.log(`updated run ${run_number}`);
+      console.log(`automatic_run_update(): updated run ${run_number}`);
       const run = await Run.findByPk(run_number, {
         include: [
           {
@@ -425,7 +426,7 @@ exports.automatic_run_update = async (req, res) => {
       res.send();
     }
   } catch (err) {
-    console.log(err);
+    console.log('automatic_run_update(): ', err);
     await transaction.rollback();
     throw `Error updating run ${run_number}`;
   }
@@ -434,28 +435,35 @@ exports.automatic_run_update = async (req, res) => {
 // In order to update the lumisections, one does it directly in lumisection.js edit_rr_lumsiections
 // For run (class, stop_reason) its here:
 exports.manual_edit = async (req, res) => {
-  const { run_number } = req.params;
+  const { run_number, attribute } = req.params; // Get URL params
 
+  // Make sure we have been passed the data we need
+  if (!(attribute in req.body)) {
+    throw `Requested to change ${attribute} but no suitable data was supplied`;
+  };
+
+  // Get Run from Database to compare changed values
   const run = await Run.findByPk(run_number);
   if (run === null) {
     throw 'Run not found';
   }
+  // rr_attributes contains the run's attributes
   const { rr_attributes } = run.dataValues;
+  console.log("Run attributes in DB:", rr_attributes);
   if (rr_attributes.state !== 'OPEN') {
     throw 'Run must be in state OPEN to be edited';
   }
-
   let transaction;
   try {
     transaction = await sequelize.transaction();
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: 'run manual edit',
+      comment: `run ${run_number} manual edit of attribute ${attribute} from "${rr_attributes[attribute]}" to "${req.body[attribute]}"`,
     });
     const new_rr_attributes = getObjectWithAttributesThatChanged(
       rr_attributes,
-      req.body.rr_attributes
+      req.body
     );
     const new_rr_attributes_length = Object.keys(new_rr_attributes).length;
     // If there was actually something to update in the RR attributes, we update it, if it was a change in oms_attributes, we don't update it (since it doesn't affect RR attributes)
@@ -468,7 +476,7 @@ exports.manual_edit = async (req, res) => {
         atomic_version,
         transaction,
       });
-      console.log(`updated run ${run_number}`);
+      console.log(`run.js # manual_edit(): updated run ${run_number}`);
     }
     await transaction.commit();
     // Now that it is commited we should find the updated run:
@@ -482,7 +490,7 @@ exports.manual_edit = async (req, res) => {
     });
     res.json(run.dataValues);
   } catch (err) {
-    console.log(err);
+    console.log('run.js # manual_edit():', err);
     await transaction.rollback();
     throw `Error updating run ${run_number}`;
   }
@@ -516,7 +524,7 @@ exports.markSignificant = async (req, res) => {
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: 'mark run significant',
+      comment: `mark run ${run_number} significant`,
     });
     await update_or_create_run({
       run_number,
@@ -532,7 +540,7 @@ exports.markSignificant = async (req, res) => {
     await manually_update_a_run(run_number, {
       email,
       manually_significant: true,
-      comment: `${email} marked run significant, component statuses refreshed`,
+      comment: `${email} marked run ${run_number} significant, component statuses refreshed`,
       atomic_version,
     });
     const updated_run = await Run.findByPk(run_number, {
@@ -544,11 +552,11 @@ exports.markSignificant = async (req, res) => {
       ],
     });
     res.json(updated_run);
-  } catch (e) {
-    console.log('Error marking run significant');
-    console.log(err);
+  } catch (err) {
+    console.log('markSignificant(): Error marking run significant');
+    console.log('markSignificant(): ', err);
     await transaction.rollback();
-    throw `Error marking run significant: ${err.message}`;
+    throw `Error marking run significant: ${err}`;
   }
 };
 
@@ -662,7 +670,7 @@ exports.moveRun = async (req, res) => {
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: 'move state (e.g. OPEN, SIGNOFF) of run',
+      comment: `move state run ${run_number} to state ${to_state}`,
     });
     await update_or_create_run({
       run_number,
@@ -688,7 +696,7 @@ exports.moveRun = async (req, res) => {
     });
     res.json(saved_run.dataValues);
   } catch (e) {
-    console.log(e);
+    console.log("run.js # moveRun(): ", e);
     await transaction.rollback();
     throw `Error SIGNING OFF run, creating the datasets from run in OFFLINE`;
   }

@@ -37,7 +37,7 @@ exports.get_OMS_lumisections = handleErrors(async (run_number) => {
       },
     })
     .catch((err) => {
-      console.log(`Error getting lumisections from OMS for run ${run_number}`);
+      console.log(`get_OMS_lumisections(): Error getting lumisections from OMS for run ${run_number}`);
     });
 
   if (
@@ -94,7 +94,8 @@ exports.get_OMS_lumisections = handleErrors(async (run_number) => {
   );
 
   return oms_lumisections;
-}, 'Error getting lumisection attributes for the run');
+}, 'runregistry_backend/cron/saving_updating_runs_lumisections_utils.js # get_OMS_lumisections(): Error getting lumisection attributes for the run'
+);
 
 exports.get_beam_present_and_stable = (lumisections) => {
   let beams_present_and_stable = false;
@@ -181,7 +182,7 @@ exports.assign_run_class = handleErrors(
     });
     return run_class;
   },
-  'Error assigning run class'
+  'runregistry_backend/cron/saving_updating_runs_lumisections_utils.js # assign_run_class(): Error assigning run class'
 );
 
 exports.is_run_significant = handleErrors(
@@ -210,7 +211,7 @@ exports.is_run_significant = handleErrors(
     });
     return run_is_significant;
   },
-  'Error determining if run is significant'
+  'runregistry_backend/cron/saving_updating_runs_lumisections_utils.js # is_run_significant(): Error determining if run is significant'
 );
 
 // Given the same oms_attributes, rr_attributes, oms_lumisections and classifiers this function will always return the same lumisections with their respective components
@@ -270,7 +271,7 @@ exports.assign_lumisection_component_status = handleErrors(
     });
     return rr_lumisections;
   },
-  'Error assigning component status in dataset'
+  'runregistry_backend/cron/saving_updating_runs_lumisections_utils.js # assign_lumisection_component_status(): Error assigning component status in dataset'
 );
 
 // This method is also used when a dataset is signed off to classify datasets into component classifiers.
