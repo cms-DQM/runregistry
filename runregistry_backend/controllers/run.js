@@ -16,7 +16,7 @@ const {
 const { update_or_create_dataset } = require('./dataset');
 const { create_new_version } = require('./version');
 const { fill_dataset_triplet_cache } = require('./dataset_triplet_cache');
-const { manually_update_a_run , manually_update_a_run_reset_rr_attributes } = require('../cron/2.save_or_update_runs');
+const { manually_update_a_run, manually_update_a_run_reset_rr_attributes } = require('../cron/2.save_or_update_runs');
 const {
   create_offline_waiting_datasets,
 } = require('../cron_datasets/1.create_datasets');
@@ -256,7 +256,7 @@ exports.new = async (req, res) => {
 // The new_attributes are a collection of the attributes that changed with respect to the run
 exports.automatic_run_update = async (req, res) => {
   const { body } = req
-  const  oms_attributes_from_body  = body.oms_attributes
+  const oms_attributes_from_body = body.oms_attributes
   const { run_number } = oms_attributes_from_body;
   if (typeof run_number === 'undefined') {
     throw 'Run number cannot be undefined';
@@ -435,28 +435,35 @@ exports.automatic_run_update = async (req, res) => {
 // In order to update the lumisections, one does it directly in lumisection.js edit_rr_lumsiections
 // For run (class, stop_reason) its here:
 exports.manual_edit = async (req, res) => {
-  const { run_number } = req.params;
+  const { run_number, attribute } = req.params; // Get URL params
 
+  // Make sure we have been passed the data we need
+  if (!(attribute in req.body)) {
+    throw `Requested to change ${attribute} but no suitable data was supplied`;
+  };
+
+  // Get Run from Database to compare changed values
   const run = await Run.findByPk(run_number);
   if (run === null) {
     throw 'Run not found';
   }
+  // rr_attributes contains the run's attributes
   const { rr_attributes } = run.dataValues;
+  console.log("Run attributes in DB:", rr_attributes);
   if (rr_attributes.state !== 'OPEN') {
     throw 'Run must be in state OPEN to be edited';
   }
-
   let transaction;
   try {
     transaction = await sequelize.transaction();
     const { atomic_version } = await create_new_version({
       req,
       transaction,
-      comment: `run ${run_number} manual edit, ${req.body.rr_attributes}`,
+      comment: `run ${run_number} manual edit of attribute ${attribute} from "${rr_attributes[attribute]}" to "${req.body[attribute]}"`,
     });
     const new_rr_attributes = getObjectWithAttributesThatChanged(
       rr_attributes,
-      req.body.rr_attributes
+      req.body
     );
     const new_rr_attributes_length = Object.keys(new_rr_attributes).length;
     // If there was actually something to update in the RR attributes, we update it, if it was a change in oms_attributes, we don't update it (since it doesn't affect RR attributes)

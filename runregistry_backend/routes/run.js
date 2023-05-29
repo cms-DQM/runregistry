@@ -17,7 +17,13 @@ module.exports = app => {
     auth,
     catchAPI(Run.automatic_run_update)
   );
-  app.put('/manual_run_edit/:run_number', auth, catchAPI(Run.manual_edit));
+
+  // Endpoint for updating run attributes. Initially a single
+  // endpoint, it was later split, in order to give different e-group permissions
+  // to modify different run attributes.
+  // I.e. only experts should be able to modify the run class,
+  // but shifters should be able to modify the stop_reason of the run.
+  app.put('/manual_run_edit/:run_number/:attribute', auth, catchAPI(Run.manual_edit));
 
   // Querying:
   app.post('/runs_filtered_ordered', catchAPI(Run.getRunsFilteredOrdered));
@@ -25,6 +31,6 @@ module.exports = app => {
   // Shifter actions:
   app.post('/runs/mark_significant', auth, catchAPI(Run.markSignificant));
   app.post('/runs/move_run/:from_state/:to_state', auth, catchAPI(Run.moveRun));
-  app.post('/runs/refresh_run/:run_number',           catchAPI(Run.refreshRunClassAndComponents));
+  app.post('/runs/refresh_run/:run_number', catchAPI(Run.refreshRunClassAndComponents));
   app.post('/runs/reset_and_refresh_run/:run_number', catchAPI(Run.resetAndRefreshRunRRatributes));
 };

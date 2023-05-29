@@ -116,7 +116,7 @@ class TopNav extends Component {
               'No User Specified in the Headers, or User is Developing'}
           </h3>
 
-          <a className="white" href="https://cmsrunregistry.web.cern.ch/logout">
+          <a className="white" href="/logout">
             Log out
           </a>
         </div>

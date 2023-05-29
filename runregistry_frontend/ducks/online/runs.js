@@ -36,16 +36,64 @@ export const filterRuns = (page_size, page, sortings, filter) =>
     false
   );
 
+
+
+// Callback when submitting updated run info (class and stop_reason). Initially, it was done
+// through a single API route, meaning that there was a single Permission tied
+// to this action. Later, it was decided that only experts can change the run class,
+// so the API route had to be split to two separate ones: one for changing the class
+// and the other for changing the stop reason. In order not to change the UI, a single form is
+// used, but two separate requests are made.
+// See https://github.com/cms-DQM/runregistry/pull/21
 export const editRun = (run_number, updated_run) =>
   error_handler(async (dispatch, getState) => {
-    let { data: run } = await axios.put(
-      `${api_url}/manual_run_edit/${run_number}`,
-      updated_run,
-      auth(getState)
-    );
+    let failed_attributes = [];
+    let first_req_failed = false;
+    let run;
+    try {
+      await axios.put(
+        `${api_url}/manual_run_edit/${run_number}/class`,
+        { "class": updated_run.rr_attributes.class },
+        auth(getState)
+      );
+    } catch (err) {
+      const { status } = err.response;
+
+      first_req_failed = true;
+      if (status === 401) {
+        failed_attributes.push("class")
+      }
+      // If any other non-authorized error happens, pass it to the error_handler
+      else {
+        throw err;
+      }
+    }
+
+    try {
+      // Parentheses needed to destructure data to existing run var, 
+      // which is outside of try-catch.
+      ({ data: run } = await axios.put(
+        `${api_url}/manual_run_edit/${run_number}/stop_reason`,
+        { "stop_reason": updated_run.rr_attributes.stop_reason },
+        auth(getState)
+      ));
+    } catch (err) {
+      const { status } = err.response;
+      // Both requests failed, error
+      if (first_req_failed) {
+        throw err;
+      }
+      if (status === 401) {
+        failed_attributes.push("stop reason")
+      } else {
+        throw err;
+      }
+    }
+
     run = formatRuns([run])[0];
     dispatch({ type: EDIT_RUN, payload: run });
     dispatch(hideManageRunModal());
+    return failed_attributes;
   });
 
 export const markSignificant = run_number =>
@@ -114,7 +162,7 @@ const INITIAL_STATE = {
   count: 0
 };
 
-export default function(state = INITIAL_STATE, action) {
+export default function (state = INITIAL_STATE, action) {
   const { type, payload } = action;
   switch (type) {
     case FILTER_RUNS:
