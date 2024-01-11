@@ -219,7 +219,7 @@ const ping_dqm_gui = async () => {
       await transaction.rollback();
     }
     console.log(
-      'cron_datasets/2.ping_dqm_gui.js # ping_dqm_gui(): finished job of fecthing all GUI datasets and comparing them with RR'
+      'cron_datasets/2.ping_dqm_gui.js # ping_dqm_gui(): finished job of fetching all GUI datasets and comparing them with RR'
     );
   } catch (err) {
     console.log('cron_datasets/2.ping_dqm_gui.js # ping_dqm_gui(): ERROR: ', err.message);
