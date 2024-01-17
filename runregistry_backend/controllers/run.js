@@ -255,9 +255,7 @@ exports.new = async (req, res) => {
 // This updates the run (triggered by an OMS update) not to be confused with an manual edition of a run
 // The new_attributes are a collection of the attributes that changed with respect to the run
 exports.automatic_run_update = async (req, res) => {
-  const { body } = req
-  const oms_attributes_from_body = body.oms_attributes
-  const { run_number } = oms_attributes_from_body;
+  const { body: { oms_attributes: { run_number } } } = req;
   if (typeof run_number === 'undefined') {
     throw 'Run number cannot be undefined';
   }
@@ -651,7 +649,7 @@ exports.moveRun = async (req, res) => {
           const subsystem = key.split('-')[1];
           const ls_position = i + 1;
           const empty_verbose = val.status || 'empty'; // Will make empty string coerce to 'empty'
-          throw `There is a ${empty_verbose} lumisection at position ${ls_position} of this run in component ${subsystem}. 
+          throw `There is a ${empty_verbose} lumisection at position ${ls_position} of this run in component ${subsystem}.
                            Please wait until this component is updated automatically (<5 mins), or ask ${subsystem} expert, then change the value in the 'manage' menu.`;
         }
       }

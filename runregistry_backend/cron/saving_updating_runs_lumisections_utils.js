@@ -119,6 +119,10 @@ exports.get_beam_present_and_stable = (lumisections) => {
       beams_present_and_stable =
         beam1_present && beam1_stable && beam2_present && beam2_stable;
     }
+    // TODO: Shouldn't this break if any of the lumisections has beams_present_and_stable === true?
+    // else if (beam1_present && beam1_stable && beam2_present && beam2_stable) {
+    //   return true;
+    // }
   });
   return beams_present_and_stable;
 };
@@ -174,7 +178,7 @@ exports.assign_run_class = handleErrors(
         if (
           run_class === '' ||
           classifier.priority <
-            class_classifiers_indexed_by_class[run_class].priority
+          class_classifiers_indexed_by_class[run_class].priority
         ) {
           run_class = assigned_class;
         }
@@ -307,7 +311,7 @@ exports.classify_component_per_lumisection = (
         if (
           previous_status === 'NO VALUE FOUND' ||
           component_classifiers_indexed_by_status[assigned_status].priority <
-            component_classifiers_indexed_by_status[previous_status].priority
+          component_classifiers_indexed_by_status[previous_status].priority
         ) {
           calculated_triplet.status = assigned_status;
           // Add online comment and cause here:

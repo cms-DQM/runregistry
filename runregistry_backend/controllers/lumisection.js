@@ -13,7 +13,7 @@ const {
 const {
   convert_array_of_ranges_to_array_of_list,
 } = require('golden-json-helpers');
-const { deepEqual } = require('assert');
+const deepEqual = require('deep-equal');
 const {
   oms_lumisection_whitelist,
   oms_lumisection_luminosity_whitelist,
@@ -390,11 +390,11 @@ exports.get_rr_lumisection_ranges_for_dataset = async (
     `
         SELECT run_number, "name", lumisection_number, mergejsonb(lumisection_metadata ORDER BY manual_change, version) as "triplets"
         FROM(
-        SELECT "LumisectionEvent"."version", run_number, "name", jsonb AS "lumisection_metadata", lumisection_number, manual_change  FROM "LumisectionEvent" INNER JOIN "LumisectionEventAssignation" 
+        SELECT "LumisectionEvent"."version", run_number, "name", jsonb AS "lumisection_metadata", lumisection_number, manual_change  FROM "LumisectionEvent" INNER JOIN "LumisectionEventAssignation"
         ON "LumisectionEvent"."version" = "LumisectionEventAssignation"."version" INNER JOIN "JSONBDeduplication" ON "lumisection_metadata_id" = "id"
         WHERE "LumisectionEvent"."name" = :dataset_name AND "LumisectionEvent"."run_number" = :run_number
         ) AS "updated_lumisectionEvents"
-        GROUP BY "run_number", "name", lumisection_number 
+        GROUP BY "run_number", "name", lumisection_number
         ORDER BY lumisection_number;
     `,
     {
@@ -443,11 +443,11 @@ exports.get_rr_lumisections_for_dataset = async (
         SELECT run_number, "name", lumisection_number, mergejsonb(lumisection_metadata ORDER BY ${without_manual_changes ? '' : 'manual_change,'
     } version ) as "triplets"
         FROM(
-        SELECT "LumisectionEvent"."version", run_number, "name", jsonb AS "lumisection_metadata", lumisection_number, manual_change  FROM "LumisectionEvent" INNER JOIN "LumisectionEventAssignation" 
+        SELECT "LumisectionEvent"."version", run_number, "name", jsonb AS "lumisection_metadata", lumisection_number, manual_change  FROM "LumisectionEvent" INNER JOIN "LumisectionEventAssignation"
         ON "LumisectionEvent"."version" = "LumisectionEventAssignation"."version" INNER JOIN "JSONBDeduplication" ON "lumisection_metadata_id" = "id"
         WHERE "LumisectionEvent"."name" = :dataset_name AND "LumisectionEvent"."run_number" = :run_number
         ) AS "updated_lumisectionEvents"
-        GROUP BY "run_number", "name", lumisection_number 
+        GROUP BY "run_number", "name", lumisection_number
         ORDER BY lumisection_number;
     `,
     {
@@ -522,11 +522,11 @@ exports.get_oms_lumisections_for_dataset = async (
     `
         SELECT run_number, lumisection_number, mergejsonb(lumisection_metadata ORDER BY version ) as "oms_json_blob"
         FROM(
-        SELECT "OMSLumisectionEvent"."version", run_number, "name", jsonb AS "lumisection_metadata", lumisection_number  FROM "OMSLumisectionEvent" INNER JOIN "OMSLumisectionEventAssignation" 
+        SELECT "OMSLumisectionEvent"."version", run_number, "name", jsonb AS "lumisection_metadata", lumisection_number  FROM "OMSLumisectionEvent" INNER JOIN "OMSLumisectionEventAssignation"
         ON "OMSLumisectionEvent"."version" = "OMSLumisectionEventAssignation"."version" INNER JOIN "JSONBDeduplication" ON "lumisection_metadata_id" = "id"
         WHERE ("OMSLumisectionEvent"."name" = 'online' ${not_online_dataset}) AND "OMSLumisectionEvent"."run_number" = :run_number
         ) AS "updated_lumisectionEvents"
-        GROUP BY "run_number", lumisection_number 
+        GROUP BY "run_number", lumisection_number
         ORDER BY lumisection_number;
     `,
     {
