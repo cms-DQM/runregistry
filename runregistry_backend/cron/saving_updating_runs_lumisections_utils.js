@@ -114,15 +114,10 @@ exports.get_beam_present_and_stable = (lumisections) => {
       beam2_stable === null
     ) {
       beams_present_and_stable = null;
-    } else {
-      // Set the conjunction:
-      beams_present_and_stable =
-        beam1_present && beam1_stable && beam2_present && beam2_stable;
+    } else if (beam1_present && beam1_stable && beam2_present && beam2_stable) {
+      // break if any of the lumisections has beams_present_and_stable === true
+      return true;
     }
-    // TODO: Shouldn't this break if any of the lumisections has beams_present_and_stable === true?
-    // else if (beam1_present && beam1_stable && beam2_present && beam2_stable) {
-    //   return true;
-    // }
   });
   return beams_present_and_stable;
 };
