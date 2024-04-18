@@ -141,7 +141,7 @@ redis-cli
 ping
 ```
 
-Set REDIS_URL to local redis server `redis://127.0.0.1:6379`
+Set `REDIS_HOST`, `REDIS_PORT` and `REDIS_PASSWORD` to match your redis server (Usually `127.0.0.1`, `6379` and no password).
 
 ### Upload LS from brilcalc
 

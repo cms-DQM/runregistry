@@ -23,8 +23,8 @@ const config = {
     api_url: 'https://cmsrunregistry.web.cern.ch/api',
   },
   kubernetes: {
-    root_url_prefix: '/runregistry',
-    api_url: 'https://cmsweb-auth.cern.ch/runregistry/api',
+    root_url_prefix: '',
+    api_url: 'https://birdup.web.cern.ch/api',  // TODO: Update
   },
 };
 exports.config = config;
@@ -164,7 +164,7 @@ exports.certifiable_offline_components = {
   rpc: ['rpc'],
   tau: ['tau'],
   tracker: ['track', 'pixel', 'strip'],
-  gem: ['gem'] 
+  gem: ['gem']
 };
 
 exports.certifiable_online_components = {
@@ -180,7 +180,7 @@ exports.certifiable_online_components = {
   lumi: ['lumi'],
   rpc: ['rpc'],
   tracker: ['pixel', 'strip'],
-  gem: ['gem'] 
+  gem: ['gem']
 };
 
 exports.lumisection_attributes = [

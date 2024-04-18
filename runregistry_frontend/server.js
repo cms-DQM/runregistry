@@ -10,7 +10,7 @@ const app = next({ dev });
 
 const handle = app.getRequestHandler();
 const http_port = process.env.PORT || 7001;
-const root_url_prefix = ENV === 'kubernetes' ? '/runregistry' : '';
+const root_url_prefix = '';
 
 // override console log to use timestamp
 let originalLog = console.log;

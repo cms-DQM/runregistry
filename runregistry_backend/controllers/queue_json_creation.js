@@ -310,7 +310,7 @@ if (process.env.ENV !== 'development' && process.env.ENV !== 'dev_to_prod') {
             }
             if (
               typeof generated_json_with_dataset_names_list[
-                `${run_number}-${name}`
+              `${run_number}-${name}`
               ] === 'undefined'
             ) {
               generated_json_with_dataset_names_list[
@@ -331,7 +331,7 @@ if (process.env.ENV !== 'development' && process.env.ENV !== 'dev_to_prod') {
             }
             if (
               typeof generated_anti_json_with_dataset_names_list[
-                `${run_number}-${name}`
+              `${run_number}-${name}`
               ] === 'undefined'
             ) {
               generated_anti_json_with_dataset_names_list[
@@ -581,7 +581,7 @@ if (process.env.ENV !== 'development' && process.env.ENV !== 'dev_to_prod') {
 
         if (
           typeof runs_lumisections_responsible_for_rule[
-            rules_why_false_reference
+          rules_why_false_reference
           ] === 'undefined'
         ) {
           runs_lumisections_responsible_for_rule[rules_why_false_reference] = {
@@ -592,11 +592,11 @@ if (process.env.ENV !== 'development' && process.env.ENV !== 'dev_to_prod') {
           runs_lumisections_responsible_for_rule[rules_why_false_reference][
             identifier
           ] = [
-            ...(runs_lumisections_responsible_for_rule[
-              rules_why_false_reference
-            ][identifier] || []),
-            +ls_index,
-          ];
+              ...(runs_lumisections_responsible_for_rule[
+                rules_why_false_reference
+              ][identifier] || []),
+              +ls_index,
+            ];
         }
 
         // Increment individual counter
