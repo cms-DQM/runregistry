@@ -1,0 +1,82 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx
+  # TODO: Update namespace
+  namespace: birdup
+  labels:
+    app: nginx
+data:
+  nginx.conf: |
+    # sso-proxy.conf
+
+    # Disable buffering for an authenticating proxy
+    proxy_buffering off;
+    # Allow big headers (oauth2-proxy cookies) - OKD routers allow headers up to 32k
+    proxy_buffer_size          32k;
+    proxy_buffers              8 64k;
+    proxy_busy_buffers_size    64k;
+    # Do not restrict upload size (consider setting a limit here if application does not need large request bodies)
+    client_max_body_size 0;
+
+    location /oauth2/ {
+        proxy_pass       http://cern-auth-proxy:4180;    # TODO: must match the Release name used to deploy the cern-auth-proxy service
+        proxy_set_header Host                    $host;
+        proxy_set_header X-Scheme                $scheme;
+        proxy_set_header X-Auth-Request-Redirect $request_uri;
+    }
+
+    location /api/ {
+        auth_request /oauth2/auth;
+        error_page 401 = /oauth2/start;
+
+        # Capture the authentication headers set by cern-auth-proxy during the authentication subrequest
+        # (headers available iff oauth2-proxy runs with --set-xauthrequest flag)
+        auth_request_set $user               $upstream_http_x_auth_request_user;       # captures X-Auth-Request-User into $user
+        auth_request_set $email              $upstream_http_x_auth_request_email;      # captures X-Auth-Request-Email into $email
+        auth_request_set $groups             $upstream_http_x_auth_request_groups;     # captures X-Auth-Request-Groups into $groups
+        auth_request_set $preferredUsername  $upstream_http_x_auth_request_preferred_username; # captures X-Auth-Request-Preferred-Username
+
+        proxy_set_header X-Forwarded-User  $user; # pass the authenticated user as X-Forwarded-User (like cern-auth-proxy does)
+        proxy_set_header X-Remote-User     $user; # pass the authenticated user as X-Remote-User (like old SSO proxy used to do)
+        # Headers checked by the frontend, passed to the backend
+        proxy_set_header id                $user;
+        proxy_set_header email             $email;
+        proxy_set_header egroups           $groups;
+        proxy_set_header displayname       $preferredUsername;
+
+        proxy_pass http://runregistry-backend:9500/;
+        proxy_read_timeout 500s;  # Backend may take a long time to respond for some queries
+        proxy_connect_timeout 500s;
+        proxy_send_timeout 500s;
+    }
+
+    location = /logout {
+        return 301 https://auth.cern.ch/auth/realms/cern/protocol/openid-connect/logout;
+    }
+
+    location / {
+      auth_request /oauth2/auth;
+      error_page 401 = /oauth2/start;
+
+      # Capture the authentication headers set by cern-auth-proxy during the authentication subrequest
+      # (headers available iff oauth2-proxy runs with --set-xauthrequest flag)
+      auth_request_set $user               $upstream_http_x_auth_request_user;       # captures X-Auth-Request-User into $user
+      auth_request_set $email              $upstream_http_x_auth_request_email;      # captures X-Auth-Request-Email into $email
+      auth_request_set $groups             $upstream_http_x_auth_request_groups;     # captures X-Auth-Request-Groups into $groups
+      auth_request_set $preferredUsername  $upstream_http_x_auth_request_preferred_username; # captures X-Auth-Request-Preferred-Username
+
+      proxy_set_header X-Forwarded-User  $user; # pass the authenticated user as X-Forwarded-User (like cern-auth-proxy does)
+      proxy_set_header X-Remote-User     $user; # pass the authenticated user as X-Remote-User (like old SSO proxy used to do)
+      proxy_set_header id                $user;
+      proxy_set_header email             $email;
+      proxy_set_header egroups           $groups;
+      proxy_set_header displayname       $preferredUsername;
+
+      proxy_read_timeout 500s;
+      proxy_connect_timeout 500s;
+      proxy_send_timeout 500s;
+
+      proxy_pass http://runregistry-frontend:7001/;
+
+    }
