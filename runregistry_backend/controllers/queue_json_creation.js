@@ -24,7 +24,7 @@ const Queue = require('bull');
 const { Op } = Sequelize;
 
 let jsonProcessingQueue = new Queue('rr_jsons', REDIS_URL);
-console.log("queue_json_creation.js : ", REDIS_URL);
+console.log(`queue_json_creation.js : ${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`);
 
 exports.get_json = async (req, res) => {
   const { id_json } = req.body;
