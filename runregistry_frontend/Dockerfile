@@ -8,7 +8,7 @@ ENV ENV kubernetes
 ENV NEXT_TELEMETRY_DISABLED 1
 # Installing dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm install && npm audit fix
 
 # Copying source files
 COPY . .

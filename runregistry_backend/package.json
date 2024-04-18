@@ -12,11 +12,11 @@
     "test": "export NODE_ENV=development && nodemon --exec 'mocha -R min'",
     "test_once": "mocha -R min",
     "migrate": "./node_modules/.bin/sequelize db:migrate",
-    "publish": "docker build . -t cmssw/runregistry-backend && docker push cmssw/runregistry-backend",
+    "publish": "docker build . -t registry.cern.ch/cms-dqmdc/runregistry-backend && docker push registry.cern.ch/cms-dqmdc/runregistry-backend",
     "start_pinging_gui": "node --inspect=0.0.0.0:9229 cron_datasets/2.ping_dqm_gui.js",
     "start_processing_jsons": "",
-    "docker_build": "docker build . -f Dockerfile -t cmssw/runregistry-backend && docker build . -f DockerfilePingGUI -t cmssw/runregistry-workers-dqm-gui-pinging",
-    "push_docker_images": "docker push cmssw/runregistry-backend & docker push cmssw/runregistry-workers-dqm-gui-pinging"
+    "docker_build": "docker build . -f Dockerfile -t registry.cern.ch/cms-dqm-dc/runregistry-backend",
+    "push_docker_images": "docker push registry.cern.ch/cms-dqm-dc/runregistry-backend"
   },
   "keywords": [],
   "author": "",

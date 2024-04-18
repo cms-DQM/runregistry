@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 ENV NODE_ENV production
 
 COPY package.json /usr/src/app
-RUN npm install
+RUN npm install && npm audit fix
 
 COPY . .
 

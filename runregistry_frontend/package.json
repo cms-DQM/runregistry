@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "node server",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "publish": "docker build . -t cmssw/runregistry-frontend && docker push cmssw/runregistry-frontend"
+    "publish": "docker build . -t registry.cern.ch/cms-dqmdc/runregistry-frontend && docker push registry.cern.ch/cms-dqmdc/runregistry-frontend"
   },
   "keywords": [],
   "author": "",

@@ -79,15 +79,15 @@ module.exports = {
     API_URL: 'http://runregistry-backend:9500',
     OMS_RUNS: (number_of_runs = 49) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 18000,
-    SECONDS_PER_DQM_GUI_CHECK: 3600,
+    SECONDS_PER_API_CALL: 30,
+    SECONDS_PER_DQM_GUI_CHECK: 600,
   },
   prod_kubernetes: {
     ...commonVars,
     API_URL: 'http://runregistry-backend:9500',
     OMS_RUNS: (number_of_runs = 10) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 18000,
+    SECONDS_PER_API_CALL: 180,
     SECONDS_PER_DQM_GUI_CHECK: 3600,
   },
 
