@@ -3,7 +3,7 @@ commonVars = {
   // Database config
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
-  database: process.env.DB_NAME || 'run_registry',
+  database: process.env.DB_NAME || 'run_registry_dev',
   port: process.env.DB_PORT || 5432,
   host: process.env.DOCKER_POSTGRES ? 'postgres' :
     process.env.DB_HOSTNAME || 'localhost',
@@ -23,8 +23,10 @@ commonVars = {
   // DQMGUI
   WAITING_DQM_GUI_CONSTANT: 'waiting dqm gui',
   DQM_GUI_URL: 'https://cmsweb.cern.ch/dqm/offline/data/json/samples?match=',
+  DQM_GUI_PING_CRON_ENABLED: true,
   // OMS
   OMS_URL: `https://cmsoms.cern.ch/agg/api/v1`,
+  OMS_GET_RUNS_CRON_ENABLED: true, // Get runs from OMS periodically or not
   OMS_SPECIFIC_RUN: (run_number) => `runs?filter[run_number]=${run_number}`,
   OMS_LUMISECTIONS: (run_number) => `lumisections?filter[run_number]=${run_number}&page[limit]=5000`,
   CLIENT_ID: 'rr-api-client',
@@ -36,8 +38,12 @@ commonVars = {
   REDIS_URL: `redis://${process.env.REDIS_PASSWORD ? ':' + process.env.REDIS_PASSWORD + '@' : ''}${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || 6379}`,
   // Authentication
   AUTH_SERVICE_URL: 'https://auth.cern.ch/auth/realms/cern/protocol/openid-connect/token',
+  // JSON processing
+  JSON_PROCESSING_ENABLED: true
 }
 
+// Configuration per deployment mode. commonVars can be overriden here.
+// These modes are selected based on the ENV environmental variable.
 module.exports = {
   // Local development
   development: {
@@ -48,7 +54,11 @@ module.exports = {
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     SECONDS_PER_API_CALL: 30,
     SECONDS_PER_DQM_GUI_CHECK: 6000,
+    JSON_PROCESSING_ENABLED: false,
+    OMS_GET_RUNS_CRON_ENABLED: false,
+    DQM_GUI_PING_CRON_ENABLED: false
   },
+  // ????
   dev_to_prod: {
     ...commonVars,
     API_URL: process.env.DOCKER_POSTGRES ? 'http://dev:9500' :
@@ -57,6 +67,9 @@ module.exports = {
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     SECONDS_PER_API_CALL: 30,
     SECONDS_PER_DQM_GUI_CHECK: 6000,
+    OMS_GET_RUNS_CRON_ENABLED: false,
+    JSON_PROCESSING_ENABLED: false,
+    DQM_GUI_PING_CRON_ENABLED: false
   },
   staging: {
     ...commonVars,
@@ -78,6 +91,17 @@ module.exports = {
     ...commonVars,
     API_URL: 'http://runregistry-backend:9500',
     OMS_RUNS: (number_of_runs = 49) =>
+      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
+    SECONDS_PER_API_CALL: 30,
+    SECONDS_PER_DQM_GUI_CHECK: 600,
+    OMS_GET_RUNS_CRON_ENABLED: false,
+    JSON_PROCESSING_ENABLED: false,
+    DQM_GUI_PING_CRON_ENABLED: false
+  },
+  staging_kubernetes: {
+    ...commonVars,
+    API_URL: 'http://runregistry-backend:9500',
+    OMS_RUNS: (number_of_runs = 10) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     SECONDS_PER_API_CALL: 30,
     SECONDS_PER_DQM_GUI_CHECK: 600,

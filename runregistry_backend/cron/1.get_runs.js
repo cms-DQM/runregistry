@@ -7,6 +7,7 @@ const config = require('../config/config');
 const {
   OMS_URL,
   OMS_RUNS,
+  OMS_GET_RUNS_CRON_ENABLED,
   API_URL,
   RUNS_PER_API_CALL,
   SECONDS_PER_API_CALL,
@@ -91,7 +92,7 @@ const fetch_runs = async (
   }
 };
 
-if (process.env.ENV === 'production' || process.env.ENV === 'staging') {
+if (OMS_GET_RUNS_CRON_ENABLED === true) {
   const job = new CronJob(
     `*/${SECONDS_PER_API_CALL} * * * * *`,
     handleErrors(fetch_runs, 'cron/1.get_runs.js # Error fetching new runs ')

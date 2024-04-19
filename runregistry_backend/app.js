@@ -42,9 +42,9 @@ models.sequelize.sync({})
       console.log(
         'app.js(): server listening in port', port,
         'env:', process.env.ENV);
+      // Starts the cron jobs, if enabled
       const cron = require('./cron/1.get_runs');
       const dqm_gui_pinging = require('./cron_datasets/2.ping_dqm_gui');
-      // const dbs_pinging = require('./cron_datasets/2.ping_dbs');
     });
 
     // 100 minute timout to server
@@ -73,8 +73,7 @@ models.sequelize.sync({})
     });
 
     routes(router);
-    const prefix = process.env.ENV === 'prod_kubernetes' ? '/api' : '';
-    app.use(prefix, router);
+    app.use('', router);
 
     // We add socket.io to the request
 

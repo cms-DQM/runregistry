@@ -1,7 +1,7 @@
 const json_logic_library = require('json-logic-js');
 const axios = require('axios');
 const config = require('../config/config');
-const { API_URL, REDIS_URL } = config[process.env.ENV || 'development'];
+const { API_URL, REDIS_URL, JSON_PROCESSING_ENABLED } = config[process.env.ENV || 'development'];
 const {
   convert_array_of_list_to_array_of_ranges,
 } = require('golden-json-helpers');
@@ -241,18 +241,18 @@ exports.calculate_json = async (req, res) => {
 };
 
 // TODO-ENHANCEMENT: Add information about job: started at, finished at
-if (process.env.ENV !== 'development' && process.env.ENV !== 'dev_to_prod') {
+if (JSON_PROCESSING_ENABLED === true) {
   jsonProcessingQueue.process(async (job, done) => {
     try {
       console.log('queue_json_creation.js # started processing job', job.id);
       const { dataset_name_filter, json_logic } = job.data;
       const datasets = await sequelize.query(
         `
-      SELECT * FROM "Dataset"
-      WHERE name SIMILAR TO :name
-      AND deleted = false
-      ORDER BY run_number ASC
-    `,
+        SELECT * FROM "Dataset"
+        WHERE name SIMILAR TO :name
+        AND deleted = false
+        ORDER BY run_number ASC
+        `,
         {
           type: sequelize.QueryTypes.SELECT,
           replacements: {
