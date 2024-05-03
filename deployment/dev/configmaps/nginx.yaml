@@ -3,7 +3,7 @@ apiVersion: v1
 metadata:
   name: nginx
   # TODO: Update namespace
-  namespace: cmsrunregistry
+  namespace: dev-cmsrunregistry
   labels:
     app: nginx
 data:

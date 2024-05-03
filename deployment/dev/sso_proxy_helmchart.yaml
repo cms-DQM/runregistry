@@ -13,4 +13,4 @@ authOptions:
 route:
   # Route not needed, we're only exposing nginx
   create: false
-  hostname: cmsrunregistry.web.cern.ch
+  hostname: dev-cmsrunregistry.web.cern.ch

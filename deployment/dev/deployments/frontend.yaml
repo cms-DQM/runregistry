@@ -3,7 +3,7 @@ apiVersion: apps/v1
 metadata:
   name: runregistry-frontend
   # TODO: Update namespace
-  namespace: cmsrunregistry
+  namespace: dev-cmsrunregistry
   labels:
     app: runregistry-frontend
     app.kubernetes.io/component: runregistry-frontend
@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/name: runregistry-frontend
     app.kubernetes.io/part-of: runregistry
     # TODO: Update namespace
-    app.openshift.io/runtime-namespace: cmsrunregistry
+    app.openshift.io/runtime-namespace: dev-cmsrunregistry
 spec:
   replicas: 1
   selector:
@@ -39,7 +39,7 @@ spec:
           imagePullPolicy: Always
           # TODO: Update namespace
           image: >-
-            image-registry.openshift-image-registry.svc:5000/cmsrunregistry/runregistry-frontend:latest
+            image-registry.openshift-image-registry.svc:5000/dev-cmsrunregistry/runregistry-frontend:latest
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst

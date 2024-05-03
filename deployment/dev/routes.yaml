@@ -3,7 +3,7 @@ apiVersion: route.openshift.io/v1
 metadata:
   name: nginx
   # TODO: Update namespace
-  namespace: cmsrunregistry
+  namespace: dev-cmsrunregistry
   labels:
     app: nginx
     app.kubernetes.io/component: nginx
@@ -14,7 +14,7 @@ metadata:
     haproxy.router.openshift.io/timeout: 500s
 spec:
   # TODO: Update url
-  host: cmsrunregistry.web.cern.ch
+  host: dev-cmsrunregistry.web.cern.ch
   to:
     kind: Service
     name: nginx
@@ -28,7 +28,7 @@ spec:
 status:
   # TODO: Update url
   ingress:
-    - host: cmsrunregistry.web.cern.ch
+    - host: dev-cmsrunregistry.web.cern.ch
       routerName: apps-shard-1
       conditions:
         - type: Admitted

@@ -3,7 +3,7 @@ kind: ImageStream
 metadata:
   name: runregistry-backend
   # TODO: Update namespace
-  namespace: cmsrunregistry
+  namespace: dev-cmsrunregistry
 spec:
   lookupPolicy:
     local: false
@@ -23,7 +23,7 @@ kind: ImageStream
 metadata:
   name: runregistry-frontend
   # TODO: Update namespace
-  namespace: cmsrunregistry
+  namespace: dev-cmsrunregistry
 spec:
   lookupPolicy:
     local: false

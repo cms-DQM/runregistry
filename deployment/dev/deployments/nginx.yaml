@@ -3,7 +3,7 @@ apiVersion: apps/v1
 metadata:
   name: nginx
   # TODO: Update namespace
-  namespace: cmsrunregistry
+  namespace: dev-cmsrunregistry
   labels:
     app: nginx
     app.kubernetes.io/component: nginx

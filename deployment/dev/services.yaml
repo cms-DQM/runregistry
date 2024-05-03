@@ -3,7 +3,7 @@ apiVersion: v1
 metadata:
   name: runregistry-backend
   # TODO: Update namespace
-  namespace: cmsrunregistry
+  namespace: dev-cmsrunregistry
   labels:
     app: runregistry-backend
     app.kubernetes.io/component: runregistry-backend
@@ -28,7 +28,7 @@ apiVersion: v1
 metadata:
   name: runregistry-frontend
   # TODO: Update namespace
-  namespace: cmsrunregistry
+  namespace: dev-cmsrunregistry
   labels:
     app: runregistry-frontend
     app.kubernetes.io/component: runregistry-frontend
@@ -53,7 +53,7 @@ apiVersion: v1
 metadata:
   name: nginx
   # TODO: Update namespace
-  namespace: cmsrunregistry
+  namespace: dev-cmsrunregistry
   labels:
     app: nginx
     app.kubernetes.io/component: nginx
