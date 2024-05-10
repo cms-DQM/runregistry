@@ -31,9 +31,9 @@ spec:
         - name: runregistry-backend
           resources:
             requests:
-              memory: 256Mi
+              memory: 512Mi
             limits:
-              memory: 1024Mi
+              memory: 2Gi
           command:
             - npm
             - run

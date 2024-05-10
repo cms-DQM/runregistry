@@ -2,6 +2,7 @@ import json
 import logging
 import argparse
 import requests
+from .utils import CernAuthToken
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(encoding="utf-8", level=logging.DEBUG)
@@ -9,7 +10,6 @@ logging.basicConfig(encoding="utf-8", level=logging.DEBUG)
 
 class RunRegistrySSOManager:
     AUTH_API = "https://authorization-service-api.web.cern.ch/api/v1.0"
-
     # All the required e-groups (a.k.a roles) that we need to add to the SSO registration.
     # ids will be added in the process here.
     RR_EGROUPS = {
@@ -57,27 +57,15 @@ class RunRegistrySSOManager:
     def __init__(
         self, app_id: str, client_id: str, client_secret: str, token: str = ""
     ):
-        self.app_id = app_id
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.token = token if token else self.__get_access_token()
 
-    def __get_access_token(self) -> str:
-        logger.debug(f"Getting access token for {self.client_id}")
-        response = requests.post(
-            "https://auth.cern.ch/auth/realms/cern/api-access/token",
-            data={
-                "grant_type": "client_credentials",
-                "client_id": self.client_id,
-                "client_secret": self.client_secret,
-                "audience": "authorization-service-api",
-            },
+        self.app_id = app_id
+        self.token = (
+            token
+            if token
+            else CernAuthToken(
+                client_id=client_id, client_secret=client_secret
+            ).get_access_token(audience="authorization-service-api")
         )
-        if response.status_code != 200:
-            raise Exception(
-                f"Could not get token for {self.client_id}. Got {response.status_code} response."
-            )
-        return response.json()["access_token"]
 
     def __get_current_roles(self):
         """Get the currently set SSO roles for the SSO registration"""
