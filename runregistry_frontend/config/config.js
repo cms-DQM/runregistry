@@ -10,21 +10,26 @@ const { ENV, NODE_ENV } = publicRuntimeConfig;
 console.log('Setup: ', NODE_ENV);
 console.log('Environment: ', ENV);
 const config = {
+  // Local development
   development: {
     root_url_prefix: '',
     api_url: 'http://localhost:9500',
   },
+  // For the dev Openshift project.
   staging: {
     root_url_prefix: '',
     api_url: 'https://dev-cmsrunregistry.web.cern.ch/api',
   },
+  // Production Openshift project, used for transitioning
+  // TODO: Remove
+  production_qa: {
+    root_url_prefix: '',
+    api_url: 'https://cmsrunregistry-qa.web.cern.ch/api',
+  },
+  // Production Openshift project
   production: {
     root_url_prefix: '',
     api_url: 'https://cmsrunregistry.web.cern.ch/api',
-  },
-  kubernetes: {
-    root_url_prefix: '',
-    api_url: 'https://birdup.web.cern.ch/api',  // TODO: Update
   },
 };
 exports.config = config;

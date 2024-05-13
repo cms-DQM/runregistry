@@ -13,4 +13,5 @@ authOptions:
 route:
   # Route not needed, we're only exposing nginx
   create: false
-  hostname: cmsrunregistry.web.cern.ch
+  # TODO: update URL
+  hostname: cmsrunregistry-qa.web.cern.ch

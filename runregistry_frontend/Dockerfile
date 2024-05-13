@@ -4,7 +4,8 @@ FROM node:14.21.3-alpine3.17
 WORKDIR /usr/src/app
 
 ENV NODE_ENV production
-ENV ENV kubernetes
+# TODO: remove qa
+ENV ENV production_qa
 ENV NEXT_TELEMETRY_DISABLED 1
 # Installing dependencies
 COPY package*.json ./
