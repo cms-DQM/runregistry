@@ -2,7 +2,6 @@ kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: nginx
-  # TODO: Update namespace
   namespace: cmsrunregistry
   labels:
     app: nginx

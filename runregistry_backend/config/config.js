@@ -71,6 +71,7 @@ module.exports = {
     JSON_PROCESSING_ENABLED: false,
     DQM_GUI_PING_CRON_ENABLED: false
   },
+  // Old "bare-metal" staging
   staging: {
     ...commonVars,
     API_URL: 'http://localhost:9500',
@@ -79,6 +80,7 @@ module.exports = {
     SECONDS_PER_API_CALL: 3600,
     SECONDS_PER_DQM_GUI_CHECK: 3600,
   },
+  // Old "bare-metal" production
   production: {
     ...commonVars,
     API_URL: 'http://localhost:9500',
@@ -87,6 +89,7 @@ module.exports = {
     SECONDS_PER_API_CALL: 180,
     SECONDS_PER_DQM_GUI_CHECK: 3600,
   },
+  // Dev kubernetes flavor which means no cronjobs, no JSON processing
   dev_kubernetes: {
     ...commonVars,
     API_URL: 'http://runregistry-backend:9500',
@@ -98,6 +101,7 @@ module.exports = {
     JSON_PROCESSING_ENABLED: false,
     DQM_GUI_PING_CRON_ENABLED: false
   },
+  // Kubernetes config, closer to production than to dev
   staging_kubernetes: {
     ...commonVars,
     API_URL: 'http://runregistry-backend:9500',
@@ -106,6 +110,7 @@ module.exports = {
     SECONDS_PER_API_CALL: 30,
     SECONDS_PER_DQM_GUI_CHECK: 600,
   },
+  // Production config for kubernetes
   prod_kubernetes: {
     ...commonVars,
     API_URL: 'http://runregistry-backend:9500',

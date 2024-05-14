@@ -2,7 +2,6 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: runregistry-backend
-  # TODO: Update namespace
   namespace: cmsrunregistry
   labels:
     app: runregistry-backend
@@ -10,7 +9,6 @@ metadata:
     app.kubernetes.io/instance: runregistry-backend
     app.kubernetes.io/name: runregistry-backend
     app.kubernetes.io/part-of: runregistry
-    # TODO: Update namespace
     app.openshift.io/runtime-namespace: cmsrunregistry
 spec:
   replicas: 1
@@ -54,7 +52,6 @@ spec:
             - name: secret-volume
               readOnly: true
               mountPath: "/usr/src/app/certs/"
-          # TODO: Update namespace
           image: >-
             image-registry.openshift-image-registry.svc:5000/cmsrunregistry/runregistry-backend:latest
       restartPolicy: Always

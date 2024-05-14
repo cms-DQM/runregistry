@@ -2,7 +2,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: runregistry-backend
-  # TODO: Update namespace
   namespace: cmsrunregistry
   labels:
     app: runregistry-backend
@@ -27,7 +26,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: runregistry-frontend
-  # TODO: Update namespace
   namespace: cmsrunregistry
   labels:
     app: runregistry-frontend
@@ -52,7 +50,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: nginx
-  # TODO: Update namespace
   namespace: cmsrunregistry
   labels:
     app: nginx
