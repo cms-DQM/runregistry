@@ -12,7 +12,7 @@
     "openshift_import_and_restart": "oc import-image runregistry-frontend --from=registry.cern.ch/cms-dqmdc/runregistry-frontend --confirm && oc rollout restart deployment/runregistry-frontend",
     "openshift_import": "oc import-image runregistry-frontend --from=registry.cern.ch/cms-dqmdc/runregistry-frontend --confirm",
     "openshift_restart": "oc rollout restart deployment/runregistry-frontend",
-    "docker_build_and_push": "docker build . -t registry.cern.ch/cms-dqmdc/runregistry-frontend && docker push registry.cern.ch/cms-dqmdc/runregistry-frontend",
+    "docker_build_and_push": "docker build . -f Dockerfile -t registry.cern.ch/cms-dqmdc/runregistry-frontend && docker push registry.cern.ch/cms-dqmdc/runregistry-frontend",
     "docker_build": "docker build . -f Dockerfile -t registry.cern.ch/cms-dqmdc/runregistry-frontend",
     "docker_push": "docker push registry.cern.ch/cms-dqmdc/runregistry-frontend"
   },
@@ -30,7 +30,7 @@
     "brace": "^0.11.1",
     "browserslist": "^4.21.10",
     "dotenv": "^16.0.3",
-    "express": "^4.16.3",
+    "express": "^4.19.2",
     "file-saver": "^2.0.2",
     "forever": "^0.15.3",
     "formik": "^1.0.2",
