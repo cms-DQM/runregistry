@@ -14,30 +14,38 @@ const io = require('socket.io')(server);
 const config = require('./config/config')
 
 
-// override console log to use timestamp
-originalLog = console.log;
-console.log = function () {
-  var args = [].slice.call(arguments);
-  originalLog.apply(console.log, [getCurrentDateString()].concat(args));
-};
-
-
 function getCurrentDateString() {
   var date = new Date();
   return String(date.getFullYear()).padStart(2, '0') + '/' + String(date.getMonth()).padStart(2, '0') + '/' + String(date.getDate()).padStart(2, '0') + ' ' + String(date.getHours()).padStart(2, '0') + ':' +
     String(date.getMinutes()).padStart(2, '0') + ':' + String(date.getSeconds()).padStart(2, '0') + ']';
 };
 
+// Generic function to return logging replacement functions given a specific level
+// which will be prepended to the messages.
+// If the caller function is not anonymous, its name is also printed.
+function getLogger(level) {
+  let originalLog = console.log;
+  return function () {
+    var args = [].slice.call(arguments);
+    originalLog.apply(console.log, [getCurrentDateString(), `${level}${arguments.callee.caller && arguments.callee.caller.name ? ' (' + arguments.callee.caller.name + '):' : ":"}`].concat(args));
+  }
+};
+
+// override console log to use timestamp
+console.debug = console.log = getLogger("DEBUG")
+console.info = getLogger("INFO")
+console.warning = getLogger("WARNING")
+
 
 // Logging for sanity
 const { database, host, port: db_port } = config[process.env.ENV];
-console.log(`Using database: ${database}@${host}:${db_port}`);
+console.info(`Using database: ${database}@${host}:${db_port}`);
 
 models.sequelize.sync({})
   .then(async () => {
     // Initialize DB data
     if (process.env.ENV === 'development') {
-      console.log('Initializing database');
+      console.info('Initializing database');
       await require('./initialization/initialize')();
     }
     server.listen(port, () => {
