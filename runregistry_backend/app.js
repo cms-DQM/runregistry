@@ -21,11 +21,13 @@ console.log = function () {
   originalLog.apply(console.log, [getCurrentDateString()].concat(args));
 };
 
+
 function getCurrentDateString() {
   var date = new Date();
-  return date.getDate() + '/' + date.getMonth() + ' ' + date.getHours() + ':' +
-    date.getMinutes() + ':' + date.getSeconds() + ']';
+  return String(date.getFullYear()).padStart(2, '0') + '/' + String(date.getMonth()).padStart(2, '0') + '/' + String(date.getDate()).padStart(2, '0') + ' ' + String(date.getHours()).padStart(2, '0') + ':' +
+    String(date.getMinutes()).padStart(2, '0') + ':' + String(date.getSeconds()).padStart(2, '0') + ']';
 };
+
 
 // Logging for sanity
 const { database, host, port: db_port } = config[process.env.ENV];
@@ -67,7 +69,7 @@ models.sequelize.sync({})
     // Log the user
     app.use('*', (req, res, next) => {
       if (process.env.NODE_ENV === 'production') {
-        console.log('app.js(): displayname = ', req.get('displayname'));
+        console.log('app.js(): displayname = ', req.get('displayname') || req.get('id'));
       }
       next();
     });
