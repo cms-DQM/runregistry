@@ -47,12 +47,13 @@ const fetch_runs = async (
   if (typeof oms_response.data.data === 'undefined') {
     throw Error('Invalid token in request');
   }
-
+  // Extract attributes from OMS response
   let all_fetched_runs = oms_response.data.data.map(
     ({ attributes }) => attributes
   );
 
-  // all_fetched_runs is an accumulation of all runs, we need to slice it to get the actually new runs in the corresponding request
+  // all_fetched_runs is an accumulation of all latest updated runs,
+  // we need to slice it to get the actually new runs in the corresponding request
   let fetched_runs = first_time
     ? all_fetched_runs
     : all_fetched_runs.slice(fetch_amount / 2);
@@ -102,31 +103,27 @@ if (OMS_GET_RUNS_CRON_ENABLED === true) {
 handleErrors(fetch_runs, 'cron/1.get_runs.js # Error fetching new runs ')();
 
 // makes left outer join between fetched_runs and last_saved_runs, returns the difference of runs (the ones which have not been saved)
-// Case when run from way in the past is updated, it will think it is a new run, since it doesn't appear in the fetch of the local 50 runs,
-const calculate_new_runs = (fetched_runs, last_saved_runs) => {
+// Case when run from way in the past is upated, it will think it is a new run, since it doesn't appear in the fetch of the local 50 runs,
+// This function only returns new runs,
+const calculate_new_runs = (fetched_runs, existing_runs) => {
+  // Keep track of new runs we received from OMS
   const new_runs = [];
+  const min_run_number = get_min_run_number(existing_runs);
 
   fetched_runs.forEach((fetched_run) => {
-    let exists = false;
     // Check if it exists in the already saved runs:
-    last_saved_runs.forEach((existing_run) => {
-      if (+fetched_run.run_number === existing_run.run_number) {
-        exists = true;
-      }
+    let exists = existing_runs.some(existing_run => {
+      +fetched_run.run_number === existing_run.run_number
     });
     // If it does not exist in alreay saved runs, check if it exists in the recently created array.
     if (!exists) {
-      let already_saved = false;
-      new_runs.forEach((run) => {
-        if (+fetched_run.run_number === +run.run_number) {
-          already_saved = true;
-        }
+      let already_saved = new_runs.some((run) => {
+        +fetched_run.run_number === +run.run_number
       });
 
       if (!already_saved) {
-        // IF THE run_number of the run is way in the past (prior to the last of the already saved runs) then this is not a new run, but a run to update
+        // If the run_number of the run is way in the past (prior to the last of the already saved runs) then this is not a new run, but a run to update
         // min_run_number is the oldest run_number saved (aka the minimum possible run number from the sample fetched):
-        const min_run_number = get_min_run_number(last_saved_runs);
         if (+fetched_run.run_number > min_run_number) {
           new_runs.push(fetched_run);
         }
