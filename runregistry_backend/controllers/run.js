@@ -193,9 +193,11 @@ exports.new = async (req, res) => {
   const run = await Run.findByPk(run_number);
   if (run !== null) {
     // Run already exists, we update it
+    console.debug(`Updating run ${run_number}, by ${req.headers['email']}, ${req.headers['comment']}`)
     await exports.automatic_run_update(req, res);
     return;
   }
+  console.debug(`Creating run ${run_number}, by ${req.headers['email']}, ${req.headers['comment']}`)
   // Initialize run:
   rr_attributes.stop_reason = '';
   rr_attributes.state = 'OPEN';
@@ -246,7 +248,7 @@ exports.new = async (req, res) => {
     await fill_dataset_triplet_cache();
     res.json(runEvent);
   } catch (err) {
-    console.log("run.js # new(): ", err);
+    console.error("run.js # new(): ", err);
     await transaction.rollback();
     throw `Error saving run ${run_number}`;
   }
@@ -262,7 +264,7 @@ exports.automatic_run_update = async (req, res) => {
   const run = await Run.findByPk(run_number);
   if (run === null) {
     // Run doesn't exist, we create it
-    console.log(
+    console.info(
       `automatic_run_update(): Trying to update run ${run_number} when we need to create it first`
     );
     await exports.new(req, res);
@@ -288,6 +290,7 @@ exports.automatic_run_update = async (req, res) => {
     }
 
     // Lumisection stuff:
+    console.info(`Updating received lumisections for run ${run_number}`)
     const newRRLumisectionRanges = await update_rr_lumisections({
       run_number,
       dataset_name: 'online',
@@ -407,7 +410,7 @@ exports.automatic_run_update = async (req, res) => {
     if (was_run_updated) {
       await transaction.commit();
       await fill_dataset_triplet_cache();
-      console.log(`automatic_run_update(): updated run ${run_number}`);
+      console.info(`automatic_run_update(): updated run ${run_number}`);
       const run = await Run.findByPk(run_number, {
         include: [
           {
@@ -424,7 +427,7 @@ exports.automatic_run_update = async (req, res) => {
       res.send();
     }
   } catch (err) {
-    console.log('automatic_run_update(): ', err);
+    console.error('automatic_run_update(): ', err);
     await transaction.rollback();
     throw `Error updating run ${run_number}`;
   }
@@ -447,7 +450,7 @@ exports.manual_edit = async (req, res) => {
   }
   // rr_attributes contains the run's attributes
   const { rr_attributes } = run.dataValues;
-  console.log("Run attributes in DB:", rr_attributes);
+  console.info("Run attributes in DB:", rr_attributes);
   if (rr_attributes.state !== 'OPEN') {
     throw 'Run must be in state OPEN to be edited';
   }
@@ -474,7 +477,7 @@ exports.manual_edit = async (req, res) => {
         atomic_version,
         transaction,
       });
-      console.log(`run.js # manual_edit(): updated run ${run_number}`);
+      console.info(`run.js # manual_edit(): updated run ${run_number}`);
     }
     await transaction.commit();
     // Now that it is commited we should find the updated run:
@@ -488,7 +491,7 @@ exports.manual_edit = async (req, res) => {
     });
     res.json(run.dataValues);
   } catch (err) {
-    console.log('run.js # manual_edit():', err);
+    console.error('run.js # manual_edit():', err);
     await transaction.rollback();
     throw `Error updating run ${run_number}`;
   }

@@ -241,6 +241,7 @@ exports.assign_lumisection_component_status = handleErrors(
     });
     const rr_lumisections = [];
     oms_lumisections.forEach((oms_lumisection) => {
+      // console.debug(`Checking LS ${oms_lumisection.lumisection_number} for run ${oms_lumisection.run_number}`)
       // We join the attributes from the run AND the lumisection to produce a per lumisection result:
       const run_and_lumisection_attributes = {
         ...run,
@@ -256,6 +257,7 @@ exports.assign_lumisection_component_status = handleErrors(
         for (const [column_name, component_classifiers] of Object.entries(
           columns_of_workspace
         )) {
+          // console.debug(`\tClassifying ${workspace}-${column_name}`)
           const component = `${workspace}-${column_name}`;
           lumisection_components[
             component
@@ -293,6 +295,7 @@ exports.classify_component_per_lumisection = (
 
   // And then for each classifier inside the component, we find its priority and check if its superior then the actual one
   component_classifiers.forEach((classifier) => {
+    // console.debug(`Classifier ${classifier.classifier} => ${classifier.status} (Priority ${classifier.priority})`)
     if (classifier.enabled) {
       const classifier_json = JSON.parse(classifier.classifier);
 
@@ -315,5 +318,6 @@ exports.classify_component_per_lumisection = (
       }
     }
   });
+  // console.debug(`\tRun ${run_and_lumisection_attributes.run_number}, LS ${run_and_lumisection_attributes.lumisection_number} returns ${calculated_triplet.status}`)
   return calculated_triplet;
 };
