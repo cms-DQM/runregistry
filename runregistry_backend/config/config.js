@@ -84,7 +84,7 @@ module.exports = {
   production: {
     ...commonVars,
     API_URL: 'http://localhost:9500',
-    OMS_RUNS: (number_of_runs = 10) =>
+    OMS_RUNS: (number_of_runs = 15) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     SECONDS_PER_API_CALL: 180,
     SECONDS_PER_DQM_GUI_CHECK: 3600,
@@ -105,16 +105,16 @@ module.exports = {
   staging_kubernetes: {
     ...commonVars,
     API_URL: 'http://runregistry-backend:9500',
-    OMS_RUNS: (number_of_runs = 10) =>
+    OMS_RUNS: (number_of_runs = 15) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 30,
+    SECONDS_PER_API_CALL: 60,
     SECONDS_PER_DQM_GUI_CHECK: 600,
   },
   // Production config for kubernetes
   prod_kubernetes: {
     ...commonVars,
     API_URL: 'http://runregistry-backend:9500',
-    OMS_RUNS: (number_of_runs = 10) =>
+    OMS_RUNS: (number_of_runs = 15) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     SECONDS_PER_API_CALL: 180,
     SECONDS_PER_DQM_GUI_CHECK: 3600,
