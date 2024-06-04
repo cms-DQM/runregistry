@@ -9,7 +9,12 @@
     "build": "next build",
     "start": "node server",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "publish": "docker build . -t registry.cern.ch/cms-dqmdc/runregistry-frontend && docker push registry.cern.ch/cms-dqmdc/runregistry-frontend"
+    "openshift_import_and_restart": "oc import-image runregistry-frontend --from=registry.cern.ch/cms-dqmdc/runregistry-frontend --confirm && oc rollout restart deployment/runregistry-frontend",
+    "openshift_import": "oc import-image runregistry-frontend --from=registry.cern.ch/cms-dqmdc/runregistry-frontend --confirm",
+    "openshift_restart": "oc rollout restart deployment/runregistry-frontend",
+    "docker_build_and_push": "docker build . -t registry.cern.ch/cms-dqmdc/runregistry-frontend && docker push registry.cern.ch/cms-dqmdc/runregistry-frontend",
+    "docker_build": "docker build . -f Dockerfile -t registry.cern.ch/cms-dqmdc/runregistry-frontend",
+    "docker_push": "docker push registry.cern.ch/cms-dqmdc/runregistry-frontend"
   },
   "keywords": [],
   "author": "",
