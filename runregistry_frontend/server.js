@@ -22,11 +22,10 @@ function getCurrentDateString() {
 // Generic function to return logging replacement functions given a specific level
 // which will be prepended to the messages.
 // If the caller function is not anonymous, its name is also printed.
-function getLogger(level) {
-  let originalLog = console.log;
+function getLogger(level, originalLogger = console.log) {
   return function () {
     var args = [].slice.call(arguments);
-    originalLog.apply(console.log, [getCurrentDateString(), `${level}${arguments.callee.caller && arguments.callee.caller.name ? ' (' + arguments.callee.caller.name + '):' : ":"}`].concat(args));
+    originalLogger.apply(console.log, [getCurrentDateString(), `${level}${arguments.callee.caller && arguments.callee.caller.name ? ' (' + arguments.callee.caller.name + '):' : ":"}`].concat(args));
   }
 };
 
@@ -34,7 +33,7 @@ function getLogger(level) {
 console.debug = console.log = getLogger("DEBUG")
 console.info = getLogger("INFO")
 console.warning = getLogger("WARNING")
-
+console.error = getLogger("ERROR", console.error)
 
 app.prepare().then(() => {
   const server = express();
