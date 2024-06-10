@@ -57,7 +57,7 @@ const fetch_runs = async (
   let fetched_runs = first_time
     ? all_fetched_runs
     : all_fetched_runs.slice(fetch_amount / 2);
-
+  console.debug("Querying the last 50 updated OMS runs")
   const { data: last_saved_runs } = await axios.get(
     `${API_URL}/runs_lastupdated_50`
   );
