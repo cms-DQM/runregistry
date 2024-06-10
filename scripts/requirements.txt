@@ -1,5 +1,8 @@
-greenlet==2.0.2
-psycopg2-binary==2.9.6
-SQLAlchemy==2.0.13
-SQLAlchemy-Utils==0.41.1
-typing_extensions==4.5.0
+greenlet~=2.0.2
+psycopg2-binary~=2.9.6
+SQLAlchemy~=2.0.13
+SQLAlchemy-Utils~=0.41.1
+typing_extensions~=4.5.0
+requests
+locust~=2.27.0
+runregistry~=1.0.0

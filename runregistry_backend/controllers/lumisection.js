@@ -13,7 +13,8 @@ const {
 const {
   convert_array_of_ranges_to_array_of_list,
 } = require('golden-json-helpers');
-const deepEqual = require('deep-equal');
+const assert = require('assert').strict;
+
 const {
   oms_lumisection_whitelist,
   oms_lumisection_luminosity_whitelist,
@@ -64,6 +65,7 @@ const update_or_create_lumisection = async ({
     if (!by.startsWith('auto@auto')) {
       manual_change = true;
     }
+    // console.debug(`Updating lumisection ${start_lumisection}:${end_lumisection} for run ${run_number} ${manual_change ? "(manual)" : "(auto)"}`)
     const lumisectionEvent = await LSEvent.create(
       {
         run_number,
@@ -89,7 +91,7 @@ const update_or_create_lumisection = async ({
     }
     return lumisectionEvent;
   } catch (err) {
-    console.log("update_or_create_lumisection():", err);
+    console.error("update_or_create_lumisection():", err);
     if (local_transaction) {
       await transaction.rollback();
     }
@@ -201,11 +203,13 @@ exports.update_rr_lumisections = async ({
   );
   let local_whitelist = ['*'];
 
+  // console.debug(`Run ${run_number}, new lumisections: ${new_lumisections.length}, previous lumisections: ${previous_lumisections.length}`)
   const new_ls_ranges = exports.getNewLumisectionRanges(
     previous_lumisections,
     new_lumisections,
     local_whitelist
   );
+  // console.debug(`Run ${run_number}, new lumisection ranges: ${new_ls_ranges.length}`)
   const saved_ranges = new_ls_ranges.map(async (lumisection_range) => {
     const { start, end } = lumisection_range;
     const lumisection_range_values = { ...lumisection_range };
@@ -225,6 +229,7 @@ exports.update_rr_lumisections = async ({
     });
   });
   await Promise.all(saved_ranges);
+  // console.debug(`Run ${run_number}, saved lumisection ranges: ${saved_ranges.length}`)
   return saved_ranges;
 };
 
@@ -272,7 +277,8 @@ exports.update_oms_lumisections = async ({
   return saved_ranges;
 };
 
-// This method is used when someone/cron automatically updates the values of the lumisections. We try to preserve the lumisection ranges which still apply, and calculate the minimum amount of new LS ranges necessary to fulfill the change
+// This method is used when someone/cron automatically updates the values of the lumisections.
+// We try to preserve the lumisection ranges which still apply, and calculate the minimum amount of new LS ranges necessary to fulfill the change
 // Returns the newLSRanges if there were any
 exports.getNewLumisectionRanges = (
   previous_lumisections,
@@ -303,7 +309,7 @@ exports.getNewLumisectionRanges = (
 
     // We will check if the lumisections are equal one by one
     try {
-      deepEqual(current_previous_lumisection, current_new_lumisection);
+      assert.deepStrictEqual(current_previous_lumisection, current_new_lumisection);
       if (new_ls_ranges.length > 0) {
         // If we had something saved in the range, we close it, since we found that there was one lumisection in the way which did match (and did not throw exception)
         const previous_range = new_ls_ranges[new_ls_ranges.length - 1];
@@ -317,7 +323,6 @@ exports.getNewLumisectionRanges = (
       }
     } catch (e) {
       // this means that they are not equal
-
       // Lumisection changed, therefore we need to create a new range
       if (new_ls_ranges.length === 0) {
         const new_lumisection_attributes = getObjectWithAttributesThatChanged(
@@ -342,7 +347,7 @@ exports.getNewLumisectionRanges = (
         delete previous_range_copy.start;
         delete previous_range_copy.end;
         try {
-          deepEqual(
+          assert.deepStrictEqual(
             previous_range_copy,
             potentially_new_lumisection_attributes
           );
@@ -585,7 +590,7 @@ exports.getLumisectionRanges = (lumisections, lumisection_attributes) => {
       const current_range = lumisections[i];
 
       try {
-        deepEqual(previous_range_copy, current_range);
+        assert.deepStrictEqual(previous_range_copy, current_range);
       } catch (e) {
         // This means that there is a LS break in the range (exception thrown), not equal, therefore we create a break in the ranges array:
         ls_ranges[ls_ranges.length - 1] = {

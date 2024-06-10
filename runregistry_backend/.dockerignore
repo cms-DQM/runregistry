@@ -4,3 +4,4 @@ node_modules
 uploader
 jsons
 .git
+.env*

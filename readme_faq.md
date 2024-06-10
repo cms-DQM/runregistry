@@ -96,32 +96,11 @@ https://auth.docs.cern.ch/user-documentation/faqs/
 {"and": [{"var": "gem_included"}, {"and": [{"==": [{"var": "gemp_ready"}, true]}, {"==": [{"var": "gemm_ready"}, true]}]}]}
 ```
 
-### Moving docker images to cern registry
+### Creating docker images and deploying on Openshift
 
-```bash
-docker login docker.com
-docker login registry.cern.ch
-```
+Each `package.json` contains shorthand commands for building and pushing docker images to registry.cern.ch, as well as redeploying them on Openshift.
 
-Following https://cms-http-group.docs.cern.ch/k8s_cluster/registry/
-
-```bash
-docker pull cmssw/runregistry-workers-dqm-gui-pinging:0.1-cmsweb
-docker pull cmssw/runregistry-backend:0.2-cmsweb
-docker pull cmssw/runregistry-frontend:0.2-cmsweb
-
-docker tag cmssw/runregistry-workers-dqm-gui-pinging:0.1-cmsweb registry.cern.ch/cmsweb/runregistry-workers-dqm-gui-pinging:0.1-cmsweb
-docker tag cmssw/runregistry-backend:0.2-cmsweb                 registry.cern.ch/cmsweb/runregistry-backend:0.2-cmsweb
-docker tag cmssw/runregistry-frontend:0.2-cmsweb                registry.cern.ch/cmsweb/runregistry-frontend:0.2-cmsweb
-
-docker push registry.cern.ch/cmsweb/runregistry-workers-dqm-gui-pinging:0.1-cmsweb
-docker push registry.cern.ch/cmsweb/runregistry-backend:0.2-cmsweb
-docker push registry.cern.ch/cmsweb/runregistry-frontend:0.2-cmsweb
-```
-
-There is also two images we were not able to pull from docker.com:
-`cmssw/runregistry-workers-oms-fetching`
-`cmssw/runregistry-workers-json-processing`
+Check the Wiki for more information.
 
 ### Redis server
 
@@ -141,7 +120,7 @@ redis-cli
 ping
 ```
 
-Set REDIS_URL to local redis server `redis://127.0.0.1:6379`
+Set `REDIS_HOST`, `REDIS_PORT` and `REDIS_PASSWORD` to match your redis server (Usually `127.0.0.1`, `6379` and no password).
 
 ### Upload LS from brilcalc
 

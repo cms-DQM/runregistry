@@ -58,6 +58,7 @@ exports.calculate_rr_lumisections = async (
   rr_attributes,
   oms_lumisections
 ) => {
+  console.info(`Classifying ${oms_lumisections.length} lumisections...`)
   const rr_lumisections = await assign_lumisection_component_status(
     oms_attributes,
     rr_attributes,

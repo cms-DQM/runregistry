@@ -10,21 +10,26 @@ const { ENV, NODE_ENV } = publicRuntimeConfig;
 console.log('Setup: ', NODE_ENV);
 console.log('Environment: ', ENV);
 const config = {
+  // Local development
   development: {
     root_url_prefix: '',
     api_url: 'http://localhost:9500',
   },
+  // For the dev Openshift project.
   staging: {
     root_url_prefix: '',
     api_url: 'https://dev-cmsrunregistry.web.cern.ch/api',
   },
+  // Production Openshift project, used for transitioning
+  // TODO: Remove
+  production_qa: {
+    root_url_prefix: '',
+    api_url: 'https://cmsrunregistry-qa.web.cern.ch/api',
+  },
+  // Production Openshift project
   production: {
     root_url_prefix: '',
     api_url: 'https://cmsrunregistry.web.cern.ch/api',
-  },
-  kubernetes: {
-    root_url_prefix: '/runregistry',
-    api_url: 'https://cmsweb-auth.cern.ch/runregistry/api',
   },
 };
 exports.config = config;
@@ -164,7 +169,7 @@ exports.certifiable_offline_components = {
   rpc: ['rpc'],
   tau: ['tau'],
   tracker: ['track', 'pixel', 'strip'],
-  gem: ['gem'] 
+  gem: ['gem']
 };
 
 exports.certifiable_online_components = {
@@ -180,7 +185,7 @@ exports.certifiable_online_components = {
   lumi: ['lumi'],
   rpc: ['rpc'],
   tracker: ['pixel', 'strip'],
-  gem: ['gem'] 
+  gem: ['gem']
 };
 
 exports.lumisection_attributes = [

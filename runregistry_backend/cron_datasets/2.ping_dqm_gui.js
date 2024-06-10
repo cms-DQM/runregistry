@@ -26,6 +26,7 @@ const {
   DQM_GUI_URL,
   SECONDS_PER_DQM_GUI_CHECK,
   WAITING_DQM_GUI_CONSTANT,
+  DQM_GUI_PING_CRON_ENABLED
 } = require('../config/config')[process.env.ENV || 'development'];
 const { update_or_create_dataset } = require('../controllers/dataset');
 const { create_new_version } = require('../controllers/version');
@@ -228,15 +229,14 @@ const ping_dqm_gui = async () => {
 };
 
 // Cron job starts:
-if (process.env.NODE_ENV !== 'development') {
+if (DQM_GUI_PING_CRON_ENABLED === true) {
   const job = new CronJob(
     `*/${SECONDS_PER_DQM_GUI_CHECK} * * * * *`,
     handleErrors(ping_dqm_gui, 'cron_datasets/2.ping_dqm_gui.js # Error pinging DQM GUI')
   ).start();
 } else {
-  // For development:
+  // Runs only once on start
   setTimeout(() => {
-    // We wait until the
     ping_dqm_gui();
   }, 3000);
 }

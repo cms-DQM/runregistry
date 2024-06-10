@@ -21,7 +21,7 @@ const requireAuth = async (req, res, next) => {
       return;
     }
 
-    const user_egroups_array = egroups.split(';');
+    const user_egroups_array = egroups.split(',');
     const permissions = await Permission.getAllPermissions();
     let egroups_needed = [];
 
@@ -57,8 +57,8 @@ const requireAuth = async (req, res, next) => {
       });
       const error_message = egroups_needed.length > 0 ?
         `User needs to be part of any of the following e-groups to fulfill this action (clickable links): <br/><br/><strong><i>${egroups_needed.join(
-          '</i></strong><br/></br><strong><i>')}</i></strong> <br/><br/> IMPORTANT: After being accepted to an e-group it is necessary to <a href="https://login.cern.ch/adfs/ls/?wa=wsignout1.0">log-out</a> and log-in again. ` :
-        `There is no egroup that is authorized to do this action. <br/><br/>Please file a JIRA ticket with the action you were trying to do.<br/><br/> Link here: <a target="_blank" href="https://its.cern.ch/jira/projects/NEWRUNREGISTRY/issues/NEWRUNREGISTRY-2?filter=allopenissues">RUN REGISTRY JIRA</a>`;
+          '</i></strong><br/></br><strong><i>')}</i></strong> <br/><br/> IMPORTANT: After being accepted to an e-group it is necessary to <a href="/logout">log-out</a> and log-in again. ` :
+        `There is no egroup that is authorized to do this action. <br/><br/>Please file a JIRA ticket with the action you were trying to do.<br/><br/> Link here: <a target="_blank" href="https://its.cern.ch/jira/projects/NEWRUNREGISTRY">RUN REGISTRY JIRA</a>`;
       res.status(401);
       res.json({ message: error_message });
     }
