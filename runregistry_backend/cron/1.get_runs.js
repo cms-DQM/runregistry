@@ -41,7 +41,7 @@ const fetch_runs = async (
       setTimeout(resolve, 2000);
     });
   }
-  console.debug(`Fetching the ${OMS_RUNS(fetch_amount)} last updated OMS runs`)
+  console.debug(`Fetching the ${fetch_amount} last updated OMS runs`)
   const oms_response = await instance.get(oms_url, {
     headers,
   });
