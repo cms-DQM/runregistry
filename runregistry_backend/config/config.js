@@ -54,8 +54,8 @@ module.exports = {
       'http://localhost:9500',
     OMS_RUNS: (number_of_runs = 10) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 30,
-    SECONDS_PER_DQM_GUI_CHECK: 6000,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 30,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 6000,
     JSON_PROCESSING_ENABLED: false,
     OMS_GET_RUNS_CRON_ENABLED: false,
     DQM_GUI_PING_CRON_ENABLED: false
@@ -67,8 +67,8 @@ module.exports = {
       'http://localhost:9500',
     OMS_RUNS: (number_of_runs = 10) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 30,
-    SECONDS_PER_DQM_GUI_CHECK: 6000,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 30,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 6000,
     OMS_GET_RUNS_CRON_ENABLED: false,
     JSON_PROCESSING_ENABLED: false,
     DQM_GUI_PING_CRON_ENABLED: false
@@ -79,8 +79,8 @@ module.exports = {
     API_URL: 'http://localhost:9500',
     OMS_RUNS: (number_of_runs = 10) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 3600,
-    SECONDS_PER_DQM_GUI_CHECK: 3600,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 3600,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 3600,
   },
   // Old "bare-metal" production
   production: {
@@ -88,8 +88,8 @@ module.exports = {
     API_URL: 'http://localhost:9500',
     OMS_RUNS: (number_of_runs = 15) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 180,
-    SECONDS_PER_DQM_GUI_CHECK: 3600,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 180,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 3600,
   },
   // Dev kubernetes flavor which means no cronjobs, no JSON processing
   dev_kubernetes: {
@@ -97,8 +97,8 @@ module.exports = {
     API_URL: 'http://runregistry-backend:9500',
     OMS_RUNS: (number_of_runs = 49) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 30,
-    SECONDS_PER_DQM_GUI_CHECK: 600,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 30,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 600,
     OMS_GET_RUNS_CRON_ENABLED: false,
     JSON_PROCESSING_ENABLED: false,
     DQM_GUI_PING_CRON_ENABLED: false
@@ -109,8 +109,8 @@ module.exports = {
     API_URL: 'http://runregistry-backend:9500',
     OMS_RUNS: (number_of_runs = 15) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 60,
-    SECONDS_PER_DQM_GUI_CHECK: 600,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 10,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 15,
   },
   // Production config for kubernetes
   prod_kubernetes: {
@@ -118,8 +118,8 @@ module.exports = {
     API_URL: 'http://runregistry-backend:9500',
     OMS_RUNS: (number_of_runs = 15) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 180,
-    SECONDS_PER_DQM_GUI_CHECK: 3600,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 3,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 10,
   },
 
   // The online components are also the rr_lumisection_whitelist

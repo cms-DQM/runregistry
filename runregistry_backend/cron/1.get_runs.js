@@ -10,7 +10,8 @@ const {
   OMS_GET_RUNS_CRON_ENABLED,
   API_URL,
   RUNS_PER_API_CALL,
-  SECONDS_PER_API_CALL,
+  OMS_API_CALL_EVERY_NTH_MINUTE,
+  MINIMUM_CMS_RUN_NUMBER
 } = config[process.env.ENV || 'development'];
 const { save_runs, update_runs } = require('./2.save_or_update_runs');
 
@@ -95,7 +96,7 @@ const fetch_runs = async (
 
 if (OMS_GET_RUNS_CRON_ENABLED === true) {
   const job = new CronJob(
-    `*/${SECONDS_PER_API_CALL} * * * * *`,
+    `*/${OMS_API_CALL_EVERY_NTH_MINUTE} * * * *`,
     handleErrors(fetch_runs, 'cron/1.get_runs.js # Error fetching new runs ')
   ).start();
 }
