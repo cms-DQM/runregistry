@@ -35,7 +35,7 @@ commonVars = {
   CLIENT_ID: 'rr-api-client',
   CLIENT_SECRET: process.env.CLIENT_SECRET,
   OMS_AUDIENCE: 'cmsoms-prod',
-  RUNS_PER_API_CALL: 49,
+  OMS_RUNS_PER_API_CALL: 49,
   OMS_API_CALL_EVERY_NTH_MINUTE: 30, // This needs to be <=60
   // Redis
   // redis://:<pass>@<host>:<port>
@@ -112,6 +112,7 @@ module.exports = {
     OMS_RUNS: (number_of_runs = 15) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_API_CALL_EVERY_NTH_MINUTE: 10,
+    OMS_RUNS_PER_API_CALL: 25,
     DQM_GUI_CHECK_EVERY_NTH_MINUTE: 15,
   },
   // Production config for kubernetes
@@ -120,6 +121,7 @@ module.exports = {
     API_URL: 'http://runregistry-backend:9500',
     OMS_RUNS: (number_of_runs = 15) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
+    OMS_RUNS_PER_API_CALL: 49,
     OMS_API_CALL_EVERY_NTH_MINUTE: 3,
     DQM_GUI_CHECK_EVERY_NTH_MINUTE: 10,
   },

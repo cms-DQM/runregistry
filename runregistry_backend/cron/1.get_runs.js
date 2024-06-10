@@ -9,7 +9,7 @@ const {
   OMS_RUNS,
   OMS_GET_RUNS_CRON_ENABLED,
   API_URL,
-  RUNS_PER_API_CALL,
+  OMS_RUNS_PER_API_CALL,
   OMS_API_CALL_EVERY_NTH_MINUTE,
   MINIMUM_CMS_RUN_NUMBER
 } = config[process.env.ENV || 'development'];
@@ -24,7 +24,7 @@ const instance = axios.create({
 
 // Will call itself recursively if all runs are new
 const fetch_runs = async (
-  fetch_amount = RUNS_PER_API_CALL,
+  fetch_amount = OMS_RUNS_PER_API_CALL,
   first_time = true
 ) => {
   const oms_url = `${OMS_URL}/${OMS_RUNS(fetch_amount)}`;
@@ -41,7 +41,7 @@ const fetch_runs = async (
       setTimeout(resolve, 2000);
     });
   }
-
+  console.debug(`Fetching the ${OMS_RUNS(fetch_amount)} last updated OMS runs`)
   const oms_response = await instance.get(oms_url, {
     headers,
   });
@@ -58,7 +58,7 @@ const fetch_runs = async (
   let fetched_runs = first_time
     ? all_fetched_runs
     : all_fetched_runs.slice(fetch_amount / 2);
-  console.debug("Querying the last 50 updated OMS runs")
+  console.debug("Querying the last 50 updated RR runs")
   const { data: last_saved_runs } = await axios.get(
     `${API_URL}/runs_lastupdated_50`
   );
