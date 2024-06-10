@@ -1,4 +1,4 @@
-// Common configuration used by all deployment modes
+// Common configuration used and overriden by all deployment modes.
 commonVars = {
   // Database config
   username: process.env.DB_USERNAME || 'postgres',
@@ -26,6 +26,7 @@ commonVars = {
   WAITING_DQM_GUI_CONSTANT: 'waiting dqm gui',
   DQM_GUI_URL: 'https://cmsweb.cern.ch/dqm/offline/data/json/samples?match=',
   DQM_GUI_PING_CRON_ENABLED: true,
+  DQM_GUI_CHECK_EVERY_NTH_MINUTE: 60, // This needs to be <=60
   // OMS
   OMS_URL: `https://cmsoms.cern.ch/agg/api/v1`,
   OMS_GET_RUNS_CRON_ENABLED: true, // Get runs from OMS periodically or not
@@ -35,6 +36,7 @@ commonVars = {
   CLIENT_SECRET: process.env.CLIENT_SECRET,
   OMS_AUDIENCE: 'cmsoms-prod',
   RUNS_PER_API_CALL: 49,
+  OMS_API_CALL_EVERY_NTH_MINUTE: 30, // This needs to be <=60
   // Redis
   // redis://:<pass>@<host>:<port>
   REDIS_URL: `redis://${process.env.REDIS_PASSWORD ? ':' + process.env.REDIS_PASSWORD + '@' : ''}${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || 6379}`,
@@ -55,7 +57,7 @@ module.exports = {
     OMS_RUNS: (number_of_runs = 10) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_API_CALL_EVERY_NTH_MINUTE: 30,
-    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 6000,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 60,
     JSON_PROCESSING_ENABLED: false,
     OMS_GET_RUNS_CRON_ENABLED: false,
     DQM_GUI_PING_CRON_ENABLED: false
@@ -68,7 +70,7 @@ module.exports = {
     OMS_RUNS: (number_of_runs = 10) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_API_CALL_EVERY_NTH_MINUTE: 30,
-    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 6000,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 60,
     OMS_GET_RUNS_CRON_ENABLED: false,
     JSON_PROCESSING_ENABLED: false,
     DQM_GUI_PING_CRON_ENABLED: false
@@ -79,8 +81,8 @@ module.exports = {
     API_URL: 'http://localhost:9500',
     OMS_RUNS: (number_of_runs = 10) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    OMS_API_CALL_EVERY_NTH_MINUTE: 3600,
-    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 3600,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 5,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 10,
   },
   // Old "bare-metal" production
   production: {
@@ -88,8 +90,8 @@ module.exports = {
     API_URL: 'http://localhost:9500',
     OMS_RUNS: (number_of_runs = 15) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    OMS_API_CALL_EVERY_NTH_MINUTE: 180,
-    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 3600,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 3,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 10,
   },
   // Dev kubernetes flavor which means no cronjobs, no JSON processing
   dev_kubernetes: {
@@ -98,7 +100,7 @@ module.exports = {
     OMS_RUNS: (number_of_runs = 49) =>
       `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_API_CALL_EVERY_NTH_MINUTE: 30,
-    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 600,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 60,
     OMS_GET_RUNS_CRON_ENABLED: false,
     JSON_PROCESSING_ENABLED: false,
     DQM_GUI_PING_CRON_ENABLED: false
