@@ -159,6 +159,7 @@ exports.update_runs = (
             oms_lumisections
           );
         }
+        console.debug(`Updating attributes for run ${oms_attributes['run_number']}, via PUT`)
         const updated_run = await axios.put(
           `${API_URL}/automatic_run_update/${run.run_number}`,
           {

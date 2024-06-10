@@ -1,0 +1,77 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: runregistry-backend
+  namespace: cmsrunregistry
+  labels:
+    app: runregistry-backend
+    app.kubernetes.io/component: runregistry-backend
+    app.kubernetes.io/instance: runregistry-backend
+    app.kubernetes.io/name: runregistry-backend
+    app.kubernetes.io/part-of: runregistry
+    app.openshift.io/runtime-version: latest
+spec:
+  type: ClusterIP
+  ports:
+    - name: 9500-tcp
+      protocol: TCP
+      port: 9500
+      targetPort: 9500
+  selector:
+    app: runregistry-backend
+    deployment: runregistry-backend
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: runregistry-frontend
+  namespace: cmsrunregistry
+  labels:
+    app: runregistry-frontend
+    app.kubernetes.io/component: runregistry-frontend
+    app.kubernetes.io/instance: runregistry-frontend
+    app.kubernetes.io/name: runregistry-frontend
+    app.kubernetes.io/part-of: runregistry
+    app.openshift.io/runtime-version: latest
+spec:
+  type: ClusterIP
+  ports:
+    - name: 7001-tcp
+      protocol: TCP
+      port: 7001
+      targetPort: 7001
+  selector:
+    app: runregistry-frontend
+    deployment: runregistry-frontend
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx
+  namespace: cmsrunregistry
+  labels:
+    app: nginx
+    app.kubernetes.io/component: nginx
+    app.kubernetes.io/instance: nginx
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    - name: 8443-tcp
+      protocol: TCP
+      port: 8443
+      targetPort: 8443
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    deployment: nginx
+status:
+  loadBalancer: {}

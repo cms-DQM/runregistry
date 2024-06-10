@@ -193,9 +193,11 @@ exports.new = async (req, res) => {
   const run = await Run.findByPk(run_number);
   if (run !== null) {
     // Run already exists, we update it
+    console.debug(`Updating run ${run_number}, by ${req.headers['email']}, ${req.headers['comment']}`)
     await exports.automatic_run_update(req, res);
     return;
   }
+  console.debug(`Creating run ${run_number}, by ${req.headers['email']}, ${req.headers['comment']}`)
   // Initialize run:
   rr_attributes.stop_reason = '';
   rr_attributes.state = 'OPEN';
@@ -246,7 +248,7 @@ exports.new = async (req, res) => {
     await fill_dataset_triplet_cache();
     res.json(runEvent);
   } catch (err) {
-    console.log("run.js # new(): ", err);
+    console.error("run.js # new(): ", err);
     await transaction.rollback();
     throw `Error saving run ${run_number}`;
   }
@@ -255,16 +257,14 @@ exports.new = async (req, res) => {
 // This updates the run (triggered by an OMS update) not to be confused with an manual edition of a run
 // The new_attributes are a collection of the attributes that changed with respect to the run
 exports.automatic_run_update = async (req, res) => {
-  const { body } = req
-  const oms_attributes_from_body = body.oms_attributes
-  const { run_number } = oms_attributes_from_body;
+  const { body: { oms_attributes: { run_number } } } = req;
   if (typeof run_number === 'undefined') {
     throw 'Run number cannot be undefined';
   }
   const run = await Run.findByPk(run_number);
   if (run === null) {
     // Run doesn't exist, we create it
-    console.log(
+    console.info(
       `automatic_run_update(): Trying to update run ${run_number} when we need to create it first`
     );
     await exports.new(req, res);
@@ -290,6 +290,7 @@ exports.automatic_run_update = async (req, res) => {
     }
 
     // Lumisection stuff:
+    console.info(`Updating received lumisections for run ${run_number}`)
     const newRRLumisectionRanges = await update_rr_lumisections({
       run_number,
       dataset_name: 'online',
@@ -409,7 +410,7 @@ exports.automatic_run_update = async (req, res) => {
     if (was_run_updated) {
       await transaction.commit();
       await fill_dataset_triplet_cache();
-      console.log(`automatic_run_update(): updated run ${run_number}`);
+      console.info(`automatic_run_update(): updated run ${run_number}`);
       const run = await Run.findByPk(run_number, {
         include: [
           {
@@ -426,7 +427,7 @@ exports.automatic_run_update = async (req, res) => {
       res.send();
     }
   } catch (err) {
-    console.log('automatic_run_update(): ', err);
+    console.error('automatic_run_update(): ', err);
     await transaction.rollback();
     throw `Error updating run ${run_number}`;
   }
@@ -449,7 +450,7 @@ exports.manual_edit = async (req, res) => {
   }
   // rr_attributes contains the run's attributes
   const { rr_attributes } = run.dataValues;
-  console.log("Run attributes in DB:", rr_attributes);
+  console.info("Run attributes in DB:", rr_attributes);
   if (rr_attributes.state !== 'OPEN') {
     throw 'Run must be in state OPEN to be edited';
   }
@@ -476,7 +477,7 @@ exports.manual_edit = async (req, res) => {
         atomic_version,
         transaction,
       });
-      console.log(`run.js # manual_edit(): updated run ${run_number}`);
+      console.info(`run.js # manual_edit(): updated run ${run_number}`);
     }
     await transaction.commit();
     // Now that it is commited we should find the updated run:
@@ -490,7 +491,7 @@ exports.manual_edit = async (req, res) => {
     });
     res.json(run.dataValues);
   } catch (err) {
-    console.log('run.js # manual_edit():', err);
+    console.error('run.js # manual_edit():', err);
     await transaction.rollback();
     throw `Error updating run ${run_number}`;
   }
@@ -651,7 +652,7 @@ exports.moveRun = async (req, res) => {
           const subsystem = key.split('-')[1];
           const ls_position = i + 1;
           const empty_verbose = val.status || 'empty'; // Will make empty string coerce to 'empty'
-          throw `There is a ${empty_verbose} lumisection at position ${ls_position} of this run in component ${subsystem}. 
+          throw `There is a ${empty_verbose} lumisection at position ${ls_position} of this run in component ${subsystem}.
                            Please wait until this component is updated automatically (<5 mins), or ask ${subsystem} expert, then change the value in the 'manage' menu.`;
         }
       }

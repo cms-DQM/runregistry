@@ -1,0 +1,16 @@
+# SSO Proxy helm chart configuration
+authOptions:
+  extraArgs:
+    - "--set-xauthrequest=true"
+    - "--pass-user-headers=true"
+    # Make sure that the cookies do not stay valid for the defaul 168 hours.
+    - "--cookie-expire=4h"
+    - "--reverse-proxy=true"
+    - "--set-authorization-header=true"
+    # Needed to authenticate with client_credentials
+    # See: https://stackoverflow.com/questions/74520641/analyzing-oauth2-client-credential-flow-with-oauth2-proxy-keycloak-oauth2-pro
+    - "--skip-jwt-bearer-tokens=true"
+route:
+  # Route not needed, we're only exposing nginx
+  create: false
+  hostname: dev-cmsrunregistry.web.cern.ch

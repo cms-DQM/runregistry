@@ -1,0 +1,34 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: nginx
+  namespace: cmsrunregistry
+  labels:
+    app: nginx
+    app.kubernetes.io/component: nginx
+    app.kubernetes.io/instance: nginx
+  annotations:
+    external-dns.alpha.kubernetes.io/target: paas-apps-shard-1.cern.ch
+    haproxy.router.openshift.io/ip_whitelist: ""
+    haproxy.router.openshift.io/timeout: 500s
+spec:
+  host: cmsrunregistry.web.cern.ch
+  to:
+    kind: Service
+    name: nginx
+    weight: 100
+  port:
+    targetPort: 8080-tcp
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: cmsrunregistry.web.cern.ch
+      routerName: apps-shard-1
+      conditions:
+        - type: Admitted
+          status: "True"
+      wildcardPolicy: None
+      routerCanonicalHostname: router-apps-shard-1.paas-apps-shard-1.cern.ch
