@@ -20,6 +20,8 @@ commonVars = {
     idle: 20000,
     acquire: 2000000,
   },
+  // Ignore run numbers lower than this one
+  MINIMUM_CMS_RUN_NUMBER: 100000,
   // DQMGUI
   WAITING_DQM_GUI_CONSTANT: 'waiting dqm gui',
   DQM_GUI_URL: 'https://cmsweb.cern.ch/dqm/offline/data/json/samples?match=',

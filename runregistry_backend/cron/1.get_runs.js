@@ -140,7 +140,12 @@ const calculate_runs_to_update = (fetched_runs, last_saved_runs) => {
   fetched_runs.forEach((fetched_run) => {
     // If the run_number is less than the minimum of the already saved runs, then it is one from the past, which needs to be updated. Else we compare timestamps
     if (fetched_run.run_number < min_run_number) {
-      runs_to_update.push(fetched_run);
+      if (fetched_run.run_number > MINIMUM_CMS_RUN_NUMBER) {
+        runs_to_update.push(fetched_run);
+
+      } else {
+        console.log(`Run number ${fetched_run.run_number} is lower than the threshold MINIMUM_CMS_RUN_NUMBER (${MINIMUM_CMS_RUN_NUMBER}), ignoring`)
+      }
     } else {
       // If the run_number is inside the existing already saved runs, then we check for the timestamp:
       last_saved_runs.forEach((existing_run) => {
