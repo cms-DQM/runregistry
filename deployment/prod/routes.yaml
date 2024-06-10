@@ -12,8 +12,7 @@ metadata:
     haproxy.router.openshift.io/ip_whitelist: ""
     haproxy.router.openshift.io/timeout: 500s
 spec:
-  # TODO: Update url
-  host: cmsrunregistry-qa.web.cern.ch
+  host: cmsrunregistry.web.cern.ch
   to:
     kind: Service
     name: nginx
@@ -25,9 +24,8 @@ spec:
     insecureEdgeTerminationPolicy: Redirect
   wildcardPolicy: None
 status:
-  # TODO: Update url
   ingress:
-    - host: cmsrunregistry-qa.web.cern.ch
+    - host: cmsrunregistry.web.cern.ch
       routerName: apps-shard-1
       conditions:
         - type: Admitted
