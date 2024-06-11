@@ -6,7 +6,7 @@ const https = require('https');
 const config = require('../config/config');
 const {
   OMS_URL,
-  OMS_RUNS,
+  OMS_RUNS_ENDPOINT,
   OMS_GET_RUNS_CRON_ENABLED,
   API_URL,
   OMS_RUNS_PER_API_CALL,
@@ -27,9 +27,9 @@ const fetch_runs = async (
   fetch_amount = OMS_RUNS_PER_API_CALL,
   first_time = true
 ) => {
-  const oms_url = `${OMS_URL}/${OMS_RUNS(fetch_amount)}`;
-  // insert cookie that will authenticate OMS request:
+  const oms_url = `${OMS_URL}/${OMS_RUNS_ENDPOINT(fetch_amount)}`;
 
+  // insert cookie that will authenticate OMS request:
   if (first_time) {
     headers = {
       Authorization: `Bearer ${await getToken()}`,

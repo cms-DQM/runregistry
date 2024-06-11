@@ -32,6 +32,9 @@ commonVars = {
   OMS_GET_RUNS_CRON_ENABLED: true, // Get runs from OMS periodically or not
   OMS_SPECIFIC_RUN: (run_number) => `runs?filter[run_number]=${run_number}`,
   OMS_LUMISECTIONS: (run_number) => `lumisections?filter[run_number]=${run_number}&page[limit]=5000`,
+  // The default value here does not play a role, really, it's overridden by OMS_RUNS_PER_API_CALL
+  OMS_RUNS_ENDPOINT: (number_of_runs = 15) =>
+    `runs?sort=-last_update&page[limit]=${number_of_runs}`,
   CLIENT_ID: 'rr-api-client',
   CLIENT_SECRET: process.env.CLIENT_SECRET,
   OMS_AUDIENCE: 'cmsoms-prod',
@@ -54,8 +57,6 @@ module.exports = {
     ...commonVars,
     API_URL: process.env.DOCKER_POSTGRES ? 'http://dev:9500' :
       'http://localhost:9500',
-    OMS_RUNS: (number_of_runs = 10) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_API_CALL_EVERY_NTH_MINUTE: 30,
     DQM_GUI_CHECK_EVERY_NTH_MINUTE: 60,
     JSON_PROCESSING_ENABLED: false,
@@ -67,8 +68,6 @@ module.exports = {
     ...commonVars,
     API_URL: process.env.DOCKER_POSTGRES ? 'http://dev:9500' :
       'http://localhost:9500',
-    OMS_RUNS: (number_of_runs = 10) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_API_CALL_EVERY_NTH_MINUTE: 30,
     DQM_GUI_CHECK_EVERY_NTH_MINUTE: 60,
     OMS_GET_RUNS_CRON_ENABLED: false,
@@ -79,8 +78,6 @@ module.exports = {
   staging: {
     ...commonVars,
     API_URL: 'http://localhost:9500',
-    OMS_RUNS: (number_of_runs = 10) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_API_CALL_EVERY_NTH_MINUTE: 5,
     DQM_GUI_CHECK_EVERY_NTH_MINUTE: 10,
   },
@@ -88,8 +85,6 @@ module.exports = {
   production: {
     ...commonVars,
     API_URL: 'http://localhost:9500',
-    OMS_RUNS: (number_of_runs = 15) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_API_CALL_EVERY_NTH_MINUTE: 3,
     DQM_GUI_CHECK_EVERY_NTH_MINUTE: 10,
   },
@@ -97,8 +92,6 @@ module.exports = {
   dev_kubernetes: {
     ...commonVars,
     API_URL: 'http://runregistry-backend:9500',
-    OMS_RUNS: (number_of_runs = 49) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_API_CALL_EVERY_NTH_MINUTE: 30,
     DQM_GUI_CHECK_EVERY_NTH_MINUTE: 60,
     OMS_GET_RUNS_CRON_ENABLED: false,
@@ -109,8 +102,6 @@ module.exports = {
   staging_kubernetes: {
     ...commonVars,
     API_URL: 'http://runregistry-backend:9500',
-    OMS_RUNS: (number_of_runs = 15) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_API_CALL_EVERY_NTH_MINUTE: 10,
     OMS_RUNS_PER_API_CALL: 25,
     DQM_GUI_CHECK_EVERY_NTH_MINUTE: 15,
@@ -119,10 +110,8 @@ module.exports = {
   prod_kubernetes: {
     ...commonVars,
     API_URL: 'http://runregistry-backend:9500',
-    OMS_RUNS: (number_of_runs = 15) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
     OMS_RUNS_PER_API_CALL: 49,
-    OMS_API_CALL_EVERY_NTH_MINUTE: 3,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 2,
     DQM_GUI_CHECK_EVERY_NTH_MINUTE: 10,
   },
 
