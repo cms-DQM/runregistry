@@ -28,6 +28,7 @@ exports.get_OMS_lumisections = handleErrors(async (run_number) => {
   await new Promise((resolve) => {
     setTimeout(resolve, 2000);
   });
+  console.debug(`Requesting lumisections for run ${run_number} from OMS`)
   const oms_lumisection_url = `${OMS_URL}/${OMS_LUMISECTIONS(run_number)}`;
   // Keep fetching until totalresourcecount is # of lumisections
   const oms_lumisection_response = await instance

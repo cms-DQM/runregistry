@@ -38,7 +38,7 @@ console.error = getLogger("ERROR", console.error)
 
 // Logging for sanity
 const { database, host, port: db_port } = config[process.env.ENV];
-console.error(`Using database: ${database}@${host}:${db_port}`);
+console.info(`Using database: ${database}@${host}:${db_port}`);
 
 models.sequelize.sync({})
   .then(async () => {
