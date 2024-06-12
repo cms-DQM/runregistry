@@ -24,7 +24,7 @@ const { handleErrors } = require('../utils/error_handlers');
 const {
   API_URL,
   DQM_GUI_URL,
-  SECONDS_PER_DQM_GUI_CHECK,
+  DQM_GUI_CHECK_EVERY_NTH_MINUTE,
   WAITING_DQM_GUI_CONSTANT,
   DQM_GUI_PING_CRON_ENABLED
 } = require('../config/config')[process.env.ENV || 'development'];
@@ -231,7 +231,7 @@ const ping_dqm_gui = async () => {
 // Cron job starts:
 if (DQM_GUI_PING_CRON_ENABLED === true) {
   const job = new CronJob(
-    `*/${SECONDS_PER_DQM_GUI_CHECK} * * * * *`,
+    `*/${DQM_GUI_CHECK_EVERY_NTH_MINUTE} * * * *`,
     handleErrors(ping_dqm_gui, 'cron_datasets/2.ping_dqm_gui.js # Error pinging DQM GUI')
   ).start();
 } else {

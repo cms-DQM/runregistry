@@ -1,4 +1,4 @@
-// Common configuration used by all deployment modes
+// Common configuration used and overriden by all deployment modes.
 commonVars = {
   // Database config
   username: process.env.DB_USERNAME || 'postgres',
@@ -20,19 +20,26 @@ commonVars = {
     idle: 20000,
     acquire: 2000000,
   },
+  // Ignore run numbers lower than this one
+  MINIMUM_CMS_RUN_NUMBER: 100000,
   // DQMGUI
   WAITING_DQM_GUI_CONSTANT: 'waiting dqm gui',
   DQM_GUI_URL: 'https://cmsweb.cern.ch/dqm/offline/data/json/samples?match=',
   DQM_GUI_PING_CRON_ENABLED: true,
+  DQM_GUI_CHECK_EVERY_NTH_MINUTE: 60, // This needs to be <=60
   // OMS
   OMS_URL: `https://cmsoms.cern.ch/agg/api/v1`,
   OMS_GET_RUNS_CRON_ENABLED: true, // Get runs from OMS periodically or not
   OMS_SPECIFIC_RUN: (run_number) => `runs?filter[run_number]=${run_number}`,
   OMS_LUMISECTIONS: (run_number) => `lumisections?filter[run_number]=${run_number}&page[limit]=5000`,
+  // The default value here does not play a role, really, it's overridden by OMS_RUNS_PER_API_CALL
+  OMS_RUNS_ENDPOINT: (number_of_runs = 15) =>
+    `runs?sort=-last_update&page[limit]=${number_of_runs}`,
   CLIENT_ID: 'rr-api-client',
   CLIENT_SECRET: process.env.CLIENT_SECRET,
   OMS_AUDIENCE: 'cmsoms-prod',
-  RUNS_PER_API_CALL: 49,
+  OMS_RUNS_PER_API_CALL: 49,
+  OMS_API_CALL_EVERY_NTH_MINUTE: 30, // This needs to be <=60
   // Redis
   // redis://:<pass>@<host>:<port>
   REDIS_URL: `redis://${process.env.REDIS_PASSWORD ? ':' + process.env.REDIS_PASSWORD + '@' : ''}${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || 6379}`,
@@ -50,10 +57,8 @@ module.exports = {
     ...commonVars,
     API_URL: process.env.DOCKER_POSTGRES ? 'http://dev:9500' :
       'http://localhost:9500',
-    OMS_RUNS: (number_of_runs = 10) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 30,
-    SECONDS_PER_DQM_GUI_CHECK: 6000,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 30,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 60,
     JSON_PROCESSING_ENABLED: false,
     OMS_GET_RUNS_CRON_ENABLED: false,
     DQM_GUI_PING_CRON_ENABLED: false
@@ -63,10 +68,8 @@ module.exports = {
     ...commonVars,
     API_URL: process.env.DOCKER_POSTGRES ? 'http://dev:9500' :
       'http://localhost:9500',
-    OMS_RUNS: (number_of_runs = 10) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 30,
-    SECONDS_PER_DQM_GUI_CHECK: 6000,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 30,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 60,
     OMS_GET_RUNS_CRON_ENABLED: false,
     JSON_PROCESSING_ENABLED: false,
     DQM_GUI_PING_CRON_ENABLED: false
@@ -75,28 +78,22 @@ module.exports = {
   staging: {
     ...commonVars,
     API_URL: 'http://localhost:9500',
-    OMS_RUNS: (number_of_runs = 10) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 3600,
-    SECONDS_PER_DQM_GUI_CHECK: 3600,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 5,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 10,
   },
   // Old "bare-metal" production
   production: {
     ...commonVars,
     API_URL: 'http://localhost:9500',
-    OMS_RUNS: (number_of_runs = 15) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 180,
-    SECONDS_PER_DQM_GUI_CHECK: 3600,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 3,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 10,
   },
   // Dev kubernetes flavor which means no cronjobs, no JSON processing
   dev_kubernetes: {
     ...commonVars,
     API_URL: 'http://runregistry-backend:9500',
-    OMS_RUNS: (number_of_runs = 49) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 30,
-    SECONDS_PER_DQM_GUI_CHECK: 600,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 30,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 60,
     OMS_GET_RUNS_CRON_ENABLED: false,
     JSON_PROCESSING_ENABLED: false,
     DQM_GUI_PING_CRON_ENABLED: false
@@ -105,19 +102,17 @@ module.exports = {
   staging_kubernetes: {
     ...commonVars,
     API_URL: 'http://runregistry-backend:9500',
-    OMS_RUNS: (number_of_runs = 15) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 60,
-    SECONDS_PER_DQM_GUI_CHECK: 600,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 10,
+    OMS_RUNS_PER_API_CALL: 25,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 15,
   },
   // Production config for kubernetes
   prod_kubernetes: {
     ...commonVars,
     API_URL: 'http://runregistry-backend:9500',
-    OMS_RUNS: (number_of_runs = 15) =>
-      `runs?sort=-last_update&page[limit]=${number_of_runs}`,
-    SECONDS_PER_API_CALL: 180,
-    SECONDS_PER_DQM_GUI_CHECK: 3600,
+    OMS_RUNS_PER_API_CALL: 49,
+    OMS_API_CALL_EVERY_NTH_MINUTE: 2,
+    DQM_GUI_CHECK_EVERY_NTH_MINUTE: 10,
   },
 
   // The online components are also the rr_lumisection_whitelist

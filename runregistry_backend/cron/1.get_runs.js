@@ -6,11 +6,12 @@ const https = require('https');
 const config = require('../config/config');
 const {
   OMS_URL,
-  OMS_RUNS,
+  OMS_RUNS_ENDPOINT,
   OMS_GET_RUNS_CRON_ENABLED,
   API_URL,
-  RUNS_PER_API_CALL,
-  SECONDS_PER_API_CALL,
+  OMS_RUNS_PER_API_CALL,
+  OMS_API_CALL_EVERY_NTH_MINUTE,
+  MINIMUM_CMS_RUN_NUMBER
 } = config[process.env.ENV || 'development'];
 const { save_runs, update_runs } = require('./2.save_or_update_runs');
 
@@ -23,12 +24,12 @@ const instance = axios.create({
 
 // Will call itself recursively if all runs are new
 const fetch_runs = async (
-  fetch_amount = RUNS_PER_API_CALL,
+  fetch_amount = OMS_RUNS_PER_API_CALL,
   first_time = true
 ) => {
-  const oms_url = `${OMS_URL}/${OMS_RUNS(fetch_amount)}`;
-  // insert cookie that will authenticate OMS request:
+  const oms_url = `${OMS_URL}/${OMS_RUNS_ENDPOINT(fetch_amount)}`;
 
+  // insert cookie that will authenticate OMS request:
   if (first_time) {
     headers = {
       Authorization: `Bearer ${await getToken()}`,
@@ -40,7 +41,7 @@ const fetch_runs = async (
       setTimeout(resolve, 2000);
     });
   }
-
+  console.debug(`Fetching the ${fetch_amount} last updated OMS runs`)
   const oms_response = await instance.get(oms_url, {
     headers,
   });
@@ -57,7 +58,7 @@ const fetch_runs = async (
   let fetched_runs = first_time
     ? all_fetched_runs
     : all_fetched_runs.slice(fetch_amount / 2);
-
+  console.debug("Querying the last 50 updated RR runs")
   const { data: last_saved_runs } = await axios.get(
     `${API_URL}/runs_lastupdated_50`
   );
@@ -95,7 +96,7 @@ const fetch_runs = async (
 
 if (OMS_GET_RUNS_CRON_ENABLED === true) {
   const job = new CronJob(
-    `*/${SECONDS_PER_API_CALL} * * * * *`,
+    `*/${OMS_API_CALL_EVERY_NTH_MINUTE} * * * *`,
     handleErrors(fetch_runs, 'cron/1.get_runs.js # Error fetching new runs ')
   ).start();
 }
@@ -140,7 +141,12 @@ const calculate_runs_to_update = (fetched_runs, last_saved_runs) => {
   fetched_runs.forEach((fetched_run) => {
     // If the run_number is less than the minimum of the already saved runs, then it is one from the past, which needs to be updated. Else we compare timestamps
     if (fetched_run.run_number < min_run_number) {
-      runs_to_update.push(fetched_run);
+      if (fetched_run.run_number > MINIMUM_CMS_RUN_NUMBER) {
+        runs_to_update.push(fetched_run);
+
+      } else {
+        console.log(`Run number ${fetched_run.run_number} is lower than the threshold MINIMUM_CMS_RUN_NUMBER (${MINIMUM_CMS_RUN_NUMBER}), ignoring`)
+      }
     } else {
       // If the run_number is inside the existing already saved runs, then we check for the timestamp:
       last_saved_runs.forEach((existing_run) => {
