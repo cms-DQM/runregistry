@@ -2,7 +2,7 @@ import json
 import logging
 import argparse
 import requests
-from .utils import CernAuthToken
+from utils import CernAuthToken
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(encoding="utf-8", level=logging.DEBUG)
