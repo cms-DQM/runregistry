@@ -70,7 +70,7 @@ const INITIAL_STATE = {
   selected_json: {},
 };
 
-export default function (state = INITIAL_STATE, action) {
+export default function ui(state = INITIAL_STATE, action) {
   const { type, payload } = action;
   switch (type) {
     case SHOW_MODAL:

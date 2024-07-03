@@ -193,7 +193,7 @@ export const exportToCSV = (columns) =>
   });
 
 const INITIAL_STATE = {};
-export default function (state = INITIAL_STATE, action) {
+export default function dc_tools(state = INITIAL_STATE, action) {
   const { type, payload } = action;
   switch (type) {
     default:

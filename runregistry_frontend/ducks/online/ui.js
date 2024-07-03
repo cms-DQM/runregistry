@@ -57,7 +57,7 @@ const INITIAL_STATE = {
     classifier_visualization_modal_run: {}
 };
 
-export default function(state = INITIAL_STATE, action) {
+export default function ui(state = INITIAL_STATE, action) {
     const { type, payload } = action;
     switch (type) {
         case SHOW_CONFIGURATION_MODAL:

@@ -35,7 +35,7 @@ const INITIAL_STATE = {
     json_editor_value: ''
 };
 
-export default function(state = INITIAL_STATE, action) {
+export default function classifier_editor(state = INITIAL_STATE, action) {
     const { type, payload } = action;
     switch (type) {
         case NEW_CLASSIFIER_INTENT:

@@ -51,7 +51,7 @@ export const editDatasetClassifier = (new_classifier, class_selected) =>
 
 const INITIAL_STATE = [];
 
-export default function(state = INITIAL_STATE, action) {
+export default function dataset(state = INITIAL_STATE, action) {
     const { type, payload } = action;
     switch (type) {
         case FETCH_DATASET_CLASSIFIERS:

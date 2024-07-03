@@ -18,7 +18,7 @@ export const initializeEnvironment = store => {
 
 const INITIAL_STATE = {};
 
-export default function(state = INITIAL_STATE, action) {
+export default function info(state = INITIAL_STATE, action) {
     const { type, payload } = action;
     switch (type) {
         case INITIAL_INFO:

@@ -59,7 +59,7 @@ export const removeRegexp = id_dataset_accepted =>
 
 const INITIAL_STATE = [];
 
-export default function(state = INITIAL_STATE, action) {
+export default function datasets_accepted(state = INITIAL_STATE, action) {
     const { type, payload } = action;
     switch (type) {
         case FETCH_DATASETS_ACCEPTED:

@@ -14,7 +14,7 @@ const INITIAL_STATE = {
   filterable: false
 };
 
-export default function(state = INITIAL_STATE, action) {
+export default function waiting_datasets(state = INITIAL_STATE, action) {
   const { type, payload } = action;
   switch (type) {
     case FILTER_WAITING_DATASETS:

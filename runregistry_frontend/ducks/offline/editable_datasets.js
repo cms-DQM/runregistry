@@ -16,7 +16,7 @@ const INITIAL_STATE = {
   sortings: [],
   filterable: false
 };
-export default function(state = INITIAL_STATE, action) {
+export default function editable_datasets(state = INITIAL_STATE, action) {
   const { type, payload } = action;
   switch (type) {
     case FILTER_EDITABLE_DATASETS:

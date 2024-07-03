@@ -72,7 +72,7 @@ const INITIAL_STATE = {
   deleted_jsons: [],
 };
 
-export default function (state = INITIAL_STATE, action) {
+export default function jsons(state = INITIAL_STATE, action) {
   const { type, payload } = action;
 
   switch (type) {

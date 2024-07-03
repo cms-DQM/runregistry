@@ -54,7 +54,7 @@ export const editClassClassifier = (new_classifier, class_selected, priority) =>
 
 const INITIAL_STATE = [];
 
-export default function(state = INITIAL_STATE, action) {
+export default function class_(state = INITIAL_STATE, action) {
     const { type, payload } = action;
     switch (type) {
         case FETCH_CLASS_CLASSIFIERS:

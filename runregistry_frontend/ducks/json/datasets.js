@@ -119,7 +119,7 @@ const INITIAL_STATE = {
   filter: {},
   filterable: false,
 };
-export default function (state = INITIAL_STATE, action) {
+export default function datasets(state = INITIAL_STATE, action) {
   const { type, payload } = action;
   switch (type) {
     case FILTER_EDITABLE_DATASETS:

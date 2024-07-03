@@ -68,7 +68,7 @@ export const editComponentClassifier = new_classifier =>
 
 const INITIAL_STATE = [];
 
-export default function(state = INITIAL_STATE, action) {
+export default function component(state = INITIAL_STATE, action) {
     const { type, payload } = action;
     switch (type) {
         case FETCH_COMPONENT_CLASSIFIERS:
