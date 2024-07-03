@@ -10,7 +10,7 @@ export const LuminositySourceModal = ({ visible, hideModal, label, runs }) => {
     <div>
       <Modal
         title={`Visualizing ${label}`}
-        visible={visible}
+        open={visible}
         onOk={hideModal}
         onCancel={
           hideModal // confirmLoading={confirmLoading}

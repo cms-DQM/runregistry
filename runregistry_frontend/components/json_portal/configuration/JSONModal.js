@@ -22,7 +22,7 @@ class JSONConfigurationModal extends Component {
       <div>
         <Modal
           title={title_types[modal_type]}
-          visible={modal_visible}
+          open={modal_visible}
           onOk={hideModal}
           onCancel={
             hideModal // confirmLoading={confirmLoading}

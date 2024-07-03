@@ -251,7 +251,7 @@ class Configuration extends Component {
                 Enter the dataset of the runs you want to create a json from:
               </h4>
               <AutoComplete
-                dropdownClassName="certain-category-search-dropdown"
+                popupClassName="certain-category-search-dropdown"
                 dropdownMatchSelectWidth={650}
                 style={{ width: 800 }}
                 options={options}
@@ -289,21 +289,21 @@ class Configuration extends Component {
                   borderRadius: '2px',
                 }}
               >
-                  <Menu onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]} mode="horizontal">
-                    <Menu.Item key="arbitrary"> New Configuration </Menu.Item>
-                  </Menu>
-                  &nbsp;
-                  <Dropdown overlay={ <Menu style={{ overflowY: 'scroll', maxHeight: '300px' }} onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]}> 
-                                      {json_configurations_array.filter( ({ created_by }) => created_by === this.props.email).map(({ name }) => ( <Menu.Item key={name}>{name}</Menu.Item> ))}
-                                      </Menu> } destroyPopupOnHide={true}> 
-                    <a style={{ marginTop: '12px' }} className="ant-dropdown-link" onClick={e => e.preventDefault()}> My Configurations <DownOutlined /> </a>
-                  </Dropdown>
-                  &nbsp;
-                  <Dropdown overlay={ <Menu style={{ overflowY: 'scroll', maxHeight: '300px' }} onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]}> 
-                                      {json_configurations_array.map(({ name }) => ( <Menu.Item key={name}>{name}</Menu.Item>))} 
-                                      </Menu> } destroyPopupOnHide={true}> 
-                    <a style={{ marginTop: '12px' }} className="ant-dropdown-link" onClick={e => e.preventDefault()}> All Configurations <DownOutlined /> </a>
-                  </Dropdown>
+                <Menu onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]} mode="horizontal">
+                  <Menu.Item key="arbitrary"> New Configuration </Menu.Item>
+                </Menu>
+                &nbsp;
+                <Dropdown overlay={<Menu style={{ overflowY: 'scroll', maxHeight: '300px' }} onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]}>
+                  {json_configurations_array.filter(({ created_by }) => created_by === this.props.email).map(({ name }) => (<Menu.Item key={name}>{name}</Menu.Item>))}
+                </Menu>} destroyPopupOnHide={true}>
+                  <a style={{ marginTop: '12px' }} className="ant-dropdown-link" onClick={e => e.preventDefault()}> My Configurations <DownOutlined /> </a>
+                </Dropdown>
+                &nbsp;
+                <Dropdown overlay={<Menu style={{ overflowY: 'scroll', maxHeight: '300px' }} onClick={({ key }) => this.handleMenuChange(key)} selectedKeys={[menu_selection]}>
+                  {json_configurations_array.map(({ name }) => (<Menu.Item key={name}>{name}</Menu.Item>))}
+                </Menu>} destroyPopupOnHide={true}>
+                  <a style={{ marginTop: '12px' }} className="ant-dropdown-link" onClick={e => e.preventDefault()}> All Configurations <DownOutlined /> </a>
+                </Dropdown>
               </div>
             </center>
           )}

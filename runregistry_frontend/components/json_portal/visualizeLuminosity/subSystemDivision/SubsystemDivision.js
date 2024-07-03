@@ -200,7 +200,7 @@ function PieChartAndBarChart({ title, data, runs }) {
       {showModal && (
         <LuminositySourceModal
           label={selectedLabel}
-          visible={showModal}
+          open={showModal}
           hideModal={() => setShowModal(false)}
           runs={runs}
         />

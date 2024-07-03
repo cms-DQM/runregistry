@@ -16,7 +16,7 @@ class ClassifierVisualizationModal extends Component {
             <div>
                 <Modal
                     title={`Classifier Visualization for Run ${run.run_number}`}
-                    visible={classifier_visualization_modal}
+                    open={classifier_visualization_modal}
                     onOk={hideClassifierVisualizationModal}
                     onCancel={
                         hideClassifierVisualizationModal // confirmLoading={confirmLoading}
