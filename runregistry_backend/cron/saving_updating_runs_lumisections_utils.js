@@ -50,20 +50,23 @@ exports.get_OMS_lumisections = handleErrors(async (run_number) => {
   let oms_lumisections = oms_lumisection_response.data.data;
   // Deconstruct attributes inside oms_lumisections:
   oms_lumisections = oms_lumisections.map(({ attributes }) => attributes);
-  // Track the exact missing lumisection numbers, one by one, for easier searching, below.
-  let missing_lumi_numbers = [];
+  // If lumisections are missing, we calculate an offset to offset the missing lumisections
+  // while processing them one by one.
+  let lumi_offset = 0;
   // Create dummy lumisection objects to replace the missing ones. This is an array of arrays, each one
   // being a subarray of missing lumisections. E.g. [[missing range 25-30], [missing range 54-60]]
   let missing_lumi_objects_ranges = [];
   // We add luminosity information
   oms_lumisections = oms_lumisections.map(
     ({ recorded_lumi, delivered_lumi, lumisection_number }, index, oms_lumisections) => {
-      // Check that the index matches the LS number. If not, we update the missing lumisection arrays.
-      if (index + 1 !== lumisection_number && missing_lumi_numbers.indexOf(index + 1) === -1) {
+      // Check that the index matches the LS number (including the offset, in case of missing LS).
+      // If they're not matching, we update the missing lumisection ranges with dummy ones, and
+      // adjust the offset.
+      if (index + 1 + lumi_offset !== lumisection_number) {
         console.warn(`Inconsistency in Run ${run_number}: Lumisection ${index} does not match OMS lumisection_number (${lumisection_number})`)
-        missing_lumi_numbers.push(...Array.from(new Array(lumisection_number - index - 1), (x, i) => i + index + 1))
+        lumi_offset = lumisection_number - index - 1;
         missing_lumi_objects_ranges.push(Array.from(new Array(lumisection_number - index - 1), (x, i) => { return { 'lumisection_number': i + index + 1 } }))
-        console.log(`Missing LS: ${missing_lumi_numbers}`)
+        console.log(`Missing LS offset: ${lumi_offset}`)
       }
 
       // If any of them is null, then the per_lumi are all null
