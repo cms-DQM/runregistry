@@ -30,27 +30,32 @@ It is based on React.
 
 ### Connect to DB
 
-Like:
+Via `psql`:
 
 ```bash
 psql -h dbod-gc005.cern.ch -p 6601 -U username
 ```
-using password & username obtained from DQM core
 
-### Delete entry from postgresql DB
+using password & username obtained from DQM core.
+
+You can also use `pgadmin4` for convenience.
+
+### Delete a run from the DB
 
 ```sql
-\l
-\c runregistry_database_dev
-\dt+
-SELECT * FROM public."Run" WHERE run_number = 346511;
-DELETE FROM public."DatasetEvent" WHERE run_number = 346511;
-DELETE FROM public."DatasetTripletCache" WHERE run_number = 346511;
-DELETE FROM public."LumisectionEvent" WHERE run_number = 346511;
-DELETE FROM public."OMSLumisectionEvent" WHERE run_number = 346511;
-DELETE FROM public."Dataset" WHERE run_number = 346511;
-DELETE FROM public."Run" WHERE run_number = 346511;
-DELETE FROM public."RunEvent" WHERE run_number = 346511;
+DO $$
+DECLARE
+	run_number_to_delete integer := 382656;
+BEGIN
+	EXECUTE 'SELECT * FROM public."Run" WHERE run_number = $1' USING run_number_to_delete;
+	EXECUTE 'DELETE FROM public."DatasetEvent" WHERE run_number = $1' USING run_number_to_delete;
+	EXECUTE 'DELETE FROM public."DatasetTripletCache" WHERE run_number = $1' USING run_number_to_delete;
+	EXECUTE 'DELETE FROM public."LumisectionEvent" WHERE run_number = $1' USING run_number_to_delete;
+	EXECUTE 'DELETE FROM public."OMSLumisectionEvent" WHERE run_number = $1' USING run_number_to_delete;
+	EXECUTE 'DELETE FROM public."Dataset" WHERE run_number = $1' USING run_number_to_delete;
+	EXECUTE 'DELETE FROM public."Run" WHERE run_number = $1' USING run_number_to_delete;
+ 	EXECUTE 'DELETE FROM public."RunEvent" WHERE run_number = $1' USING run_number_to_delete;
+END $$;
 ```
 
 ### Add e-group into DB
