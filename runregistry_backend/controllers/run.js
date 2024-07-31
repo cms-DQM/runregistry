@@ -571,20 +571,24 @@ exports.refreshRunClassAndComponents = async (req, res) => {
   if (previously_saved_run.rr_attributes.state !== 'OPEN') {
     throw 'Run must be in state OPEN to be refreshed';
   }
-
-  await manually_update_a_run(run_number, {
-    email,
-    comment: `${email} requested refresh from OMS`,
-  });
-  const saved_run = await Run.findByPk(run_number, {
-    include: [
-      {
-        model: DatasetTripletCache,
-        attributes: ['triplet_summary'],
-      },
-    ],
-  });
-  res.json(saved_run);
+  try {
+    await manually_update_a_run(run_number, {
+      email,
+      comment: `${email} requested refresh from OMS`,
+    });
+    const saved_run = await Run.findByPk(run_number, {
+      include: [
+        {
+          model: DatasetTripletCache,
+          attributes: ['triplet_summary'],
+        },
+      ],
+    });
+    res.json(saved_run);
+  } catch (err) {
+    console.error(`Could not refresh run ${run_number}: ${err}`);
+    throw `Could not refresh run ${run_number}: ${err}`;
+  }
 };
 
 exports.resetAndRefreshRunRRatributes = async (req, res) => {
@@ -597,20 +601,24 @@ exports.resetAndRefreshRunRRatributes = async (req, res) => {
   if (previously_saved_run.rr_attributes.state !== 'OPEN') {
     throw 'Run must be in state OPEN to be refreshed';
   }
-
-  await manually_update_a_run_reset_rr_attributes(run_number, {
-    email,
-    comment: `${email} requested reset and refresh from OMS`,
-  });
-  const saved_run = await Run.findByPk(run_number, {
-    include: [
-      {
-        model: DatasetTripletCache,
-        attributes: ['triplet_summary'],
-      },
-    ],
-  });
-  res.json(saved_run);
+  try {
+    await manually_update_a_run_reset_rr_attributes(run_number, {
+      email,
+      comment: `${email} requested reset and refresh from OMS`,
+    });
+    const saved_run = await Run.findByPk(run_number, {
+      include: [
+        {
+          model: DatasetTripletCache,
+          attributes: ['triplet_summary'],
+        },
+      ],
+    });
+    res.json(saved_run);
+  } catch (err) {
+    console.error(`Could not refresh run ${run_number}: ${err}`);
+    throw `Could not refresh run ${run_number}: ${err}`;
+  }
 };
 
 exports.moveRun = async (req, res) => {
