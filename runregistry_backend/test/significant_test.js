@@ -6,9 +6,9 @@ const {
   get_OMS_lumisections
 } = require('../cron/saving_updating_runs_lumisections_utils');
 const {
-  calculate_rr_attributes,
-  calculate_rr_lumisections,
-  calculate_oms_attributes
+  calculate_updated_rr_run_attributes,
+  classify_rr_lumisection_components,
+  augment_oms_run_attributes: augment_oms_run_attributes
 } = require('../cron/3.calculate_rr_attributes');
 
 describe('Significant test', async () => {
@@ -170,14 +170,14 @@ describe('Significant test', async () => {
   it('Generates significance correctly', async () => {
     // const oms_lumisections = await get_OMS_lumisections(run.run_number);
     const oms_lumisections = [];
-    const oms_attributes = await calculate_oms_attributes(
+    const oms_attributes = await augment_oms_run_attributes(
       run,
       oms_lumisections
     );
     Object.freeze(oms_lumisections);
     Object.freeze(oms_attributes);
 
-    const rr_attributes = await calculate_rr_attributes(
+    const rr_attributes = await calculate_updated_rr_run_attributes(
       oms_attributes,
       oms_lumisections
     );
