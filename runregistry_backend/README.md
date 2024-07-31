@@ -83,10 +83,12 @@ pg_dump -f dump.sql -d runregistry_database -U admin -h <DBoD URL> -p <DBoD port
 psql -h localhost -p 6543 -U hackathon -d runregistry_database -f dump.sql
 ```
 
-Alternatively, simultaneously dump & restore the databse with:
+Alternatively, simultaneously dump & restore a local databse with:
 
 ```bash
-pg_dump -d runregistry_database -U admin -h <DBoD URL> -p <DBoD port> | PGPASSWORD=<your local postgres password> psql -U <your local postgres user> run_registry
+LOCAL_PG_USER=<your local postgres user>
+LOCAL_PG_PASSWORD=<your local postgres password>
+PGPASSWORD=$LOCAL_PG_PASSWORD dropdb -U $LOCAL_PG_USER 'run_registry' && PGPASSWORD=$LOCAL_PG_PASSWORD createdb -U $LOCAL_PG_USER 'run_registry' && pg_dump -d runregistry_database -U admin -h <DBoD URL> -p <DBoD port> | PGPASSWORD=$LOCAL_PG_PASSWORD psql -U $LOCAL_PG_USER run_registry
 ```
 
 Now if you run `make dev` the API will connect to a fresh copy of the production data of run registry running in your local postgres database container. Now, your local environment resembles the production environment as much as possible, you can run runregistry_frontend locally to then interact with your development API.
