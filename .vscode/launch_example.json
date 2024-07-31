@@ -1,0 +1,47 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "runtimeExecutable": "${workspaceFolder}/node/bin/node",
+      "type": "node",
+      "request": "launch",
+      "name": "Debug RR backend",
+      "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceFolder}/runregistry_backend",
+      "args": ["--inspect"],
+      "program": "${workspaceFolder}/runregistry_backend/app.js",
+      "env": {
+        "ENV": "development",
+        "NODE_ENV": "development",
+        "CLIENT_SECRET": "TODO: REPLACE"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug RR frontend",
+      "cwd": "${workspaceFolder}/runregistry_frontend",
+      "skipFiles": ["<node_internals>/**"],
+      "args": ["--inspect"],
+      "program": "${workspaceFolder}/runregistry_frontend/server.js",
+      "env": {}
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug RR get_runs cronjob",
+      "cwd": "${workspaceFolder}/runregistry_backend",
+      "skipFiles": ["<node_internals>/**"],
+      "args": ["--inspect"],
+      "program": "${workspaceFolder}/runregistry_backend/cron/1.get_runs.js",
+      "env": {}
+    },
+    {
+      "name": "Attach to node",
+      "type": "node",
+      "request": "attach",
+      "restart": true,
+      "port": 9229
+    }
+  ]
+}

@@ -3,7 +3,8 @@
 node_modules/
 node/
 yarn.lock
-.vscode
+.vscode/*
+!.vscode/launch_example.json
 *.csv
 *.rdb
 **/*.pyc
