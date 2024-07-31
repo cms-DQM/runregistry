@@ -116,37 +116,26 @@ exports.get_OMS_lumisections = handleErrors(async (run_number) => {
 }, 'runregistry_backend/cron/saving_updating_runs_lumisections_utils.js # get_OMS_lumisections(): Error getting lumisection attributes for the run'
 );
 
+// If at least one LS has beams 1 & 2 present and stable, return true
 exports.get_beam_present_and_stable = (lumisections) => {
-  let beams_present_and_stable = false;
-  lumisections.forEach((lumisection) => {
-    const {
-      beam1_present,
-      beam1_stable,
-      beam2_present,
-      beam2_stable,
-    } = lumisection;
-    // If one of them is null, set the conjunction null:
-    if (
-      beam1_present === null ||
-      beam1_stable === null ||
-      beam2_present === null ||
-      beam2_stable === null
-    ) {
-      beams_present_and_stable = null;
-    } else if (beam1_present && beam1_stable && beam2_present && beam2_stable) {
-      // break if any of the lumisections has beams_present_and_stable === true
-      return true;
-    }
-  });
-  return beams_present_and_stable;
+  let res = lumisections.find((lumisection) =>
+    lumisection.beam1_present && lumisection.beam1_stable && lumisection.beam2_present && lumisection.beam2_stable
+  )
+  return res ? true : false;
 };
 
-// Reduces the array of lumisections to truthy if only one is true in whole array
+// Reduces the array of lumisections to truthy if only one is true in whole array.
+// For example, if "beam_present" is true for at least one lumisection, the returned
+// object will contain a key with "beam_present" equal to true.
 exports.reduce_ls_attributes = (lumisections) => {
   const reduced_values = {};
   // If there is at least 1 LS that is true, then its true for the run:
-  lumisections.forEach((lumisection) => {
-    Object.keys(lumisection).forEach((key, index) => {
+  for (const lumisection of lumisections) {
+    for (const key in lumisection) {
+      // Early break if the key is already set to true in the final object
+      if (reduced_values[key] === true) {
+        continue
+      }
       // We are only interested for either true or null values: (if it was true once, it is true for all)
       if (reduced_values[key] !== true && (lumisection[key] === true || lumisection[key] === false)) {
         reduced_values[key] = lumisection[key];
@@ -155,8 +144,8 @@ exports.reduce_ls_attributes = (lumisections) => {
       if (lumisection[key] === null && !reduced_values[key]) {
         reduced_values[key] = false;
       }
-    });
-  });
+    };
+  };
   return reduced_values;
 };
 
@@ -202,29 +191,31 @@ exports.assign_run_class = handleErrors(
   },
   'runregistry_backend/cron/saving_updating_runs_lumisections_utils.js # assign_run_class(): Error assigning run class'
 );
-
+// For a given run's OMS and RR attributes, and OMS LS information,
+// try to decide whether it's significant or not.
+// NOTE: "dataset classifiers" in this context have nothing to do with
+// Offline's "datasets" like "Express" etc. It's unknown why this name was chosen
+// (Perhaps it makes sense in the Offline part of Runregistry?)
 exports.is_run_significant = handleErrors(
-  async (oms_attributes, rr_attributes, oms_lumisections) => {
+  async (oms_run_attributes, rr_run_attributes, oms_lumisections) => {
     const reduced_lumisection_attributes = exports.reduce_ls_attributes(
       oms_lumisections
     );
     const run = {
       ...reduced_lumisection_attributes,
-      ...oms_attributes,
-      ...rr_attributes,
+      ...oms_run_attributes,
+      ...rr_run_attributes,
     };
-    let run_is_significant = false;
     const { data: classifiers_array } = await axios.get(
       `${API_URL}/classifiers/dataset`
     );
-    classifiers_array.forEach((classifier) => {
+    let run_is_significant = classifiers_array.some((classifier) => {
       const classifier_class = classifier.class;
       classifier = JSON.parse(classifier.classifier);
       if (classifier_class === run.class) {
-        const create_dataset = json_logic.apply(classifier, run);
-        if (create_dataset) {
-          run_is_significant = true;
-        }
+        // If the classifier was applied successfully, returns true,
+        // and breaks the some() loop
+        return (json_logic.apply(classifier, run))
       }
     });
     return run_is_significant;
