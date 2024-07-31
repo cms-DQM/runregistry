@@ -13,14 +13,14 @@ export const error_handler = (
         console.log('request cancelled due to race condition');
         return;
       }
-      console.log(err);
+      console.error(err);
       let swal_message = {
         type: 'error',
         title: 'Error:',
         text: error_message || err ? err.message : '',
       };
       if (err.response) {
-        console.log(err.response);
+        console.error(err.response);
         const { status, statusText, data } = err.response;
         if (show_html) {
           swal_message.html = data.err;
