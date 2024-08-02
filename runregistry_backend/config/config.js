@@ -172,6 +172,7 @@ module.exports = {
       'beam1_stable', 'hbhec_ready',
       'beam2_stable', 'beam2_present',
       'gemp_ready', 'gemm_ready',
+      'prescale_index', 'prescale_name'
     ],
   oms_lumisection_luminosity_whitelist:
     [
