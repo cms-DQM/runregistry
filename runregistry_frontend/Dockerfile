@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 
 ENV NODE_ENV production
 # TODO: remove qa
-ENV ENV production_qa
+ENV ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 # Installing dependencies
 COPY package*.json ./

@@ -31,8 +31,8 @@ function getLogger(level, originalLogger = console.log) {
 
 // override console log to use timestamp
 console.debug = console.log = getLogger("DEBUG")
-console.info = getLogger("INFO")
-console.warning = getLogger("WARNING")
+console.info = getLogger("INFO", console.info)
+console.warn = getLogger("WARNING", console.warn)
 console.error = getLogger("ERROR", console.error)
 
 app.prepare().then(() => {

@@ -20,12 +20,6 @@ const config = {
     root_url_prefix: '',
     api_url: 'https://dev-cmsrunregistry.web.cern.ch/api',
   },
-  // Production Openshift project, used for transitioning
-  // TODO: Remove
-  production_qa: {
-    root_url_prefix: '',
-    api_url: 'https://cmsrunregistry-qa.web.cern.ch/api',
-  },
   // Production Openshift project
   production: {
     root_url_prefix: '',

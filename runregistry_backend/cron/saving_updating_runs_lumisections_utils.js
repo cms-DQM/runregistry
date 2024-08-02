@@ -53,7 +53,11 @@ exports.get_OMS_lumisections = handleErrors(async (run_number) => {
 
   // We add luminosity information
   oms_lumisections = oms_lumisections.map(
-    ({ recorded_lumi, delivered_lumi }, index, oms_lumisections) => {
+    ({ recorded_lumi, delivered_lumi, lumisection_number }, index, oms_lumisections) => {
+      // Check that the index matches the LS number
+      if (index + 1 !== lumisection_number) {
+        console.warn(`Inconsistency in Run ${run_number}: Lumisection ${index} does not match OMS lumisection_number (${lumisection_number})`)
+      }
       // If any of them is null, then the per_lumi are all null
       if (recorded_lumi === null || delivered_lumi === null) {
         return {
