@@ -14,12 +14,12 @@
     "migrate": "./node_modules/.bin/sequelize db:migrate",
     "start_pinging_gui": "node --inspect=0.0.0.0:9229 cron_datasets/2.ping_dqm_gui.js",
     "start_processing_jsons": "",
-    "openshift_import_and_restart": "oc import-image runregistry-backend --from=registry.cern.ch/cms-dqmdc/runregistry-backend --confirm && oc rollout restart deployment/runregistry-backend",
+    "openshift_import_and_restart": "npm run openshift_import && npm run openshift_restart",
     "openshift_import": "oc import-image runregistry-backend --from=registry.cern.ch/cms-dqmdc/runregistry-backend --confirm",
     "openshift_restart": "oc rollout restart deployment/runregistry-backend",
-    "docker_build_and_push": "docker build . -t registry.cern.ch/cms-dqmdc/runregistry-backend && docker push registry.cern.ch/cms-dqmdc/runregistry-backend",
-    "docker_build": "docker build . -f Dockerfile -t registry.cern.ch/cms-dqmdc/runregistry-backend",
-    "docker_push": "docker push registry.cern.ch/cms-dqmdc/runregistry-backend"
+    "docker_build_and_push": "npm run docker_build ${npm_config_mytag:+--mytag=$npm_config_mytag} && npm run docker_push ${npm_config_mytag:+--mytag=$npm_config_mytag}",
+    "docker_build": "docker build . -f Dockerfile -t registry.cern.ch/cms-dqmdc/runregistry-backend${npm_config_mytag:+:$npm_config_mytag}",
+    "docker_push": "docker push registry.cern.ch/cms-dqmdc/runregistry-backend${npm_config_mytag:+:$npm_config_mytag}"
   },
   "keywords": [],
   "author": "",

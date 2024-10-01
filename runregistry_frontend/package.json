@@ -9,12 +9,12 @@
     "build": "next build",
     "start": "node server",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "openshift_import_and_restart": "oc import-image runregistry-frontend --from=registry.cern.ch/cms-dqmdc/runregistry-frontend --confirm && oc rollout restart deployment/runregistry-frontend",
-    "openshift_import": "oc import-image runregistry-frontend --from=registry.cern.ch/cms-dqmdc/runregistry-frontend --confirm",
+    "openshift_import_and_restart": "npm run openshift_import ${npm_config_mytag:+--mytag=$npm_config_mytag} && npm run openshift_restart",
+    "openshift_import": "oc import-image runregistry-frontend${npm_config_mytag:+:$npm_config_mytag} --from=registry.cern.ch/cms-dqmdc/runregistry-frontend --confirm",
     "openshift_restart": "oc rollout restart deployment/runregistry-frontend",
-    "docker_build_and_push": "docker build . -f Dockerfile -t registry.cern.ch/cms-dqmdc/runregistry-frontend && docker push registry.cern.ch/cms-dqmdc/runregistry-frontend",
-    "docker_build": "docker build . -f Dockerfile -t registry.cern.ch/cms-dqmdc/runregistry-frontend",
-    "docker_push": "docker push registry.cern.ch/cms-dqmdc/runregistry-frontend"
+    "docker_build_and_push": "npm run docker_build ${npm_config_mytag:+--mytag=$npm_config_mytag} && npm run docker_push ${npm_config_mytag:+--mytag=$npm_config_mytag}",
+    "docker_build": "docker build . -f Dockerfile -t registry.cern.ch/cms-dqmdc/runregistry-frontend${npm_config_mytag:+:$npm_config_mytag}",
+    "docker_push": "docker push registry.cern.ch/cms-dqmdc/runregistry-frontend${npm_config_mytag:+:$npm_config_mytag}"
   },
   "keywords": [],
   "author": "",
