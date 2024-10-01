@@ -779,7 +779,7 @@ exports.get_rr_and_oms_lumisection_ranges = async (req, res) => {
   );
   const oms_lumisections = await exports.get_oms_lumisections_for_dataset(
     run_number,
-    'online'
+    dataset_name || 'online'
   );
   let joint_lumisections;
   if (rr_lumisections.length >= oms_lumisections.length) {
