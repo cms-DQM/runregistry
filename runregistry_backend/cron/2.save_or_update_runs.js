@@ -189,6 +189,7 @@ exports.update_runs = (
         }
       } catch (e) {
         console.error(`2.save_or_update_runs.js # update_runs(): Error updating run ${oms_run_attributes.run_number}, ${e}`);
+        reject(`${e}`)
       }
     });
     if (runs_to_update.length < 10) {
