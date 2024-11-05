@@ -33,7 +33,7 @@ export const editLumisections = (edited_lumisections, workspace) =>
     });
 
 const INITIAL_STATE = [];
-export default function(state = INITIAL_STATE, action) {
+export default function lumisections(state = INITIAL_STATE, action) {
     const { type, payload } = action;
     switch (type) {
         case FETCH_LUMISECTION_RANGES:

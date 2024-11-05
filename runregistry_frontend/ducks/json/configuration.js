@@ -109,7 +109,7 @@ const INITIAL_STATE = {
   number_of_lumisections: 0,
 };
 
-export default function (state = INITIAL_STATE, action) {
+export default function configuration(state = INITIAL_STATE, action) {
   const { type, payload } = action;
 
   switch (type) {

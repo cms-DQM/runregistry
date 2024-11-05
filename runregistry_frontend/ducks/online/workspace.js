@@ -54,7 +54,7 @@ export const removeColumn = (workspace, column) =>
 
 const INITIAL_STATE = { workspace: 'global', workspaces: [] };
 
-export default function(state = INITIAL_STATE, action) {
+export default function workspace(state = INITIAL_STATE, action) {
   const { type, payload } = action;
   switch (type) {
     case FETCH_WORKSPACES:

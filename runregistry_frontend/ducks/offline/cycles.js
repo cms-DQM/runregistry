@@ -119,7 +119,7 @@ const INITIAL_STATE = {
   cycles: [],
 };
 
-export default function (state = INITIAL_STATE, action) {
+export default function cycles(state = INITIAL_STATE, action) {
   const { type, payload } = action;
   switch (type) {
     case FETCH_CYCLES:
