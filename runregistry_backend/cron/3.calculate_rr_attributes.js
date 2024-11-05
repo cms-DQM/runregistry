@@ -1,3 +1,4 @@
+const assert = require('assert').strict;
 const appendToAllAttributes = require('append-to-all-attributes');
 const {
   getComponentsIncludedBooleans,
@@ -60,6 +61,14 @@ exports.calculate_updated_rr_run_attributes = async (
     rr_run_attributes,
     oms_lumisections
   );
+
+  // Make sure that if for some reason lumisections disappear
+  // and the run is no longer significant, we don't mess up the run information.
+  // TODO: This is probably not the best place to do this check
+  if (run_was_previously_significant) {
+    assert.deepStrictEqual(rr_run_attributes.significant && oms_lumisections.length !== 0, true,
+      `Run ${oms_run_attributes.run_number} would no longer be deemed significant`)
+  }
 
   return rr_run_attributes;
 };
