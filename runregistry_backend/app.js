@@ -23,18 +23,19 @@ function getCurrentDateString() {
 // Generic function to return logging replacement functions given a specific level
 // which will be prepended to the messages.
 // If the caller function is not anonymous, its name is also printed.
-function getLogger(level, originalLogger = console.log) {
+function getLogger(level, originalLogger = console.log, color = '\x1b[0m') {
   return function () {
+    if (level === "DEBUG" && process.env.ENV !== 'development') { return }
     var args = [].slice.call(arguments);
-    originalLogger.apply(console.log, [getCurrentDateString(), `${level}${arguments.callee.caller && arguments.callee.caller.name ? ' (' + arguments.callee.caller.name + '):' : ":"}`].concat(args));
+    originalLogger.apply(console.log, [getCurrentDateString(), `${color}${level}\x1b[0m${arguments.callee.caller && arguments.callee.caller.name ? ' (' + arguments.callee.caller.name + '):' : ":"}`].concat(args));
   }
 };
 
-// override console log to use timestamp
-console.debug = console.log = getLogger("DEBUG")
-console.info = getLogger("INFO", console.info)
-console.warn = getLogger("WARNING", console.warn)
-console.error = getLogger("ERROR", console.error)
+// Override console methods to use timestamp & add some color
+console.debug = console.log = getLogger("DEBUG", console.log, '\x1b[90m')
+console.info = getLogger("INFO", console.info, '\x1b[1m\x1b[34m')
+console.warn = getLogger("WARNING", console.warn, '\x1b[1m\x1b[33m')
+console.error = getLogger("ERROR", console.error, '\x1b[1m\x1b[31m')
 
 // Logging for sanity
 const { database, host, port: db_port } = config[process.env.ENV];
