@@ -42,7 +42,7 @@ class ConfigurationModal extends Component {
             <div>
                 <Modal
                     title={title_options[configuration_modal_type]}
-                    visible={configuration_modal_visible}
+                    open={configuration_modal_visible}
                     onOk={hideConfigurationModal}
                     onCancel={
                         hideConfigurationModal // confirmLoading={confirmLoading}

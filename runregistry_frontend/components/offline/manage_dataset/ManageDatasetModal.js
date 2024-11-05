@@ -16,10 +16,9 @@ class ManageDatasetModal extends Component {
         return (
             <div>
                 <Modal
-                    title={`Managing Dataset # ${dataset.name} of run ${
-                        dataset.run_number
-                    }`}
-                    visible={manage_dataset_modal_visible}
+                    title={`Managing Dataset # ${dataset.name} of run ${dataset.run_number
+                        }`}
+                    open={manage_dataset_modal_visible}
                     onOk={hideManageDatasetModal}
                     onCancel={
                         hideManageDatasetModal // confirmLoading={confirmLoading}

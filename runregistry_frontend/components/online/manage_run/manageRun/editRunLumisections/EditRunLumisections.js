@@ -33,7 +33,7 @@ class EditRunLumisections extends Component {
     this.setState({ lumisections, loading: false });
   });
   render() {
-    const { run, workspaces, addLumisectionRange } = this.props;
+    const { run, workspaces, addLumisectionRange, refreshRun, resetAndRefreshRun, showManageRunModal } = this.props;
     const current_workspace = this.props.workspace.toLowerCase();
     let components = [];
     if (current_workspace === 'global') {
@@ -53,58 +53,57 @@ class EditRunLumisections extends Component {
     }
     return (
       <div>
-
-            <br />
-            <div
-              style={{
-                textAlign: 'center',
-              }}
-            >
-              <Button
-                onClick={async (evt) => {
-                  const { value } = await Swal({
-                    type: 'warning',
-                    title: `If a status was previously edited by a shifter, it will not be updated, it will only change those untouched.`,
-                    text: '',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes',
-                    reverseButtons: true,
-                  });
-                  if (value) {
-                    const updated_run = await this.props.refreshRun( run.run_number );
-                    await Swal(`Run updated`, '', 'success');
-                    await this.props.showManageRunModal(updated_run);
-                    this.fetchLumisections();
-                  }
-                }}
-                type="primary"
-              >
-                Manually refresh component's statuses
-              </Button>
-              &nbsp;
-              <Button
-                onClick={async (evt) => {
-                  const { value } = await Swal({
-                    type: 'warning',
-                    title: `If a status was previously edited by a shifter, it will not be updated, it will only change those untouched.`,
-                    text: '',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes',
-                    reverseButtons: true,
-                  });
-                  if (value) {
-                    const updated_run = await this.props.resetAndRefreshRun( run.run_number );
-                    await Swal(`Run updated`, '', 'success');
-                    await this.props.showManageRunModal(updated_run);
-                    this.fetchLumisections();
-                  }
-                }}
-                type="primary"
-              >
-                Reset RR attributes and refresh
-              </Button>
-            </div>
-            <br />
+        <br />
+        <div
+          style={{
+            textAlign: 'center',
+          }}
+        >
+          <Button
+            onClick={async (evt) => {
+              const { value } = await Swal({
+                type: 'warning',
+                title: `If a status was previously edited by a shifter, it will not be updated, it will only change those untouched.`,
+                text: '',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                reverseButtons: true,
+              });
+              if (value) {
+                const updated_run = await refreshRun(run.run_number);
+                await Swal(`Run updated`, '', 'success');
+                await showManageRunModal(updated_run);
+                this.fetchLumisections();
+              }
+            }}
+            type="primary"
+          >
+            Manually refresh component's statuses
+          </Button>
+          &nbsp;
+          <Button
+            onClick={async (evt) => {
+              const { value } = await Swal({
+                type: 'warning',
+                title: `If a status was previously edited by a shifter, it will not be updated, it will only change those untouched.`,
+                text: '',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                reverseButtons: true,
+              });
+              if (value) {
+                const updated_run = await resetAndRefreshRun(run.run_number);
+                await Swal(`Run updated`, '', 'success');
+                await showManageRunModal(updated_run);
+                this.fetchLumisections();
+              }
+            }}
+            type="primary"
+          >
+            Reset RR attributes and refresh
+          </Button>
+        </div>
+        <br />
 
         {run.significant ? (
           <div style={{ overflowX: 'scroll' }}>
