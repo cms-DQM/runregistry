@@ -6,9 +6,9 @@ const {
   get_OMS_lumisections,
 } = require('./saving_updating_runs_lumisections_utils');
 const {
-  calculate_rr_attributes,
-  calculate_rr_lumisections,
-  calculate_oms_attributes,
+  calculate_updated_rr_run_attributes,
+  classify_rr_lumisection_components,
+  augment_oms_run_attributes,
 } = require('./3.calculate_rr_attributes');
 
 const { API_URL, OMS_URL, OMS_SPECIFIC_RUN } = require('../config/config')[
@@ -37,17 +37,17 @@ exports.save_runs = async (new_runs, number_of_tries) => {
       // delete run.lumisections;
       // END temporal:
 
-      const oms_attributes = await calculate_oms_attributes(
+      const oms_run_attributes = await augment_oms_run_attributes(
         run,
         oms_lumisections
       );
 
       // We freeze oms_attributes to prevent them changing later on:
       Object.freeze(oms_lumisections);
-      Object.freeze(oms_attributes);
+      Object.freeze(oms_run_attributes);
       // NORMAL:
-      const rr_attributes = await calculate_rr_attributes(
-        oms_attributes,
+      const rr_run_attributes = await calculate_updated_rr_run_attributes(
+        oms_run_attributes,
         oms_lumisections
       );
       // START TEMPORAL
@@ -55,10 +55,10 @@ exports.save_runs = async (new_runs, number_of_tries) => {
       // END TEMPORAL
       let rr_lumisections = [];
       // Only if the run is significant, do we calculate the component statuses for the run
-      if (rr_attributes.significant) {
-        rr_lumisections = await calculate_rr_lumisections(
-          oms_attributes,
-          rr_attributes,
+      if (rr_run_attributes.significant) {
+        rr_lumisections = await classify_rr_lumisection_components(
+          oms_run_attributes,
+          rr_run_attributes,
           oms_lumisections
         );
       }
@@ -66,9 +66,9 @@ exports.save_runs = async (new_runs, number_of_tries) => {
       await axios.post(
         `${API_URL}/runs`,
         {
-          oms_attributes,
+          oms_attributes: oms_run_attributes,
           oms_lumisections,
-          rr_attributes,
+          rr_attributes: rr_run_attributes,
           rr_lumisections,
         },
         {
@@ -133,39 +133,41 @@ exports.update_runs = (
   return new Promise(async (resolve, reject) => {
     let updated_runs = 0;
     const runs_not_updated = [];
-    const promises = runs_to_update.map((run) => async () => {
+    const promises = runs_to_update.map((oms_run_attributes) => async () => {
       // We only update a run which state is OPEN
       try {
-        // We get the lumisections from OMS:
-        const oms_lumisections = await get_OMS_lumisections(run.run_number);
-        const oms_attributes = await calculate_oms_attributes(
-          run,
+        // We get per-lumisection info from OMS
+        const oms_lumisections = await get_OMS_lumisections(oms_run_attributes.run_number);
+        // Then we use it to augment oms run information with attributes we need, such as "pixel_included"
+        oms_run_attributes = await augment_oms_run_attributes(
+          oms_run_attributes,
           oms_lumisections
         );
-        // We freeze oms_attributes to prevent them changing later on:
+        // We freeze oms_attributes to prevent them changing later on
         Object.freeze(oms_lumisections);
-        Object.freeze(oms_attributes);
-        const rr_attributes = await calculate_rr_attributes(
-          oms_attributes,
+        Object.freeze(oms_run_attributes);
+
+        const rr_run_attributes = await calculate_updated_rr_run_attributes(
+          oms_run_attributes,
           oms_lumisections,
           previous_rr_attributes // If it was manually updated (see method below), this will not be undefined
         );
         let rr_lumisections = [];
-        // Only if the run is significant, do we calculate the component statuses for the run
-        if (rr_attributes.significant || manually_significant) {
-          rr_lumisections = await calculate_rr_lumisections(
-            oms_attributes,
-            rr_attributes,
+        // Only calculate the component statuses for the run if the run is significant
+        if (rr_run_attributes.significant || manually_significant) {
+          rr_lumisections = await classify_rr_lumisection_components(
+            oms_run_attributes,
+            rr_run_attributes,
             oms_lumisections
           );
         }
-        console.debug(`Updating attributes for run ${oms_attributes['run_number']}, via PUT`)
+        console.debug(`Updating attributes for run ${oms_run_attributes['run_number']}, via PUT`)
         const updated_run = await axios.put(
-          `${API_URL}/automatic_run_update/${run.run_number}`,
+          `${API_URL}/automatic_run_update/${oms_run_attributes.run_number}`,
           {
-            oms_attributes,
-            oms_lumisections,
-            rr_attributes,
+            oms_attributes: oms_run_attributes,
+            oms_lumisections: oms_lumisections,
+            rr_attributes: rr_run_attributes,
             rr_lumisections,
             atomic_version,
           },
@@ -186,7 +188,7 @@ exports.update_runs = (
           updated_runs += 1;
         }
       } catch (e) {
-        console.log(`2.save_or_update_runs.js # update_runs(): Error updating run ${run.run_number}`);
+        console.error(`2.save_or_update_runs.js # update_runs(): Error updating run ${oms_run_attributes.run_number}, ${e}`);
       }
     });
     if (runs_to_update.length < 10) {
@@ -257,8 +259,8 @@ exports.manually_update_a_run = async (
       Authorization: `Bearer ${await getToken()}`,
     },
   });
-  const run_oms_attributes = fetched_run[0].attributes;
-  await exports.update_runs([run_oms_attributes], 0, {
+  const oms_run_attributes = fetched_run[0].attributes;
+  await exports.update_runs([oms_run_attributes], 0, {
     previous_rr_attributes,
     email,
     comment,
@@ -288,8 +290,8 @@ exports.manually_update_a_run_reset_rr_attributes = async (
     },
   });
   const empty_var = false;
-  const run_oms_attributes = fetched_run[0].attributes;
-  await exports.update_runs([run_oms_attributes], 0, {
+  const oms_run_attributes = fetched_run[0].attributes;
+  await exports.update_runs([oms_run_attributes], 0, {
     empty_var,
     email,
     comment,
