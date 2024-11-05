@@ -19,7 +19,7 @@ class LumisectionModal extends Component {
             <div>
                 <Modal
                     title={`Lumisections of run # ${run_number} from ${name}`}
-                    visible={lumisection_modal_visible}
+                    open={lumisection_modal_visible}
                     onOk={hideLumisectionModal}
                     onCancel={
                         hideLumisectionModal // confirmLoading={confirmLoading}

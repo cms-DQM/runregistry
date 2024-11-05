@@ -16,7 +16,7 @@ class ManageRunModal extends Component {
       <div>
         <Modal
           title={`Managing Run # ${run.run_number}`}
-          visible={manage_run_modal_visible}
+          open={manage_run_modal_visible}
           onOk={hideManageRunModal}
           onCancel={
             hideManageRunModal // confirmLoading={confirmLoading}
