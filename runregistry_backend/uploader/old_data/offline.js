@@ -11,7 +11,7 @@ const {
 const connectionString =
     'postgresql://fabioespinosa:@localhost:5432/intermediate_rr_2';
 const { API_URL } = require('../../config/config')['development'];
-const { oms_lumisection_whitelist } = require('../../config/config');
+const { oms_lumisection_whitelist, MAX_UPDATE_RUNS_RETRIES } = require('../../config/config');
 
 exports.save_runs_from_old_rr = async (rows, number_of_tries) => {
     const client = new Client({
@@ -22,8 +22,8 @@ exports.save_runs_from_old_rr = async (rows, number_of_tries) => {
     if (!rows) {
         // This script requires that the runs that exist in the offline table MUST exist already in the online, and be already inserted
         const result = await client.query(`
-            select offline.* from offline 
-            where run_number > 300000 and run_number <= 350000 and rda_name <> '/Global/Online/ALL'  and 
+            select offline.* from offline
+            where run_number > 300000 and run_number <= 350000 and rda_name <> '/Global/Online/ALL'  and
             (lumisection_ranges_global is not null or lumisection_ranges_btag is not null or lumisection_ranges_castor is not null or lumisection_ranges_csc is not null or lumisection_ranges_ctpps is not null or lumisection_ranges_dt is not null or lumisection_ranges_ecal is not null or lumisection_ranges_egamma is not null or lumisection_ranges_hcal is not null or lumisection_ranges_hlt is not null or lumisection_ranges_jetmet is not null or lumisection_ranges_l1t is not null or lumisection_ranges_lumi is not null or lumisection_ranges_muon is not null or lumisection_ranges_rpc is not null or lumisection_ranges_tau is not null or lumisection_ranges_tracker is not null)
             order by run_number ASC;
         `);
@@ -137,11 +137,10 @@ exports.save_runs_from_old_rr = async (rows, number_of_tries) => {
                 },
                 {
                     headers: {
-                        email: `auto@auto ${
-                            workspace_user
-                                ? workspace_user.global && workspace_user.global
-                                : ''
-                        }`,
+                        email: `auto@auto ${workspace_user
+                            ? workspace_user.global && workspace_user.global
+                            : ''
+                            }`,
                         comment: 'dataset creation - migration from previous RR'
                     },
                     maxContentLength: 52428890000
@@ -168,7 +167,7 @@ exports.save_runs_from_old_rr = async (rows, number_of_tries) => {
             );
             console.log('------------------------------');
             console.log('------------------------------');
-            if (number_of_tries < 4) {
+            if (number_of_tries < MAX_UPDATE_RUNS_RETRIES) {
                 console.log(
                     `TRYING AGAIN: with ${runs_not_saved.length} run(s)`
                 );
@@ -179,7 +178,7 @@ exports.save_runs_from_old_rr = async (rows, number_of_tries) => {
                 );
             } else {
                 console.log(
-                    `After trying 4 times, ${run_numbers_of_runs_not_saved} dataset(s) were not saved`
+                    `After trying ${MAX_UPDATE_RUNS_RETRIES} times, ${run_numbers_of_runs_not_saved} dataset(s) were not saved`
                 );
             }
         }

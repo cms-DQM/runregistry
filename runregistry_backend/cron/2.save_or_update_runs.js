@@ -11,7 +11,7 @@ const {
   augment_oms_run_attributes,
 } = require('./3.calculate_rr_attributes');
 
-const { API_URL, OMS_URL, OMS_SPECIFIC_RUN } = require('../config/config')[
+const { API_URL, OMS_URL, OMS_SPECIFIC_RUN, MAX_UPDATE_RUNS_RETRIES } = require('../config/config')[
   process.env.ENV || 'development'
 ];
 
@@ -23,7 +23,7 @@ const instance = axios.create({
 // The runs to be saved get here, they await to be classified into cosmics/collision/commission:
 // AND check if they are significant
 // IF the run is significant, the lumisection component's statuses get assigned
-// If some runs didn't got saved, it will try again 4 times.
+// If some runs didn't got saved, it will try again MAX_UPDATE_RUNS_RETRIES times.
 exports.save_runs = async (new_runs, number_of_tries) => {
   let saved_runs = 0;
   const runs_not_saved = [];
@@ -100,13 +100,13 @@ exports.save_runs = async (new_runs, number_of_tries) => {
       console.warn(
         `2.save_or_update_runs.js # save_runs(): WARNING: ${runs_not_saved.length} run(s) were not saved. They are: ${run_numbers_of_runs_not_saved}.`
       );
-      if (number_of_tries < 4) {
+      if (number_of_tries < MAX_UPDATE_RUNS_RETRIES) {
         console.info(`2.save_or_update_runs.js # save_runs(): TRYING AGAIN: with ${runs_not_saved.length} run(s)`);
         number_of_tries += 1;
         await exports.save_runs(runs_not_saved, number_of_tries);
       } else {
         console.error(
-          `2.save_or_update_runs.js # save_runs(): After trying 4 times, ${run_numbers_of_runs_not_saved} run(s) were not saved`
+          `2.save_or_update_runs.js # save_runs(): After trying ${MAX_UPDATE_RUNS_RETRIES} times, ${run_numbers_of_runs_not_saved} run(s) were not saved`
         );
       }
     }
@@ -211,7 +211,7 @@ exports.update_runs = (
           console.warn(
             `2.save_or_update_runs.js # update_runs(): WARNING: ${runs_not_updated.length} run(s) were not updated. They are: ${run_numbers_of_runs_not_updated}.`
           );
-          if (number_of_tries < 4) {
+          if (number_of_tries < MAX_UPDATE_RUNS_RETRIES) {
             console.info(`2.save_or_update_runs.js # update_runs(): TRYING AGAIN: with ${runs_not_updated.length} run(s)`);
             number_of_tries += 1;
             await exports.update_runs(runs_not_updated, number_of_tries, {
@@ -223,7 +223,7 @@ exports.update_runs = (
             resolve();
           } else {
             console.error(
-              `2.save_or_update_runs.js # update_runs(): After trying 4 times, ${run_numbers_of_runs_not_updated} run(s) were not updated`
+              `2.save_or_update_runs.js # update_runs(): After trying ${MAX_UPDATE_RUNS_RETRIES} times, ${run_numbers_of_runs_not_updated} run(s) were not updated`
             );
             reject();
           }

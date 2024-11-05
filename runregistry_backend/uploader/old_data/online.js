@@ -6,7 +6,7 @@ const axios = require('axios');
 const connectionString =
   'postgresql://fabioespinosa:@localhost:5432/intermediate_rr_2';
 const { API_URL } = require('../../config/config')['development'];
-const { oms_lumisection_whitelist } = require('../../config/config');
+const { oms_lumisection_whitelist, MAX_UPDATE_RUNS_RETRIES } = require('../../config/config');
 const getAttributesSpecifiedFromArray = require('get-attributes-specified-from-array');
 
 exports.save_runs_from_old_rr = async (rows, number_of_tries, interval = 0) => {
@@ -18,9 +18,9 @@ exports.save_runs_from_old_rr = async (rows, number_of_tries, interval = 0) => {
   const starting_point = 123000; //123000;
   if (!rows) {
     const result = await client.query(`
-            select * from online 
+            select * from online
             where (workspace_states -> 'global') is not null and lumisections is not null and run_number > ${starting_point +
-              interval * interval_length} and run_number <= ${starting_point +
+      interval * interval_length} and run_number <= ${starting_point +
       (interval + 1) * interval_length}
             order by run_number ASC
         `);
@@ -98,21 +98,21 @@ exports.save_runs_from_old_rr = async (rows, number_of_tries, interval = 0) => {
       );
       console.log('------------------------------');
       console.log('------------------------------');
-      if (number_of_tries < 4) {
+      if (number_of_tries < MAX_UPDATE_RUNS_RETRIES) {
         console.log(`TRYING AGAIN: with ${runs_not_saved.length} run(s)`);
         number_of_tries += 1;
         await exports.save_runs_from_old_rr(runs_not_saved, number_of_tries);
       } else {
         console.log(
-          `After trying 4 times, ${run_numbers_of_runs_not_saved} run(s) were not updated`
+          `After trying ${MAX_UPDATE_RUNS_RETRIES} times, ${run_numbers_of_runs_not_saved} run(s) were not updated`
         );
       }
     }
     const result = await client.query(`
-            select * from online 
+            select * from online
             where (workspace_states -> 'global') is not null and lumisections is not null and run_number > ${starting_point +
-              (interval + 1) *
-                interval_length} and run_number <= ${starting_point +
+      (interval + 1) *
+      interval_length} and run_number <= ${starting_point +
       (interval + 2) * interval_length}
             order by run_number ASC
         `);

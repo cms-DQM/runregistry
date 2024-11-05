@@ -40,6 +40,7 @@ commonVars = {
   OMS_AUDIENCE: 'cmsoms-prod',
   OMS_RUNS_PER_API_CALL: 49,
   OMS_API_CALL_EVERY_NTH_MINUTE: 30, // This needs to be <=60
+  MAX_UPDATE_RUNS_RETRIES: 4, // Max times that we will retry to update runs on error
   // Redis
   // redis://:<pass>@<host>:<port>
   REDIS_URL: `redis://${process.env.REDIS_PASSWORD ? ':' + process.env.REDIS_PASSWORD + '@' : ''}${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || 6379}`,
@@ -61,7 +62,8 @@ module.exports = {
     DQM_GUI_CHECK_EVERY_NTH_MINUTE: 60,
     JSON_PROCESSING_ENABLED: false,
     OMS_GET_RUNS_CRON_ENABLED: false,
-    DQM_GUI_PING_CRON_ENABLED: false
+    DQM_GUI_PING_CRON_ENABLED: false,
+    MAX_UPDATE_RUNS_RETRIES: 1,
   },
   // ????
   dev_to_prod: {
