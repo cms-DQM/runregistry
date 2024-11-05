@@ -11,7 +11,7 @@ const INITIAL_STATE = {
     lumisection_modal_visible: false,
     lumisection_modal_dataset: {}
 };
-export default function(state = INITIAL_STATE, action) {
+export default function global_ui(state = INITIAL_STATE, action) {
     const { type, payload } = action;
     switch (type) {
         case SHOW_LUMISECTION_MODAL:

@@ -70,7 +70,7 @@ export const editRun = (run_number, updated_run) =>
     }
 
     try {
-      // Parentheses needed to destructure data to existing run var, 
+      // Parentheses needed to destructure data to existing run var,
       // which is outside of try-catch.
       ({ data: run } = await axios.put(
         `${api_url}/manual_run_edit/${run_number}/stop_reason`,
@@ -162,7 +162,7 @@ const INITIAL_STATE = {
   count: 0
 };
 
-export default function (state = INITIAL_STATE, action) {
+export default function runs(state = INITIAL_STATE, action) {
   const { type, payload } = action;
   switch (type) {
     case FILTER_RUNS:

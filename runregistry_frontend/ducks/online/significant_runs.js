@@ -44,7 +44,7 @@ const INITIAL_STATE = {
   runs: []
 };
 
-export default function(state = INITIAL_STATE, action) {
+export default function significant_runs(state = INITIAL_STATE, action) {
   const { type, payload } = action;
   switch (type) {
     case FILTER_RUNS:
