@@ -1,4 +1,4 @@
-export default function (getState, comment) {
+export default function auth(getState, comment) {
   const state = getState();
   let email = state.info.email;
   let egroups = state.info.egroups;
