@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       updated_by: { type: DataTypes.TEXT, allowNull: true },
     },
     {
-      // the RR DB was created and filled only with createdAt field. But for the operation we need updatedAt instead, actually. 
+      // the RR DB was created and filled only with createdAt field. But for the operation we need updatedAt instead, actually.
       // So, we alias updatedAt as createdAt for sequelize that will update it properly.
       createdAt: false,
       updatedAt: 'createdAt',

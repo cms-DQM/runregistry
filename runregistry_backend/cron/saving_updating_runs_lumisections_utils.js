@@ -188,18 +188,21 @@ exports.assign_run_class = handleErrors(
   },
   'runregistry_backend/cron/saving_updating_runs_lumisections_utils.js # assign_run_class(): Error assigning run class'
 );
-
+// For a given run's OMS and RR attributes, and OMS LS information,
+// try to decide whether it's significant or not.
+// NOTE: "dataset classifiers" in this context have nothing to do with
+// Offline's "datasets" like "Express" etc. It's unknown why this name was chosen
+// (Perhaps it makes sense in the Offline part of Runregistry?)
 exports.is_run_significant = handleErrors(
-  async (oms_attributes, rr_attributes, oms_lumisections) => {
+  async (oms_run_attributes, rr_run_attributes, oms_lumisections) => {
     const reduced_lumisection_attributes = exports.reduce_ls_attributes(
       oms_lumisections
     );
     const run = {
       ...reduced_lumisection_attributes,
-      ...oms_attributes,
-      ...rr_attributes,
+      ...oms_run_attributes,
+      ...rr_run_attributes,
     };
-    let run_is_significant = false;
     const { data: classifiers_array } = await axios.get(
       `${API_URL}/classifiers/dataset`
     );

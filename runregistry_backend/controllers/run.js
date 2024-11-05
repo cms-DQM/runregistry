@@ -250,7 +250,7 @@ exports.new = async (req, res) => {
   } catch (err) {
     console.error("run.js # new(): ", err);
     await transaction.rollback();
-    throw `Error saving run ${run_number}`;
+    throw `Error saving run ${run_number}: ${err}`;
   }
 };
 
