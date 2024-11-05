@@ -22,7 +22,7 @@ DB_USERNAME=postgres
 DB_PASSWORD=postgres
 DB_NAME=run_registry
 ```
-4. Make sure you have `node` v12 installed (e.g. `node-v12.22.12`) and it's in your `PATH`.   
+4. Make sure you have `node` v12 installed (e.g. `node-v12.22.12`) and it's in your `PATH`.
 5. Populate your local database with data, see [here](#adding-real-data-to-your-development-environments-database)
 6. `npm install`
 6. `npm run dev`
@@ -78,29 +78,29 @@ pg_dump -f dump.sql -d runregistry_database -U admin -h <DBoD URL> -p <DBoD port
 ```
 
 3. Restore the `dump.sql` to the postgres docker container. If you already started the development environment using `make dev` before, make sure to delete the database and create it again using your postgres client (if not it will throw errors saying that the tables already exist), once the database is virginly created, and the admin role has been created, you can run the following command (this will also take a while depending on the size of the dump):
-
+-
 ```bash
 psql -h localhost -p 6543 -U hackathon -d runregistry_database -f dump.sql
 ```
-
+-
 Now if you run `make dev` the API will connect to a fresh copy of the production data of run registry running in your local postgres database container. Now, your local environment resembles the production environment as much as possible, you can run runregistry_frontend locally to then interact with your development API.
-
+-
 ## Open ID  authentication
-
+-
 In order to get a **client secret** which will be used by the RunRegistry backend for OpenID authentication, in order to connect to the OMS API, you will need to contact [`cms-dqm-coreTeam`](mailto:cms-dqm-coreteam@cern.ch).
-
+-
 Once you have the secret, it must be set as environment variable in the following file: https://github.com/cms-DQM/runregistry/blob/master/runregistry_backend/docker-compose.development.yml.
-
+-
 It is important to set the environment variable CLIENT_SECRET in **production and development**. Otherwise, the backend will not work.
-
-
+-
+-
 ## The Stack
-
+-
 Run registry is a full-stack javascript application. Meaning both its front-end and back-end are written using JavaScript. There is also a python API pip client[https://github.com/fabioespinosa/runregistry_api_client] for users who want to acces the API.
-
+-
 ## Performing migrations
-
-To migrate in development: 
+-
+To migrate in development:
 ```bash
 docker-compose -f docker-compose.development.yml run dev npm run migrate
 ```
