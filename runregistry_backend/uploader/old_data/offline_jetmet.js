@@ -22,7 +22,7 @@ exports.save_runs_from_old_rr = async (rows, number_of_tries) => {
   if (!rows) {
     // This script requires that the runs that exist in the offline table MUST exist already in the online, and be already inserted
     const result = await client.query(`
-            select offline.* from offline 
+            select offline.* from offline
             where run_number > 1 and run_number <= 350000 and rda_name <> '/Global/Online/ALL'  and (rda_name = '/ReReco/Run2017C_UL2019/DQM' or rda_name = '/ReReco/Run2017E_UL2019/DQM')
             and (lumisection_ranges_global is not null)
             order by run_number ASC;
@@ -146,11 +146,10 @@ exports.save_runs_from_old_rr = async (rows, number_of_tries) => {
         },
         {
           headers: {
-            email: `auto@auto ${
-              workspace_user
-                ? workspace_user.global && workspace_user.global
-                : ''
-            }`,
+            email: `auto@auto ${workspace_user
+              ? workspace_user.global && workspace_user.global
+              : ''
+              }`,
             comment: 'migration of only jetmet from UL2017 era C and E only'
           },
           maxContentLength: 52428890000
@@ -177,13 +176,13 @@ exports.save_runs_from_old_rr = async (rows, number_of_tries) => {
       );
       console.log('------------------------------');
       console.log('------------------------------');
-      if (number_of_tries < 4) {
+      if (number_of_tries < MAX_UPDATE_RUNS_RETRIES) {
         console.log(`TRYING AGAIN: with ${runs_not_saved.length} run(s)`);
         number_of_tries += 1;
         await exports.save_runs_from_old_rr(runs_not_saved, number_of_tries);
       } else {
         console.log(
-          `After trying 4 times, ${run_numbers_of_runs_not_saved} dataset(s) were not saved`
+          `After trying ${MAX_UPDATE_RUNS_RETRIES} times, ${run_numbers_of_runs_not_saved} dataset(s) were not saved`
         );
       }
     }
