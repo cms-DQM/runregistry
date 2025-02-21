@@ -1,5 +1,8 @@
 # Run Registry
 
+> [!WARNING]
+> This repository has moved [here](https://gitlab.cern.ch/cms-dqmdc/services/runregistry).
+
 ## What is Run Registry?
 
 The process of monitoring and certifying data in the CMS experiment consists of several stages. Each through which new decision-making information regarding the quality of data is revealed. Run Registry is an application designed to document and aggregate each decision made -and by which actor, either human, automatic or machine learning agent- at every stage. It is then responsible for aggregating and exposing the results of data deemed good or ‘usable for analysis’ to the CMS collaboration in what is known as the **golden** json.
